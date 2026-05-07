@@ -2,6 +2,10 @@
 
 This guide walks you through everything needed to get the dashboard fully working on your own Home Assistant instance. Work through the sections in order — each one builds on the previous.
 
+NOTE: Since v2.0.0 the configuration has been decoupled. You ONLY need to edit the config.js file.
+
+TIP: Search for "YOUR_" in the config.js to find every value you need to personalise.
+
 ---
 
 ## Prerequisites
@@ -16,8 +20,6 @@ Before you start, make sure you have:
 - A websocket url ws://YOUR_HA_IP:8123/api/websocket
 
 ---
-
-TIP: Search for "YOUR_" to find every value you need to personalise
 
 ## Step 1 — Find your Home Assistant IP address
 
@@ -47,14 +49,14 @@ The dashboard authenticates with HA using a token instead of a password.
 
 ## Step 3 — Connect the dashboard to your HA instance
 
-Open `homie-dashboard.html` in your text editor.
+Open `config.js` in your text editor.
 
 Use **Find & Replace** (Ctrl+H / Cmd+H) to make these two replacements:
 
 | Find | Replace with |
 |------|-------------|
-| `YOUR_HA_LONG_LIVED_ACCESS_TOKEN` | The token you copied in Step 2 |
-| `YOUR_HA_IP:8123` | Your HA address from Step 1 (e.g. `192.168.1.100:8123`) |
+| `YOUR_LONG_LIVED_ACCESS_TOKEN` | The token you copied in Step 2 |
+| `YOUR_WEBSOCKET_URL` | Your HA address from Step 1 (e.g. `192.168.1.100:8123`) |
 
 > If your HA uses HTTPS, also change `ws://` to `wss://` in the `wsUrl` line.
 
@@ -79,7 +81,7 @@ Keep this page open in a separate tab — you will refer to it throughout setup.
 
 ## Step 5 — Set the background image
 
-In the file, find `YOUR_BACKGROUND_IMAGE_URL` and replace it with either:
+In the file, find `BACKGROUND IMAGE` and replace it with either:
 
 - A public image URL, e.g. from [Unsplash](https://unsplash.com) — right-click any photo → Copy Image Address. Append `?w=1200&q=80` for a smaller file size.
 - A local image served by HA — place the image in your HA `config/www/` folder and reference it as `/local/your-image.jpg`
@@ -93,16 +95,16 @@ These are the 5–10 summary tiles shown in the center of the dashboard (Doors, 
 Find the `homeStats` section in the file. For each entry, replace the entity placeholder with the real entity ID from your HA:
 
 ```
-{ label: "Doors",     entity: "binary_sensor.YOUR_DOORS_SENSOR", ... }
-{ label: "Windows",   entity: "binary_sensor.YOUR_DOORS_SENSOR", ... }
-{ label: "Alarm",     entity: "alarm_control_panel.YOUR_ALARM",  ... }
-{ label: "Cameras",   entity: "switch.YOUR_CAMERA_PRIVACY_SWITCH", ... }
-{ label: "Motion",    entity: "binary_sensor.YOUR_MOTION_SENSOR", ... }
-{ label: "Lights",    entity: "light.YOUR_ALL_LIGHTS_GROUP",      ... }
-{ label: "Air Con",   entity: "group.YOUR_ALL_AC_GROUP",          ... }
-{ label: "Purifiers", entity: "fan.YOUR_ALL_PURIFIERS_GROUP",     ... }
-{ label: "W. Heater", entity: "switch.YOUR_WATER_HEATER",         ... }
-{ label: "T. Warmer", entity: "group.YOUR_ALL_AC_GROUP",          ... }
+{ label: "Doors",     entity: "YOUR_ALL_DOORS_ENTITY", ... }
+{ label: "Windows",   entity: "YOUR_ALL_WINDOWS_ENTITY", ... }
+{ label: "Alarm",     entity: "YOUR_ALARM_ENTITY",  ... }
+{ label: "Cameras",   entity: "YOUR_CAMERA_PRIVACY_ENTITY", ... }
+{ label: "Motion",    entity: "YOUR_ALL_MOTION_SENSORS_ENTITY", ... }
+{ label: "Lights",    entity: "YOUR_ALL_LIGHTS_ENTITY",      ... }
+{ label: "Air Con",   entity: "YOUR_ALL_AC_GROUP_ENTITY",          ... }
+{ label: "Purifiers", entity: "YOUR_ALL_PURIFIERS_ENTITY",     ... }
+{ label: "W. Heater", entity: "YOUR_WATER_HEATER_ENTITY",         ... }
+{ label: "T. Warmer", entity: "YOUR_TOWEL_WARMER_ENTITY",          ... }
 ```
 
 **Tips:**
@@ -114,7 +116,7 @@ Find the `homeStats` section in the file. For each entry, replace the entity pla
 
 ## Step 7 — Weather
 
-Find `weather.YOUR_WEATHER_ENTITY` and replace it with your HA weather entity.
+Find `YOUR_WEATHER_ENTITY` and replace it with your HA weather entity.
 
 Most HA installations have a default weather entity already — check Developer Tools → States and filter by `weather.` to find yours (commonly `weather.home` or `weather.forecast_home`).
 
@@ -129,17 +131,17 @@ The sensor bar at the bottom shows temperature, humidity, and air quality for tw
 Find the `floorSensors` section and replace each entity:
 
 **First Floor (ground):**
-- `sensor.YOUR_FLOOR1_TEMPERATURE` → your first floor temperature sensor
-- `sensor.YOUR_FLOOR1_HUMIDITY` → your first floor humidity sensor
-- `sensor.YOUR_FLOOR1_PM25` → your first floor PM2.5 / air quality sensor
+- `YOUR_FIRST_FLOOR_TEMP_ENTITY` → your first floor temperature sensor
+- `YOUR_FIRST_FLOOR_HUMIDITY_ENTITY` → your first floor humidity sensor
+- `YOUR_FIRST_FLOOR_PM25_ENTITY` → your first floor PM2.5 / air quality sensor
 
 **Second Floor (upper):**
-- `sensor.YOUR_FLOOR2_TEMPERATURE` → your second floor temperature sensor
-- `sensor.YOUR_FLOOR2_HUMIDITY` → your second floor humidity sensor
-- `sensor.YOUR_FLOOR2_PM25` → your second floor PM2.5 / air quality sensor
+- `YOUR_SECOND_FLOOR_TEMP_ENTITY` → your second floor temperature sensor
+- `YOUR_SECOND_FLOOR_HUMIDITY_ENTITY` → your second floor humidity sensor
+- `YOUR_SECOND_FLOOR_PM25_ENTITY` → your second floor PM2.5 / air quality sensor
 
 **Power sensor:**
-- `sensor.YOUR_POWER_CONSUMPTION` → your whole-home energy/power sensor (in kW)
+- `YOUR_POWER_SENSOR_ENTITY` → your whole-home energy/power sensor (in kW)
 
 > If you don't have PM2.5 sensors, you can substitute any other sensor (e.g. CO₂). Change the `unit` value to match.
 
@@ -149,210 +151,28 @@ Find the `floorSensors` section and replace each entity:
 
 If you have a solar inverter integrated with HA, fill in the four solar entities:
 
-- `sensor.YOUR_SOLAR_PRODUCTION` → current solar generation (kW)
-- `sensor.YOUR_SOLAR_EXPORT` → power being exported to the grid (kW)
-- `sensor.YOUR_BATTERY_SOC` → battery state of charge (%)
-- `sensor.YOUR_INVERTER_TEMP` → inverter temperature (°C)
+- `YOUR_SOLAR_PRODUCTION_ENTITY` → current solar generation (kW)
+- `YOUR_SOLAR_EXPORT_ENTITY` → power being exported to the grid (kW)
+- `YOUR_BATTERY_SOC_ENTITY` → battery state of charge (%)
+- `YOUR_INVERTER_TEMP_ENTITY` → inverter temperature (°C)
 
 > If you don't have solar, you can hide this section by finding the `solarSensors` block and setting each entity to `null`. The solar pill will simply show dashes.
 
 ---
 
-## Step 10 — Lights
+## Step 10 
+You should get the idea by now. The config file makes it easy and it's pretty well documented to follow through. 
+Continue searching for the rest of "YOUR_" in the config.js to replace the entities with your own ones.
 
-Find the `controls` section, then the `Lights` chip entry. Under `subGroups`, each group represents a room. Replace every `entity` placeholder with your actual light entity IDs:
-
-```
-{ label: "Living", subEntities: [
-    { label: "Center",     entity: "light.YOUR_LIVING_ROOM_LIGHTS" },
-    { label: "Table",      entity: "light.YOUR_TABLE_LIGHTS" },
-    ...
-]}
-```
-
-**To customise rooms and groups:**
-- Rename any `label` to match your room names
-- Add or remove `{ label: "...", entity: "..." }` lines within a group
-- Add an entirely new room group by copying one `{ label: "...", subEntities: [...] }` block and updating it
-- Remove a room group you don't need by deleting the entire block
-
-**Important:** Light entities must start with `light.` for the brightness slider and colour controls to appear in the popup.
-
-Also replace:
-- `light.YOUR_ALL_LIGHTS_GROUP` → a Light Group or group entity that covers all lights (used by the chip toggle and the homeStats tile)
-- `sensor.YOUR_LIGHTS_ON_COUNT` → a template sensor that counts how many lights are on (used for the badge counter on the chip). If you don't have this, remove the `countEntity` line.
 
 ---
 
-## Step 11 — Scenes
-
-Find the `Scenes` chip entry in `controls`. Each scene entry looks like:
-
-```
-{ label: "Relax", entity: "automation.YOUR_LIVING_RELAX", color: "#4a2d7a", icon: `...` }
-```
-
-Replace each `automation.YOUR_*` with the automation or script entity ID that triggers that scene in your HA.
-
-- The `label` is the name shown on the bubble
-- The `color` is the background colour of the bubble (any CSS hex colour)
-- The `icon` is an inline SVG — leave these unchanged unless you want to customise them
-
-To add or remove scenes, copy or delete individual `{ label: ... }` lines. To add a new scene group (e.g. a third room), copy an entire `{ label: "...", scenes: [...] }` block.
-
----
-
-## Step 12 — Air conditioning
-
-Find the `Air Con` chip entry. Replace each `climate.YOUR_*` with your climate entity IDs:
-
-```
-{ label: "Living",  entity: "climate.YOUR_LIVING_AC" },
-{ label: "Dining",  entity: "climate.YOUR_DINING_AC" },
-...
-```
-
-Also replace:
-- `group.YOUR_ALL_AC_GROUP` → a group covering all AC units (for the chip-level toggle)
-- `sensor.YOUR_AIRCON_ON_COUNT` → a template sensor counting how many units are on
-
-**Important:** These entities must start with `climate.` for the AC card (mode, fan speed, temperature controls) to appear.
-
----
-
-## Step 13 — Air purifiers
-
-Find the `Purifiers` chip entry. Replace each `fan.YOUR_*` with your purifier entity IDs:
-
-```
-{ label: "Living",  entity: "fan.YOUR_LIVING_PURIFIER" },
-{ label: "Office",  entity: "fan.YOUR_OFFICE_PURIFIER" },
-{ label: "Bedroom", entity: "fan.YOUR_BEDROOM_PURIFIER" },
-```
-
-Also replace:
-- `fan.YOUR_ALL_PURIFIERS_GROUP` → a group covering all purifiers
-- `sensor.YOUR_PURIFIERS_ON_COUNT` → a template sensor counting how many are on
-
-**Important:** These must start with `fan.` for the purifier speed card to appear.
-
----
-
-## Step 14 — Blinds and curtains
-
-Find the `Blinds` chip entry. Replace each `cover.YOUR_*`:
-
-```
-{ label: "Living",  entity: "cover.YOUR_LIVING_BLINDS" },
-{ label: "Dining",  entity: "cover.YOUR_DINING_BLINDS", isCurtain: true },
-...
-```
-
-- Entities must start with `cover.` for the open/close/stop controls to appear
-- Add `isCurtain: true` to any entry that is a horizontal curtain (flips the arrow direction)
-- Remove entries for rooms where you have no blinds
-
-Also replace `cover.YOUR_ALL_BLINDS_GROUP` with a group covering all your covers.
-
----
-
-## Step 15 — Bathroom controls
-
-Find the `Bath` chip entry. It has three sub-sections: House (water heater and hot water circulation), Main Bath, and Ensuite.
-
-Replace each entity:
-
-| Placeholder | What it controls |
-|-------------|-----------------|
-| `switch.YOUR_WATER_HEATER` | Whole-home water heater switch |
-| `switch.YOUR_HW_CIRC_KITCHEN` | Hot water circulation — kitchen zone |
-| `switch.YOUR_HW_CIRC_MAIN_BATH` | Hot water circulation — main bath zone |
-| `switch.YOUR_HW_CIRC_ENSUITE` | Hot water circulation — ensuite zone |
-| `fan.YOUR_MAIN_BATH_FAN` | Main bathroom extractor fan |
-| `switch.YOUR_MAIN_BATH_TOWEL_WARMER` | Main bath towel warmer switch |
-| `fan.YOUR_ENSUITE_FAN` | Ensuite extractor fan |
-| `switch.YOUR_ENSUITE_TOWEL_WARMER` | Ensuite towel warmer switch |
-
-Remove any entries you don't have. If you have no hot water circulation at all, delete the entire `HW Circulation` expandable block.
-
----
-
-## Step 16 — Irrigation
-
-Find the `Irrigation` chip entry and replace:
-
-- `switch.YOUR_IRRIGATION_FRONT` → your front garden irrigation switch
-- `switch.YOUR_IRRIGATION_BACK` → your back garden irrigation switch
-
-Add or remove zone entries to match the number of zones you have.
-
----
-
-## Step 17 — Music player
-
-Find `media_player.YOUR_MEDIA_PLAYER` and replace it with your HA media player entity (e.g. a Spotify integration, a Sonos player, or a local media player).
-
-The Now Playing bar will appear automatically at the bottom of the screen whenever music is actively playing.
-
----
-
-## Step 18 — Calendar
-
-Find the `calendarEntities` line:
-
-```js
-calendarEntities: ["calendar.YOUR_CALENDAR_1", "calendar.YOUR_CALENDAR_2"],
-```
-
-Replace each entry with the entity IDs of your HA calendar integrations. You can have as many or as few as you like — add more by adding `"calendar.your_calendar"` entries separated by commas, or remove the second entry if you only have one calendar.
-
----
-
-## Step 19 — Notifications
-
-Find the `notifications` section. Each entry defines a sensor or input_boolean that, when `on`, triggers a banner at the top of the dashboard.
-
-Replace each entity placeholder with your own binary sensors or input_booleans. You can:
-- Rename the `label` to describe the reminder
-- Remove any rows you don't want
-- Add new rows following the same `{ label: "...", entity: "..." }` pattern
-
----
-
-## Step 20 — Pet stats (optional)
-
-If you don't have a pet or don't want this feature, skip to Step 21.
-
-Find `petName: "YOUR_PET_NAME"` and replace it with your pet's name. This updates both the button label and the popup title automatically.
-
-Then replace each sensor in the `petStats` block:
-
-| Placeholder | What it tracks |
-|-------------|---------------|
-| `sensor.YOUR_PET_LITTER_USES_TODAY` | Litter box visits today |
-| `sensor.YOUR_PET_LITTER_LAST_USED` | Timestamp of last litter box use |
-| `sensor.YOUR_PET_FOOD_COUNT` | Food portions dispensed today |
-| `sensor.YOUR_PET_FOOD_WEIGHT` | Total food weight dispensed today (g) |
-| `sensor.YOUR_PET_FOOD_DESICCANT` | Days left on feeder desiccant pack |
-| `sensor.YOUR_PET_WATER_TODAY` | Water dispensed today (ml) |
-| `sensor.YOUR_PET_WATER_FILTER` | Water fountain filter life (%) |
-
-If you only have some of these sensors, set the ones you don't have to `null` (no quotes).
-
-Also update the two notification label entries that contain `YOUR_PET_NAME`:
-```
-{ label: "YOUR_PET_NAME Litter Box Needs Cleaning", ... }
-{ label: "YOUR_PET_NAME Food/Water Problem",        ... }
-```
-
----
-
-## Step 21 — Serve the file
+## Step 11 — Serve the file
 
 The dashboard must be opened from a device on the same local network as your HA instance. There are two ways to do this:
 
 **Option A — Serve from Home Assistant (recommended)**
-1. Copy `homie-dashboard.html` into your HA `config/www/` folder
+1. Copy `homie-dashboard.html` and `config.js` into your HA `config/www/` folder
 2. Access it in a browser at `http://YOUR_HA_IP:8123/local/homie-dashboard.html`
 
 **Option B — Open directly in a browser**
@@ -362,7 +182,7 @@ The dashboard must be opened from a device on the same local network as your HA 
 
 ---
 
-## Step 22 — Verify everything works
+## Step 12 — Verify everything works
 
 Work through this checklist once the dashboard is open:
 
@@ -375,7 +195,7 @@ Work through this checklist once the dashboard is open:
 - [ ] Tapping a chip (Lights, Air Con, etc.) opens a popup with your devices
 - [ ] Toggles and sliders in popups control your devices in HA
 - [ ] The Now Playing bar appears when music is playing
-- [ ] The Calendar button shows upcoming events
+- [ ] The Calendar dashboard shows upcoming events, todo etc.
 
 ---
 
