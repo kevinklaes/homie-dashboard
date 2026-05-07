@@ -20,42 +20,46 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 - Revoke and regenerate the token periodically (HA → Profile → Long-Lived Access Tokens)
 - For remote access, use a VPN (e.g. WireGuard)
 
-## Dashboard Screenshots
+## Screenshots
 
-| Main Screen | Notifications and Music | Hero Stats and Chips ON |
+| Overview Dashboard | Notifications and Music | Dashboard Modes |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/ea02bf92-5c94-4de5-a226-708e6651217f" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/49147619-f734-4b36-bf5d-37583b95d5d8" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/9a76656d-3410-4469-a4df-7a0624930104" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/444fb202-fa95-468e-9d90-9f8fdd9dee5f" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/7087e6e2-2980-40b6-829c-71e143dcdb6f" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/0adb38f3-c0f9-47d2-a464-75b6cd8a6553" width="320" height="200"/> |
 
-| Pet Stats | Calendar | AirCon |
+| Music Dashboard A | Music Dashboard B | Calendar Dashboard |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/00381443-7d68-43f9-8296-f20299ad74eb" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/7a1326ec-3ab9-45fe-9d88-49359db6c760" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/2cf69c21-d577-4fd3-8124-47b28d65d1bb" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/0035aa33-3489-41c6-bcda-55923ec36b1a" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/ed0d9782-77c6-491d-9854-4c3ee4171fc5" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/ed10dc98-2453-4029-9d63-749443c8638a" width="320" height="200"/> |
 
-| Lights | Scenes | Blinds |
+| Memories Dashboard | Thermostat Dashboard | Themes |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/79b52001-6b85-4a4f-96f4-0332dfe05f2d" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/404c87ef-6105-49bd-b12b-1d7c6eadfb5f" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/8107d615-41be-457a-9f91-c3e674a654d0" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/04555ed4-983d-47ac-b672-8568867c6bf9" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/b0a94058-a174-4fe4-92b9-dc387a5ce4ea" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/39d826bb-2a85-4dec-adf9-9a5ddbce3244" width="320" height="200"/> |
 
+| Pet Stats | Alarm Status | Lights |
+|--------|--------|--------|
+| <img src="https://github.com/user-attachments/assets/c3d8fb36-c271-43e3-aaae-064a454a47d1" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/0ec20e9d-604d-42d6-af8c-a3e9a942bc81" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/89d52cd2-bf4a-4153-8976-c82599caa683" width="320" height="200"/> |
 
-| Alarmo | Media Browse |
-|--------|--------|
-| <img src="https://github.com/user-attachments/assets/767a5909-e6da-4877-b9c8-569286f33bc4" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/6a60a1d8-3ba5-40fa-82c6-813b217212fa" width="320" height="200"/> | 
+| Scenes | AirCon | Blinds |
+|--------|--------|--------|
+| <img src="https://github.com/user-attachments/assets/e7f3b548-7c1d-434d-b05b-0dd217de039e" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/2e7e9043-120e-4ed1-9fa3-8dadd75654a9" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/b6f6191c-42a0-4dcf-9d75-c17f05e09222" width="320" height="200"/> |
 
 | ... and Shumi 🐱 |
 |--------|
-| <img src="https://github.com/user-attachments/assets/2b4c66f6-2b31-4a11-b967-55e7fc3f4b0a" width="246" height="428"/> |
+| <img src="https://github.com/user-attachments/assets/2b4c66f6-2b31-4a11-b967-55e7fc3f4b0a" width="320" height="557"/> |<img width="2560" height="1600" alt="15  Blinds" src="https://github.com/user-attachments/assets/707451a4-abb4-49a6-9100-9ca64ee771a7" />
+
 
 ## Theme Screenshots
 
 | Classic Gold | Deep Copper | Terracotta |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/d92e2c0d-3ddc-4c5a-80ce-7200aacc2dfc" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/2cf7cd06-7009-4824-8a11-12b655a0e93d" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/eb8983a9-b24c-44db-8599-7fe7ad1ac3fe" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/a59a180f-852f-4ffc-b53f-505e8c1a8d59" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/3608d390-d8e7-4ed7-a30b-7e8003a96ee8" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/4b948a3c-1c01-4ad2-931f-9252be1415eb" width="320" height="200"/> |
 
 | Steel Blue | Arctic Cyan | Emerald Green |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/580b6471-731d-489e-91f2-87b9a26e64eb" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/bc928c36-5ecf-4846-ae72-a287074828ac" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/84b79c9a-aa71-46b2-b939-a4237acfca0e" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/cbd4106d-d00e-40d7-aec0-70b43ab9190e" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/00b0a8e1-761b-4f19-bebd-d9ffc4affba3" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/7ec8622d-1ef5-4764-b7ff-cc1fbe650100" width="320" height="200"/> |
 
 | Amethyst Purple | Solar Yellow | Crimson Red |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/e892a526-7be1-4ae8-bd7a-9627393a776f" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/a7fd6d82-0bce-4535-bc16-d959c1ed63a9" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/00ae02cd-627a-4db5-a154-6d7b32c99ec3" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/44f850b2-cbc6-49a0-8aaf-2fad3b5981e1" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/901445d8-58f8-43b6-8a4b-61c833363b06" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/df6f6316-7f9e-4543-881b-ffb2c95b7a07" width="320" height="200"/> |
 
 
 ---
