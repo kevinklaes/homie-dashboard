@@ -26,7 +26,7 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 |--------|--------|--------|
 | <img src="https://github.com/user-attachments/assets/444fb202-fa95-468e-9d90-9f8fdd9dee5f" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/7087e6e2-2980-40b6-829c-71e143dcdb6f" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/0adb38f3-c0f9-47d2-a464-75b6cd8a6553" width="320" height="200"/> |
 
-| Music Dashboard A | Music Dashboard B | Calendar Dashboard |
+| Now Playing Dashboard A | Now Playing Dashboard B | My Day Dashboard |
 |--------|--------|--------|
 | <img src="https://github.com/user-attachments/assets/0035aa33-3489-41c6-bcda-55923ec36b1a" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/ed0d9782-77c6-491d-9854-4c3ee4171fc5" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/ed10dc98-2453-4029-9d63-749443c8638a" width="320" height="200"/> |
 
