@@ -10,7 +10,7 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 
 ## Security
 
-⚠️ The HA Long-Lived Access Token is stored in plain text inside the HTML file. Anyone who can read the file has full access to your Home Assistant instance.
+⚠️ The HA Long-Lived Access Token is stored in plain text inside the config.js file. Anyone who can read the file has full access to your Home Assistant instance.
 
 > DON'T BE like the guy in Massachusetts that has a room named Jason's room - if you have been on Reddit long enough, you will get the joke :)
 
