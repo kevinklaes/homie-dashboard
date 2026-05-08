@@ -77,7 +77,7 @@ New in v1.1.0
 - Support for Media Browsing
 - Alarmo controls
   
-First Release
+First Release v1.0.0
 - 9 Themes
 - Works both vertically and horizontally 
 - Fullscreen on first tap
