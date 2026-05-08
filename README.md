@@ -86,7 +86,7 @@ First Release v1.0.0
 - Popups with many entities use a room accordion — tap a room to expand it, tap outside to dismiss
 - Notifications/Reminders
 - Music playback and controls
-- Haptic Feedback on suported Android devices
+- Haptic Feedback on supported Android devices
 
 More information for the Homie Dashboard Elements can be found [homie-dashboard-elements](https://github.com/Big-Edge2297/homie-dashboard/blob/main/homie-dashboard-elements.md)
 
