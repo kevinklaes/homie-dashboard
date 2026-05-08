@@ -73,9 +73,9 @@ New in v2.0.0
 - Thermostat Dashboard
   
 New in v1.1.0
-- Support for Spotify and Music Assistant - new in v1.1.0
-- Support for Media Browsing - new in v1.1.0
-- Alarmo controls - new in v1.1.0
+- Support for Spotify and Music Assistant
+- Support for Media Browsing
+- Alarmo controls
   
 First Release
 - 9 Themes
