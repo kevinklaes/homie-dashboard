@@ -65,6 +65,19 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 ---
 
 ## Features
+New in v3.0.0
+- Setting Cog to customize settings directly from the dashboard
+- New Overview screen with side controls
+- Analog and Digital Dashboards
+- Weather Dashboard with adaptive weather conditions
+- Mood Tracker in My Day
+- Habit and Mood history for up to 30 days
+- Volume Control in Music Players
+- Themed Background based on theme selection
+- Bloom Intensiy for brighter/darker background
+- Greeting and dashboard name personalization
+- Weather popup in the main overview screens 
+
 New in v2.1.0
 - Support for more than 2 Music Players
 - Hide top right buttons
