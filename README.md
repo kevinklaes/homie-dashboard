@@ -81,7 +81,7 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 
 ## Features
 New in v3.0.0
-- Setting Cog to customize settings directly from the dashboard
+- Settings Cog to customize settings directly from the dashboard
 - New Overview screen with side controls
 - Analog and Digital Dashboards
 - Weather Dashboard with adaptive weather conditions
