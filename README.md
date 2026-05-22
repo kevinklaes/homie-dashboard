@@ -65,6 +65,11 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 ---
 
 ## Features
+New in v2.1.0
+- Support for more than 2 Music Players
+- Hide top right buttons
+- Sensor row customization
+
 New in v2.0.0
 - Separate configuration file for much easier user adoption and setup
 - Now Playing Dashboards - 2 beautiful full screen music dashboards
