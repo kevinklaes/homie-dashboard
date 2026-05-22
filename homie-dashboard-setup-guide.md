@@ -2,7 +2,7 @@
 
 This guide walks you through everything needed to get the dashboard fully working on your own Home Assistant instance. Work through the sections in order — each one builds on the previous.
 
-NOTE: Since v2.0.0 the configuration has been decoupled. You ONLY need to edit the config.js file.
+NOTE: Since v2.0.0 the configuration has been decoupled. You ONLY need to edit the config.js file. Do NOT edit anything in the html file unless you know what you are doing.
 
 TIP: Search for "YOUR_" in the config.js to find every value you need to personalise.
 
@@ -14,6 +14,8 @@ Before you start, make sure you have:
 
 - A running HA instance 2023.x or newer
 - The dashboard HTML file (`homie-dashboard.html`) saved in config/www folder of your HA
+- The config file (`config.js`) saved in config/www folder of your HA
+- The photos you will like to display in the Memories Dashboard in config/www/photos
 - A plain text editor such as Notepad to edit the html file
 - The dashboard served from the same network as your HA instance (a phone, tablet, or browser on your local network)
 - A Long-Lived Access Token — generate one at HA → Profile → Security → Long-Lived Access Tokens
@@ -60,7 +62,7 @@ Use **Find & Replace** (Ctrl+H / Cmd+H) to make these two replacements:
 
 > If your HA uses HTTPS, also change `ws://` to `wss://` in the `wsUrl` line.
 
-**Test it now** — open the file in your browser. If the clock shows, the background loads, and you do not see a red "Connection Lost" banner, you are connected. The stats and sensors will show `—` until you fill in entities in the next steps.
+**Test it now** — open the file in your browser. If the clock shows etc, and you do not see a red "Connection Lost" banner, you are connected. The stats and sensors will show `—` until you fill in entities in the next steps.
 
 ---
 
@@ -79,16 +81,7 @@ Keep this page open in a separate tab — you will refer to it throughout setup.
 
 ---
 
-## Step 5 — Set the background image
-
-In the file, find `BACKGROUND IMAGE` and replace it with either:
-
-- A public image URL, e.g. from [Unsplash](https://unsplash.com) — right-click any photo → Copy Image Address. Append `?w=1200&q=80` for a smaller file size.
-- A local image served by HA — place the image in your HA `config/www/` folder and reference it as `/local/your-image.jpg`
-
----
-
-## Step 6 — Fill in the overview stats
+## Step 5 — Fill in the overview stats
 
 These are the 5–10 summary tiles shown in the center of the dashboard (Doors, Alarm, Lights, etc.).
 
@@ -114,7 +107,7 @@ Find the `homeStats` section in the file. For each entry, replace the entity pla
 
 ---
 
-## Step 7 — Weather
+## Step 6 — Weather
 
 Find `YOUR_WEATHER_ENTITY` and replace it with your HA weather entity.
 
@@ -124,7 +117,7 @@ If you prefer Fahrenheit, change `"°C"` to `"°F"` on the line below it.
 
 ---
 
-## Step 8 — Floor sensors (bottom bar)
+## Step 7 — Floor sensors (bottom bar)
 
 The sensor bar at the bottom shows temperature, humidity, and air quality for two floors.
 
@@ -147,7 +140,7 @@ Find the `floorSensors` section and replace each entity:
 
 ---
 
-## Step 9 — Solar panel (bottom bar)
+## Step 8 — Solar panel (bottom bar)
 
 If you have a solar inverter integrated with HA, fill in the four solar entities:
 
@@ -160,14 +153,14 @@ If you have a solar inverter integrated with HA, fill in the four solar entities
 
 ---
 
-## Step 10 
+## Step 9 
 You should get the idea by now. The config file makes it easy and it's pretty well documented to follow through. 
 Continue searching for the rest of "YOUR_" in the config.js to replace the entities with your own ones.
 
 
 ---
 
-## Step 11 — Serve the file
+## Step 10 — Serve the file
 
 The dashboard must be opened from a device on the same local network as your HA instance. There are two ways to do this:
 
@@ -175,14 +168,15 @@ The dashboard must be opened from a device on the same local network as your HA 
 1. Copy `homie-dashboard.html` and `config.js` into your HA `config/www/` folder
 2. Access it in a browser at `http://YOUR_HA_IP:8123/local/homie-dashboard.html`
 
-**Option B — Open directly in a browser**
+**Option B — Open directly in a browser (not recommended)**
 1. Open the HTML file directly in Chrome, Firefox, or Safari on any device on your local network
 2. The browser may warn about local file access — allow it
+3. Due to CORS not all elements such as the calendar will not load, so Option A is the best way
 
 
 ---
 
-## Step 12 — Verify everything works
+## Step 11 — Verify everything works
 
 Work through this checklist once the dashboard is open:
 
