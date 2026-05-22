@@ -22,17 +22,33 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 
 ## Screenshots
 
-| Overview Dashboard | Notifications and Music | Dashboard Modes |
-|--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/444fb202-fa95-468e-9d90-9f8fdd9dee5f" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/7087e6e2-2980-40b6-829c-71e143dcdb6f" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/0adb38f3-c0f9-47d2-a464-75b6cd8a6553" width="320" height="200"/> |
+### Overview
+
+| Overview Screen A | Overview Screen B |
+|--------|--------|
+| <img src="https://github.com/user-attachments/assets/4dab2467-0468-4f59-a708-0bd5431e99f1" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/4defc21a-1da4-42c3-a108-3bac96b7c7a5" width="320" height="200"/> 
+
+### Dashboards
 
 | Now Playing Dashboard A | Now Playing Dashboard B | My Day Dashboard |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/0035aa33-3489-41c6-bcda-55923ec36b1a" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/ed0d9782-77c6-491d-9854-4c3ee4171fc5" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/ed10dc98-2453-4029-9d63-749443c8638a" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/f5ae7528-00b3-4af3-9101-a73a8111b886" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/b968bae0-c504-4cd1-a3f9-93a1d54fba97" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/3d6f985c-b43a-4dfd-984c-4f4082facebc" width="320" height="200"/> |
 
-| Memories Dashboard | Thermostat Dashboard | Themes |
+| Memories Dashboard | Thermostat Dashboard | Weather Dashboard |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/04555ed4-983d-47ac-b672-8568867c6bf9" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/b0a94058-a174-4fe4-92b9-dc387a5ce4ea" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/39d826bb-2a85-4dec-adf9-9a5ddbce3244" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/408ccb23-e120-432e-847b-bc6fce5a3c12" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/65cfe584-bca4-498e-80d7-56035b69fff3" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/3182c2c6-5cd9-41bd-afe4-432c2f42890c" width="320" height="200"/> |
+
+| Weather Dashboard | Clock Dashboard A | Clock Dashboard B |
+|--------|--------|--------|
+| <img src="https://github.com/user-attachments/assets/d0c54a8d-a417-45c2-b05b-fe930aa8d558" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/12e6e752-3e75-4f87-8a3d-05bf5eac38d9" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/8eed2bb8-ed38-42e4-8f06-1968fdda4aa9" width="320" height="200"/> |
+
+### Settings
+
+| Settings | Languages | Bloom Intensity |
+|--------|--------|--------|
+| <img src="https://github.com/user-attachments/assets/621faddb-84f1-4019-bd14-4f9a66e09e14" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/e516e490-172e-444f-8024-267e1ea4f973" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/d13e497d-a545-43a1-aa74-749a02074591" width="320" height="200"/> |
+
+### Entities and other screens
 
 | Pet Stats | Alarm Status | Lights |
 |--------|--------|--------|
@@ -42,24 +58,23 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 |--------|--------|--------|
 | <img src="https://github.com/user-attachments/assets/e7f3b548-7c1d-434d-b05b-0dd217de039e" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/2e7e9043-120e-4ed1-9fa3-8dadd75654a9" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/b6f6191c-42a0-4dcf-9d75-c17f05e09222" width="320" height="200"/> |
 
-| ... and Shumi 🐱 |
-|--------|
-| <img src="https://github.com/user-attachments/assets/2b4c66f6-2b31-4a11-b967-55e7fc3f4b0a" width="320" height="557"/> |<img width="2560" height="1600" alt="15  Blinds" src="https://github.com/user-attachments/assets/707451a4-abb4-49a6-9100-9ca64ee771a7" />
+| Habit History | Mood History | and Shumi 🐱 |
+|--------|--------|--------|
+| <img src="https://github.com/user-attachments/assets/dbfc0e7e-ee10-4f49-a716-b9f43e7213c5" width="320" height="557"/> | <img src="https://github.com/user-attachments/assets/4e0bdf03-5a79-4ea3-99e7-c6328223c79b" width="320" height="557"/> | <img src="https://github.com/user-attachments/assets/2b4c66f6-2b31-4a11-b967-55e7fc3f4b0a" width="320" height="557"/> |
 
-
-## Theme Screenshots
+## Themes
 
 | Classic Gold | Deep Copper | Terracotta |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/a59a180f-852f-4ffc-b53f-505e8c1a8d59" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/3608d390-d8e7-4ed7-a30b-7e8003a96ee8" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/4b948a3c-1c01-4ad2-931f-9252be1415eb" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/0a2921f9-f0bd-48b3-abfb-49fcac8d03c4" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/dec18e63-d9ed-46cf-86f2-d343feb78599" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/23cd908b-99b2-4b57-8df3-0d0294a4304f" width="320" height="200"/> |
 
 | Steel Blue | Arctic Cyan | Emerald Green |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/cbd4106d-d00e-40d7-aec0-70b43ab9190e" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/00b0a8e1-761b-4f19-bebd-d9ffc4affba3" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/7ec8622d-1ef5-4764-b7ff-cc1fbe650100" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/a236054c-3e47-4c12-bbd4-a11d371f3280" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/fb56fd90-7b55-4fd7-81f4-9d3a4d72b440" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/6d6f9619-80fb-4c4a-a75a-94d0c472b35b" width="320" height="200"/> |
 
 | Amethyst Purple | Solar Yellow | Crimson Red |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/44f850b2-cbc6-49a0-8aaf-2fad3b5981e1" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/901445d8-58f8-43b6-8a4b-61c833363b06" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/df6f6316-7f9e-4543-881b-ffb2c95b7a07" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/9decdabc-1f36-4a4d-ac34-80860b4b6020" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/2b8ba98d-a56d-4516-9cd6-a1a2af7cc68c" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/7b7f9b44-41a2-4544-bab2-6903d8dbd505" width="320" height="200"/> |
 
 
 ---
@@ -76,7 +91,8 @@ New in v3.0.0
 - Themed Background based on theme selection
 - Bloom Intensiy for brighter/darker background
 - Greeting and dashboard name personalization
-- Weather popup in the main overview screens 
+- Weather popup in the main overview screens
+- Language selection
 
 New in v2.1.0
 - Support for more than 2 Music Players
