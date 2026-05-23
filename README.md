@@ -83,7 +83,7 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 New in v3.0.0
 - Settings Cog to customize settings directly from the dashboard
 - New Overview screen with side controls
-- Analog and Digital Dashboards
+- Analog and Digital Clock Dashboards
 - Weather Dashboard with adaptive weather conditions
 - Mood Tracker in My Day
 - Habit and Mood history for up to 30 days
