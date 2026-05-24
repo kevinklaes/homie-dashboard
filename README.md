@@ -24,29 +24,34 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 
 ### Overview
 
-| Overview Screen A | Overview Screen B |
-|--------|--------|
-| <img src="https://github.com/user-attachments/assets/4dab2467-0468-4f59-a708-0bd5431e99f1" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/4defc21a-1da4-42c3-a108-3bac96b7c7a5" width="320" height="200"/> 
+| Overview Screen A | Overview Screen B | Notifications and Music |
+|--------|--------|--------|
+| <img src="https://github.com/user-attachments/assets/bbd44202-789c-4ba9-ac28-ebc9a16d9496" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/b5be80f2-b630-4e8b-a422-a19ab6d267b6" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/ac5ac945-4fc5-4faa-ba01-f64c95e57689" width="320" height="200"/> |
 
 ### Dashboards
 
 | Now Playing Dashboard A | Now Playing Dashboard B | My Day Dashboard |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/f5ae7528-00b3-4af3-9101-a73a8111b886" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/b968bae0-c504-4cd1-a3f9-93a1d54fba97" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/3d6f985c-b43a-4dfd-984c-4f4082facebc" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/af3968cd-ce95-440c-a24e-e4ee94902e3d" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/b968bae0-c504-4cd1-a3f9-93a1d54fba97" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/b1a05624-3e43-483d-a69e-0afe5af386e7" width="320" height="200"/> |
 
 | Memories Dashboard | Thermostat Dashboard | Weather Dashboard |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/408ccb23-e120-432e-847b-bc6fce5a3c12" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/65cfe584-bca4-498e-80d7-56035b69fff3" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/3182c2c6-5cd9-41bd-afe4-432c2f42890c" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/89f6fa97-5e8b-41eb-b788-558857f30bea" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/685e0e08-5dbd-420d-b429-4ad2ceaffdd1" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/feb4fa44-7f99-4359-ab4f-deea6915fce5" width="320" height="200"/> |
 
 | Weather Dashboard | Clock Dashboard A | Clock Dashboard B |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/d0c54a8d-a417-45c2-b05b-fe930aa8d558" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/12e6e752-3e75-4f87-8a3d-05bf5eac38d9" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/8eed2bb8-ed38-42e4-8f06-1968fdda4aa9" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/d0c54a8d-a417-45c2-b05b-fe930aa8d558" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/d96813db-dacb-401a-ad30-5c1d34249480" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/82c82e38-6267-42cb-b516-65deb13a299e" width="320" height="200"/> |
 
 ### Settings
 
-| Settings | Languages | Bloom Intensity |
+| Settings | Themes | Bloom Intensity |
 |--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/621faddb-84f1-4019-bd14-4f9a66e09e14" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/e516e490-172e-444f-8024-267e1ea4f973" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/d13e497d-a545-43a1-aa74-749a02074591" width="320" height="200"/> |
+| <img src="https://github.com/user-attachments/assets/7497a0ac-f620-4e40-b395-256104d32ad4" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/48618cbd-acfc-4f5c-be2d-2a420a8e3231" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/a153f728-e843-41ac-a6d8-1a063bc12d57" width="320" height="200"/> |
+
+| Fonts | Languages | Elements Customization |
+|--------|--------|--------|
+| <img src="https://github.com/user-attachments/assets/e8afa1cd-63f2-4f9c-ada2-f875e51d7aae" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/93c7a8ee-b353-4487-b321-d85e3106fb88" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/f471f2f4-a630-434f-adda-94e00d576899" width="320" height="200"/> |
+
 
 ### Entities and other screens
 
