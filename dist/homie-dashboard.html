@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   ╔══════════════════════════════════════════════════════════════════════════╗
-  ║                        HOMIE  DASHBOARD v3.1.0                           ║
+  ║                        HOMIE  DASHBOARD v3.1.1                           ║
   ╠══════════════════════════════════════════════════════════════════════════╣
   ║  A custom Home Assistant dashboard designed for wall-mounted tablets.    ║
   ║                                                                          ║
@@ -10459,7 +10459,7 @@ async function _dailyLoadEvents() {
     );
     const results = await Promise.all(requests);
     const newEvents = results.flat().sort(
-      (a, b) => new Date(a.start.dateTime || a.start.date) - new Date(b.start.dateTime || b.start.date)
+      (a, b) => _parseEventDate(a) - _parseEventDate(b)
     );
     // Re-render if data changed, first load, OR selected day may have changed
     // (e.g. user picked a different day then closed and reopened the view).
@@ -10481,7 +10481,7 @@ function _dailyMarkWeekDots() {
   for (let i = 0; i < 7; i++) {
     const d = new Date(today); d.setDate(today.getDate() + i);
     const hasEvt = _dailyAllEvents.some(ev => {
-      const evDate = new Date(ev.start.dateTime || ev.start.date);
+      const evDate = _parseEventDate(ev);
       return _isSameDay(evDate, d);
     });
     const dot = document.getElementById(`wdot-${d.getTime()}`);
@@ -10495,7 +10495,7 @@ function _dailyMarkWeekDots() {
  * template. Pass animDelay (a CSS seconds string) only in day view.
  */
 function _buildEventCardHtml(ev, { isToday = false, animDelay = null } = {}) {
-  const evDate   = new Date(ev.start.dateTime || ev.start.date);
+  const evDate   = _parseEventDate(ev);
   const isAllDay = !ev.start.dateTime;
   let timeStr = _localeWord('allDay');
   if (!isAllDay) {
@@ -10528,7 +10528,7 @@ function _dailyRenderEvents() {
   const sel = _dailySelectedDay || new Date();
 
   const dayEvents = _dailyAllEvents.filter(ev => {
-    const evDate = new Date(ev.start.dateTime || ev.start.date);
+    const evDate = _parseEventDate(ev);
     return _isSameDay(evDate, sel);
   });
 
@@ -10547,7 +10547,7 @@ function _dailyRenderEvents() {
 
   const todayDate = new Date(); todayDate.setHours(0,0,0,0);
   list.innerHTML = dayEvents.map((ev, idx) => {
-    const isToday = _isSameDay(new Date(ev.start.dateTime || ev.start.date), todayDate);
+    const isToday = _isSameDay(_parseEventDate(ev), todayDate);
     return _buildEventCardHtml(ev, { isToday, animDelay: idx * 0.05 });
   }).join("");
 }
@@ -10599,7 +10599,7 @@ function _dailyRenderAllEvents() {
   // Group events by calendar date
   const groups = {};
   _dailyAllEvents.forEach(ev => {
-    const evDate = new Date(ev.start.dateTime || ev.start.date);
+    const evDate = _parseEventDate(ev);
     const key = evDate.toISOString().slice(0, 10);
     if (!groups[key]) groups[key] = [];
     groups[key].push(ev);
@@ -10669,11 +10669,11 @@ async function _dailyLoadMeals(silent = false) {
       const slotB = _mealSlotFor(b.summary, !b.start.dateTime ? 12 : new Date(b.start.dateTime).getHours());
       const orderDiff = (_MEAL_SORT_ORDER[slotA] ?? 99) - (_MEAL_SORT_ORDER[slotB] ?? 99);
       if (orderDiff !== 0) return orderDiff;
-      return new Date(a.start.dateTime || a.start.date) - new Date(b.start.dateTime || b.start.date);
+      return _parseEventDate(a) - _parseEventDate(b);
     });
 
     const newHTML = sorted.map(ev => {
-      const evDate   = new Date(ev.start.dateTime || ev.start.date);
+      const evDate   = _parseEventDate(ev);
       const isAllDay = !ev.start.dateTime;
       const hour     = isAllDay ? 12 : evDate.getHours();
       const slot     = _mealSlotFor(ev.summary, hour);
@@ -10893,6 +10893,18 @@ async function dailyToggleTodo(entity, uid, isDone) {
 
   // Silent patch refresh after update — no flicker
   setTimeout(() => _dailyLoadTodos(true), 800);
+}
+
+/**
+ * _parseEventDate — safely parse a HA calendar event start into a local Date.
+ * All-day events have only ev.start.date ("YYYY-MM-DD") which new Date() would
+ * interpret as UTC midnight, shifting the day by one in timezones behind UTC.
+ * We parse date-only strings as LOCAL midnight to avoid this off-by-one bug.
+ */
+function _parseEventDate(ev) {
+  if (ev.start.dateTime) return new Date(ev.start.dateTime);
+  const [y, m, d] = ev.start.date.split('-').map(Number);
+  return new Date(y, m - 1, d); // local midnight — no UTC shift
 }
 
 function _isSameDay(a, b) {
@@ -11962,7 +11974,7 @@ function switchOverview(idx) {
         <line x1="12" y1="5" x2="12" y2="19"/>
         <polyline points="19 12 12 19 5 12"/>
       </svg>
-      <span>swipe down to close</span>
+      <span>swipe down from top to close</span>
     `;
     document.body.appendChild(_hintEl);
     // Auto-hide after 5 s with a fade
@@ -11998,6 +12010,8 @@ function switchOverview(idx) {
     const dy = e.changedTouches[0].clientY - _startY;
     // Must be a downward swipe of at least 80px, more vertical than horizontal
     if (dy < 80 || Math.abs(dx) > dy * 0.6) return;
+    // Swipe must have started in the top fifth of the screen
+    if (_startY > window.innerHeight / 5) return;
     // Find whichever mode overlay is open
     for (const m of MODE_OVERLAYS) {
       const el = document.getElementById(m.id);
@@ -12543,7 +12557,7 @@ function resetSettings() {
       const results = await Promise.all(requests);
       const today = new Date();
       const count = results.flat().filter(ev => {
-        return _isSameDay(new Date(ev.start.dateTime || ev.start.date), today);
+        return _isSameDay(_parseEventDate(ev), today);
       }).length;
       calEl.textContent = count;
     } catch(e) {
