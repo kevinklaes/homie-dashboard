@@ -85,6 +85,10 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 ---
 
 ## Features
+New in v3.1.0
+- Implemented 10 Fonts in settings
+- Implemented swipe down from dashboards to return to the main screen
+
 New in v3.0.0
 - Settings Cog to customize settings directly from the dashboard
 - New Overview screen with side controls
