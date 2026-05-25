@@ -81,10 +81,68 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 |--------|--------|--------|
 | <img src="https://github.com/user-attachments/assets/9decdabc-1f36-4a4d-ac34-80860b4b6020" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/2b8ba98d-a56d-4516-9cd6-a1a2af7cc68c" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/7b7f9b44-41a2-4544-bab2-6903d8dbd505" width="320" height="200"/> |
 
+---
+## Get Started with HACS Integation
+
+### Step 1: Add the Custom Repository in HACS
+1. In your Home Assistant sidebar, click on HACS.
+2. Click the three dots (menu icon) in the top-right corner and select Custom repositories.
+3. In the window that pops up, fill out the following fields:
+   - Repository: https://github.com/Big-Edge2297/homie-dashboard
+   - Type: Select Dashboard.
+4. Click Add.
+5. Once added, find Homie Dashboard in your HACS list, click it, and click Download.
+Result: This creates the folder structure on your system: config/www/community/homie-dashboard/. You can browse to this location later so you can edit the config.js file.
+
+### Step 2: Register the Lovelace Resource
+Home Assistant needs permission to access the JavaScript files inside your local folders.
+1. Go to Settings -> Dashboards.
+2. Click the three dots in the top-right corner and select Resources.
+   (Note: If you don't see "Resources", go to your Profile page by clicking your username in the bottom-left corner, turn on Advanced Mode, and return to this step).
+3. Click Add Resource (bottom right).
+4. Enter the details exactly like this:
+   - URL: /local/community/homie-dashboard/homie-dashboard.js
+   - Resource Type: JavaScript Module
+5. Click Create.
+
+### Step 3: Refresh Your Frontend Cache
+To ensure Home Assistant registers the newly added resource files, clear your browser cache:
+   - Windows: Press Ctrl + F5
+   - Mac: Press Cmd + Shift + R
+
+### Step 4: Create a Dashboard in the Sidebar
+1. Go to Settings -> Dashboards.
+2. Click Add Dashboard in the bottom-right corner.
+3. Choose Webpage from the list.
+4. Fill out the configuration box:
+   - Title: Homie Dash
+   - Icon: Choose an icon (e.g., mdi:tablet-dashboard)
+   - URL: /local/community/homie-dashboard/homie-dashboard.html
+5. Click Create.
+Result: You will now see a Homie Dashboard tab in your left sidebar. Clicking it will load your user interface. It will show Connection Lost - Retrying at the top and entities will be empty. Your dashboard is now visible, but it needs permission to talk to your Home Assistant data.
+
+### Step 5: Configure Your config.js File
+5A. Generate an Access Token
+1. Click your username/profile in the bottom-left corner of Home Assistant.
+2. Scroll all the way to the bottom to the Long-Lived Access Tokens section.
+3.  Click Create Token, give it a name (e.g., Homie Dashboard), and copy the long string of text generated. Save it somewhere safe temporarily.
+
+5B. Set Up the Configuration File
+Navigate to the folder: config/www/community/homie-dashboard/
+1. Look for a file named config.js.
+2. Edit the config.js file (you can create a backup file before each change in case you mess up something).
+3. Paste your Long-Lived Access Token into the token field and update the server URL configuration to match your Home Assistant IP address.
+4. Follow the config.js file documentation to make changes to the entitiy names
+5. Save the file. Refresh your Homie Dashboard sidebar page, and it will connect directly to your Home Assistant entities!
+
+Remember to clear the cache/hard refresh so the new file changes apply in the browser. On a tablet you will need to clear the Home Assistant companion app cache, in the app storage settings. Do not clear storage, only cache.
 
 ---
 
-## Features
+## New Features Summary per version
+New in v3.2.0
+- HACS Integration!
+
 New in v3.1.0
 - Implemented 10 Fonts in settings
 - Implemented swipe down from dashboards to return to the main screen
