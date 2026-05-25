@@ -2,7 +2,7 @@
 
 A custom Home Assistant dashboard built for wall-mounted tablets. 
 
-I created this dashboard with the design philosophy of a single page overview for accessing the most important functions and controls of my house easily. 
+I created this dashboard with the design philosophy of a single page overview for accessing the most important functions and controls of my house easily. It gives the flexibility to be used in different dashboard modes (Overview, Music player, Calendar, Photo frame, Thermostat, Clock, Weather)
 
 Homie connects directly to Home Assistant over a Long-Lived Access Token and a local WebSocket connection which results in automatic caching.
 
@@ -133,6 +133,20 @@ Remember to clear the cache/hard refresh so the new file changes apply in the br
 
 ---
 
+## Security
+
+⚠️ The HA Long-Lived Access Token is stored in plain text inside the config.js file. Anyone who can read the file has full access to your Home Assistant instance.
+
+> DON'T BE like the guy in Massachusetts that has a room named Jason's room - if you have been on Reddit long enough, you will get the joke :)
+
+**Recommendations:**
+- Serve the file only on your local network — never expose it to the internet without authentication
+- Create a dedicated HA user account for the dashboard token rather than using your personal admin account so you can limit access and exposure
+- Revoke and regenerate the token periodically (HA → Profile → Long-Lived Access Tokens)
+- For remote access, use a VPN (e.g. WireGuard)
+
+---
+
 ## New Features Summary per version
 New in v3.2.0
 - HACS Integration!
@@ -184,17 +198,3 @@ First Release v1.0.0
 - Haptic Feedback on supported Android devices
 
 More information for the Homie Dashboard Elements can be found [homie-dashboard-elements](https://github.com/Big-Edge2297/homie-dashboard/blob/main/docs/homie-dashboard-elements.md)
-
----
-
-## Security
-
-⚠️ The HA Long-Lived Access Token is stored in plain text inside the config.js file. Anyone who can read the file has full access to your Home Assistant instance.
-
-> DON'T BE like the guy in Massachusetts that has a room named Jason's room - if you have been on Reddit long enough, you will get the joke :)
-
-**Recommendations:**
-- Serve the file only on your local network — never expose it to the internet without authentication
-- Create a dedicated HA user account for the dashboard token rather than using your personal admin account so you can limit access and exposure
-- Revoke and regenerate the token periodically (HA → Profile → Long-Lived Access Tokens)
-- For remote access, use a VPN (e.g. WireGuard)
