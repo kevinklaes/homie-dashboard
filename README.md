@@ -8,18 +8,6 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 
 ![Home Assistant](https://img.shields.io/badge/Home%20Assistant-compatible-41BDF5?logo=home-assistant&logoColor=white)
 
-## Security
-
-⚠️ The HA Long-Lived Access Token is stored in plain text inside the config.js file. Anyone who can read the file has full access to your Home Assistant instance.
-
-> DON'T BE like the guy in Massachusetts that has a room named Jason's room - if you have been on Reddit long enough, you will get the joke :)
-
-**Recommendations:**
-- Serve the file only on your local network — never expose it to the internet without authentication
-- Create a dedicated HA user account for the dashboard token rather than using your personal admin account so you can limit access and exposure
-- Revoke and regenerate the token periodically (HA → Profile → Long-Lived Access Tokens)
-- For remote access, use a VPN (e.g. WireGuard)
-
 ## Screenshots
 
 ### Overview
@@ -196,3 +184,17 @@ First Release v1.0.0
 - Haptic Feedback on supported Android devices
 
 More information for the Homie Dashboard Elements can be found [homie-dashboard-elements](https://github.com/Big-Edge2297/homie-dashboard/blob/main/docs/homie-dashboard-elements.md)
+
+---
+
+## Security
+
+⚠️ The HA Long-Lived Access Token is stored in plain text inside the config.js file. Anyone who can read the file has full access to your Home Assistant instance.
+
+> DON'T BE like the guy in Massachusetts that has a room named Jason's room - if you have been on Reddit long enough, you will get the joke :)
+
+**Recommendations:**
+- Serve the file only on your local network — never expose it to the internet without authentication
+- Create a dedicated HA user account for the dashboard token rather than using your personal admin account so you can limit access and exposure
+- Revoke and regenerate the token periodically (HA → Profile → Long-Lived Access Tokens)
+- For remote access, use a VPN (e.g. WireGuard)
