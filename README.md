@@ -125,14 +125,18 @@ Result: You will now see a Homie Dashboard tab in your left sidebar. Clicking it
 
 ### Step 5: Configure Your config.js File
 5A. Generate an Access Token
-1. Click your username/profile in the bottom-left corner of Home Assistant.
-2. Scroll all the way to the bottom to the Long-Lived Access Tokens section.
-3.  Click Create Token, give it a name (e.g., Homie Dashboard), and copy the long string of text generated. Save it somewhere safe temporarily.
+1. Click your username in the bottom-left sidebar to open your Profile
+2. Go to Security at the top of the page
+3. Scroll to the bottom of the Profile page to Long-Lived Access Tokens
+4. Click Create Token
+5. Give it a name (e.g. Homie Dashboard) and click OK
+6. Copy the token immediately — HA will never show it again
+7. Keep it somewhere safe temporarily while you complete the setup
 
 5B. Set Up the Configuration File
-Navigate to the folder: config/www/community/homie-dashboard/
+Navigate to your Home Assistant folder: config/www/community/homie-dashboard/
 1. Look for a file named config.js.
-2. Edit the config.js file (you can create a backup file before each change in case you mess up something).
+2. Edit the config.js file (create a backup file before each change in case you mess up something).
 3. Paste your Long-Lived Access Token into the token field and update the server URL configuration to match your Home Assistant IP address.
 4. Follow the config.js file documentation to make changes to the entitiy names
 5. Save the file. Refresh your Homie Dashboard sidebar page, and it will connect directly to your Home Assistant entities!
