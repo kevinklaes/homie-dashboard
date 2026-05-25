@@ -115,11 +115,12 @@ To ensure Home Assistant registers the newly added resource files, clear your br
 1. Go to Settings -> Dashboards.
 2. Click Add Dashboard in the bottom-right corner.
 3. Choose Webpage from the list.
-4. Fill out the configuration box:
+4. Fill out the URL box and click next
+   - URL: /local/community/homie-dashboard/homie-dashboard.html
+5. Fill out the configuration box and click create
    - Title: Homie Dash
    - Icon: Choose an icon (e.g., mdi:tablet-dashboard)
-   - URL: /local/community/homie-dashboard/homie-dashboard.html
-5. Click Create.
+  
 Result: You will now see a Homie Dashboard tab in your left sidebar. Clicking it will load your user interface. It will show Connection Lost - Retrying at the top and entities will be empty. Your dashboard is now visible, but it needs permission to talk to your Home Assistant data.
 
 ### Step 5: Configure Your config.js File
