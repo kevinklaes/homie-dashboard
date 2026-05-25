@@ -1,4 +1,5 @@
 # **Homie Dashboard**
+![Home Assistant](https://img.shields.io/badge/Home%20Assistant-compatible-41BDF5?logo=home-assistant&logoColor=white)
 
 A custom Home Assistant dashboard built for wall-mounted tablets. 
 
@@ -6,7 +7,7 @@ I created this dashboard with the design philosophy of a single page overview fo
 
 Homie connects directly to Home Assistant over a Long-Lived Access Token and a local WebSocket connection which results in automatic caching.
 
-![Home Assistant](https://img.shields.io/badge/Home%20Assistant-compatible-41BDF5?logo=home-assistant&logoColor=white)
+[HACS Setup](https://github.com/Big-Edge2297/homie-dashboard/blob/main/README.md#get-started-with-hacs-integation) · [New Features](https://github.com/Big-Edge2297/homie-dashboard/blob/main/README.md#new-features-summary-per-version)
 
 ## Screenshots
 
