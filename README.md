@@ -101,7 +101,9 @@ Home Assistant needs permission to access the JavaScript files inside your local
 ### Step 3: Refresh Your Frontend Cache
 To ensure Home Assistant registers the newly added resource files, clear your browser cache:
    - Windows: Press Ctrl + F5
-   - Mac: Press Cmd + Shift + R
+   - Mac:
+     1. Enable Developer menu in Safari (Safari → Settings → Advanced → Show features for web developers)
+     2. In the new "Develop" menu, select "Empty caches".
 
 ### Step 4: Create a Dashboard in the Sidebar
 1. Go to Settings -> Dashboards.
