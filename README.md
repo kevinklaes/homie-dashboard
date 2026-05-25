@@ -72,6 +72,8 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 ---
 ## Get Started with HACS Integation
 
+⚠️ Save/Backup Your config.js File in Step 6 after you make your changes! Everytime you download a new release it will probably be overwritten and you will lose your changes. ⚠️
+
 ### Step 1: Add the Custom Repository in HACS
 1. In your Home Assistant sidebar, click on HACS.
 2. Click the three dots (menu icon) in the top-right corner and select Custom repositories.
@@ -128,6 +130,8 @@ Navigate to your Home Assistant folder: config/www/community/homie-dashboard/
 3. Paste your Long-Lived Access Token into the token field and update the server URL configuration to match your Home Assistant IP address.
 4. Follow the config.js file documentation to make changes to the entitiy names
 5. Save the file. Refresh your Homie Dashboard sidebar page, and it will connect directly to your Home Assistant entities!
+
+⚠️ Save/Backup Your config.js File! Everytime you download a new release it will probably be overwritten and you will lose your changes. ⚠️  
 
 Remember to clear the cache/hard refresh so the new file changes apply in the browser. On a tablet you will need to clear the Home Assistant companion app cache, in the app storage settings. Do not clear storage, only cache.
 
