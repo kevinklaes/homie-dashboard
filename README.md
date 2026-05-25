@@ -7,7 +7,8 @@ I created this dashboard with the design philosophy of a single page overview fo
 
 Homie connects directly to Home Assistant over a Long-Lived Access Token and a local WebSocket connection which results in automatic caching.
 
-[HACS Setup](https://github.com/Big-Edge2297/homie-dashboard/blob/main/README.md#get-started-with-hacs-integation) · [New Features](https://github.com/Big-Edge2297/homie-dashboard/blob/main/README.md#new-features-summary-per-version)
+[HACS Setup](https://github.com/Big-Edge2297/homie-dashboard/blob/main/README.md#get-started-with-hacs-integation) · [Security](https://github.com/Big-Edge2297/homie-dashboard/blob/main/README.md#security) · [New Features](https://github.com/Big-Edge2297/homie-dashboard/blob/main/README.md#new-features-summary-per-version)
+
 
 ## Screenshots
 
