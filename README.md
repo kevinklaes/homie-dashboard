@@ -132,8 +132,9 @@ Navigate to your Home Assistant folder: config/www/community/homie-dashboard/
 1. Look for a file named config.js.
 2. Edit the config.js file (create a backup file before each change in case you mess up something).
 3. Paste your Long-Lived Access Token into the token field and update the server URL configuration to match your Home Assistant IP address.
-4. Follow the config.js file documentation to make changes to the entitiy names
-5. Save the file. Refresh your Homie Dashboard sidebar page, and it will connect directly to your Home Assistant entities!
+4. Follow the config.js file documentation to make changes to the entity names and save the file
+5. DELETE THE FILE config.js.gz. This is something that HACS serves and it's causing issues, investigating solutions. 
+6. Refresh your Homie Dashboard sidebar page, and it will connect directly to your Home Assistant entities!
 
 ⚠️ Save/Backup your config.js file! Every time you download a new release, the config file will be overwritten and you will lose your changes. ⚠️  
 
