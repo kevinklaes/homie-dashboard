@@ -3,7 +3,7 @@
 
 A custom Home Assistant dashboard built for wall-mounted tablets. 
 
-I created this dashboard with the design philosophy of a single page overview for accessing the most important functions and controls of my house easily. It gives the flexibility to be used in different dashboard modes (Overview, Music player, Calendar, Photo frame, Thermostat, Clock, Weather)
+I created this dashboard with the design philosophy of a single page overview for accessing the most important functions and controls of my house easily. It gives the flexibility to be used in different dashboard modes (Overview, Music player, Calendar, Photo frame, Thermostat, Clock, Weather, Cameras, Solar)
 
 Homie connects directly to Home Assistant over a Long-Lived Access Token and a local WebSocket connection which results in automatic caching.
 
