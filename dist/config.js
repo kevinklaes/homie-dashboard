@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
- * HOMIE DASHBOARD CONFIGURATION v3.4.0
+ * HOMIE DASHBOARD CONFIGURATION v3.5.0
  * ═══════════════════════════════════════════════════════════════════════════
  * This is the main configuration file. Edit the sections below to customise the dashboard for your home.
  * Both homie-dashboard.html and config.js must be in the same folder.
@@ -202,11 +202,11 @@ const CONFIG = {
    * pill to cycle through multiple active players.
    * ──────────────────────────────────────────────────────────────────── */
   musicPlayers: [
-    { entity: "YOUR_PRIMARY_MEDIA_PLAYER_ENTITY",   label: "Spotify" },
-    // { entity: "YOUR_SECONDARY_MEDIA_PLAYER_ENTITY", label: "Echo"    },
-    // { entity: "YOUR_THIRD_MEDIA_PLAYER_ENTITY",  label: "Sonos"   },
-    // { entity: "media_player.apple_tv",           label: "Apple TV" },
-    // { entity: "media_player.music_assistant",    label: "MA"       },
+    { entity: "YOUR_PRIMARY_MEDIA_PLAYER_ENTITY",    label: "Spotify" },
+    // { entity: "YOUR_SECONDARY_MEDIA_PLAYER_ENTITY",  label: "Echo"    },
+    // { entity: "YOUR_THIRD_MEDIA_PLAYER_ENTITY",      label: "Sonos"   },
+    // { entity: "media_player.apple_tv",               label: "Apple TV" },
+    // { entity: "media_player.music_assistant",        label: "MA"       },
   ],
 
   /* musicHideDelay — ms the Now Playing bar stays visible after music stops.
@@ -222,12 +222,12 @@ const CONFIG = {
   /* mealSlots — the four meal periods in the Today's Meals card.
    * Each entry: key (matched case-insensitively against calendar event titles),
    *   label, icon (inline SVG), hour (0–23, fallback time when none is set).
-   * ───────────────────────────────────────────────────────────────────── */
+   * ────────────────────────────────────────────────────────────────────── */
   mealSlots: [
-    { key: "breakfast", label: "Breakfast", icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`, hour: 9  },
-    { key: "lunch",     label: "Lunch",     icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>`, hour: 13 },
-    { key: "snack",     label: "Snack",     icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`, hour: 16 },
-    { key: "dinner",    label: "Dinner",    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>`, hour: 19 },
+    { key: "breakfast", label: "Breakfast", icon: ICONS.meals.breakfast, hour: 9  },
+    { key: "lunch",     label: "Lunch",     icon: ICONS.meals.lunch,     hour: 13 },
+    { key: "snack",     label: "Snack",     icon: ICONS.meals.snack,     hour: 16 },
+    { key: "dinner",    label: "Dinner",    icon: ICONS.meals.dinner,    hour: 19 },
   ],
 
   /* ── NOTIFICATIONS ───────────────────────────────────────────────────────
@@ -236,14 +236,47 @@ const CONFIG = {
    * Add as many as you like.
    * ──────────────────────────────────────────────────────────────────── */
   notifications: [
-    { label: "Pet Maintenance",                    entity: "YOUR_PET_MAINTENANCE_ENTITY" },
-    { label: "Car Maintenance",                    entity: "YOUR_CAR_MAINTENANCE_ENTITY" },
-    { label: "Home Maintenance",                   entity: "YOUR_HOME_MAINTENANCE_ENTITY" },
-    { label: "Personal Maintenance",               entity: "YOUR_PERSONAL_MAINTENANCE_ENTITY" },
-    { label: "Take Your Vitamins",                 entity: "YOUR_VITAMINS_ENTITY" },
-    { label: "Litter Box Needs Cleaning",          entity: "YOUR_LITTER_BOX_CLEAN_ENTITY" },
-    { label: "Pet Food/Water Problem",             entity: "YOUR_PET_FOOD_WATER_ENTITY" },
-    { label: "Prepare Coffee for Tomorrow",        entity: "YOUR_COFFEE_PREPARATION_ENTITY" },
+    { label: "Pet Maintenance",                     entity: "YOUR_PET_MAINTENANCE_ENTITY" },
+    { label: "Car Maintenance",                     entity: "YOUR_CAR_MAINTENANCE_ENTITY" },
+    { label: "Home Maintenance",                    entity: "YOUR_HOME_MAINTENANCE_ENTITY" },
+    { label: "Personal Maintenance",                entity: "YOUR_PERSONAL_MAINTENANCE_ENTITY" },
+    { label: "Take Your Vitamins",                  entity: "YOUR_VITAMINS_ENTITY" },
+    { label: "Litter Box Needs Cleaning",           entity: "YOUR_LITTER_BOX_CLEAN_ENTITY" },
+    { label: "Pet Food/Water Problem",              entity: "YOUR_PET_FOOD_WATER_ENTITY" },
+    { label: "Prepare Coffee for Tomorrow",         entity: "YOUR_COFFEE_PREPARATION_ENTITY" },
+  ],
+
+  /* ── ECHO TIMERS ─────────────────────────────────────────────────────────
+   * Amazon Echo timer sensors. Each active timer is shown as a live
+   * countdown bubble underneath the notification bar.
+   * Add/remove entries to match your Echo devices.
+   * ──────────────────────────────────────────────────────────────────── */
+  echoTimers: [
+    { label: "Office",      entity: "YOUR_ECHO_OFFICE_TIMER_ENTITY"      },
+    { label: "Bedroom",     entity: "YOUR_ECHO_BEDROOM_TIMER_ENTITY"     },
+    { label: "Living Room", entity: "YOUR_ECHO_LIVING_ROOM_TIMER_ENTITY" },
+  ],
+
+  /* ── CAMERAS ─────────────────────────────────────────────────────────────
+   * List of camera entities shown in the Cameras dashboard (launcher button).
+   * Up to 6 cameras are displayed in a 3×2 grid.
+   *
+   * entity        — HA camera entity_id
+   * label         — display name shown in the bottom-left of each cell
+   * motionEntity  — (optional) binary_sensor entity_id for motion detection;
+   *                 cell glows red with a pulsing dot when motion is detected
+   *
+   * cameraRefreshSeconds — how often each frame is fetched (default: 1)
+   * ──────────────────────────────────────────────────────────────────────── */
+  cameraRefreshSeconds: 1,
+
+  cameras: [
+    { entity: "YOUR_CAMERA_1_ENTITY",  label: "Camera 1", motionEntity: "YOUR_CAMERA_1_MOTION_ENTITY" },
+    { entity: "YOUR_CAMERA_2_ENTITY",  label: "Camera 2", motionEntity: "YOUR_CAMERA_2_MOTION_ENTITY" },
+    { entity: "YOUR_CAMERA_3_ENTITY",  label: "Camera 3", motionEntity: "YOUR_CAMERA_3_MOTION_ENTITY" },
+    { entity: "YOUR_CAMERA_4_ENTITY",  label: "Camera 4", motionEntity: "YOUR_CAMERA_4_MOTION_ENTITY" },
+    { entity: "YOUR_CAMERA_5_ENTITY",  label: "Camera 5", motionEntity: "YOUR_CAMERA_5_MOTION_ENTITY" },
+    { entity: "YOUR_CAMERA_6_ENTITY",  label: "Camera 6", motionEntity: "YOUR_CAMERA_6_MOTION_ENTITY" },
   ],
 
   /* ── PET STATS ───────────────────────────────────────────────────────────
@@ -293,7 +326,7 @@ const CONFIG = {
    *          Set to [] to disable the mood tracker.
    * habits — each entry: key, label, icon (SVG; use stroke="var(--accent)").
    *          Set to [] to disable the habit tracker.
-        * ──────────────────────────────────────────────────────────────────── */
+   * ──────────────────────────────────────────────────────────────────── */
   habitsMoodHistoryEntities: {
     habits: "YOUR_HABITS_LOG_ENTITY",
     mood:   "YOUR_MOOD_LOG_ENTITY",
@@ -308,26 +341,11 @@ const CONFIG = {
   ],
 
   habits: [
-    {
-      key: "water", label: "Hydrate",
-      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`,
-    },
-    {
-      key: "workout", label: "Workout",
-      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11M6.5 17.5h11M3 10h3v4H3zM18 10h3v4h-3z"/><line x1="6" y1="12" x2="18" y2="12"/></svg>`,
-    },
-    {
-      key: "read", label: "Read",
-      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
-    },
-    {
-      key: "meditate", label: "Meditate",
-      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" fill="var(--accent)" stroke="none"/><path d="M5 12c0-2 2-4 7-4s7 2 7 4"/><path d="M3 16c1-3 4-4 9-4s8 1 9 4"/><path d="M6 16c0 2 2.5 3 6 3s6-1 6-3"/><line x1="12" y1="8" x2="12" y2="12"/></svg>`,
-    },
-    {
-      key: "snacks", label: "Snacks",
-      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1 0-3.5 1-3.5 4 0 0 1.5-1 3.5-1s3.5 1 3.5 1C15.5 4 13 3 12 3z"/><path d="M14 2c0 0 1-2 3-1"/><path d="M6.5 8C4 8 2 10.5 2 13.5 2 17.5 5 22 8 22c1.5 0 2-0.5 4-0.5s2.5 0.5 4 0.5c3 0 6-4.5 6-8.5C22 10.5 20 8 17.5 8c-1.5 0-2.5 1-5.5 1S8 8 6.5 8z"/></svg>`,
-    },
+    { key: "water",    label: "Hydrate",  icon: ICONS.habits.water    },
+    { key: "workout",  label: "Workout",  icon: ICONS.habits.workout  },
+    { key: "read",     label: "Read",     icon: ICONS.habits.read     },
+    { key: "meditate", label: "Meditate", icon: ICONS.habits.meditate },
+    { key: "snacks",   label: "Snacks",   icon: ICONS.habits.snacks   },
   ],
 
   /* ── GLOBAL CONTROLS ─────────────────────────────────────────────────────
@@ -349,7 +367,7 @@ const CONFIG = {
    *   noRoomGrouping: true — flat list even when subGroups is used
    *   twoColumnGrid: true  — two-column layout for many small cards
    *   isSceneChip: true    — turns subGroups into scene category launchers
-        * ──────────────────────────────────────────────────────────────────── */
+   * ──────────────────────────────────────────────────────────────────── */
   controls: [
     {
       label: "Lights",
@@ -402,29 +420,20 @@ const CONFIG = {
         {
           label: "Living",
           scenes: [
-            { label: "Relax",     entity: "YOUR_LIVING_ROOM_RELAX_SCENE_ENTITY",       color: "#4a2d7a",
-              icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="1.5"/><path d="M9 9 Q8 13 10 15 L8 21"/><path d="M9 9 L15 9 Q17 9 17 12 L17 15"/><path d="M10 15 L17 15 L19 21"/><path d="M6 21 L20 21"/></svg>` },
-            { label: "Romantic",  entity: "YOUR_LIVING_ROOM_ROMANTIC_SCENE_ENTITY",    color: "#8b2252",
-              icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>` },
-            { label: "Movie",     entity: "YOUR_LIVING_ROOM_MOVIE_SCENE_ENTITY",        color: "#f0ece4",
-              icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(20,16,12,0.85)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>` },
-            { label: "Candle",    entity: "YOUR_LIVING_ROOM_CANDLE_SCENE_ENTITY",       color: "#7a4a1e",
-              icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="12" width="6" height="9" rx="1"/><path d="M12 12V9"/><path d="M12 9 C13.5 7 13.5 5 12 3.5 C10.5 5 10.5 7 12 9Z" fill="rgba(255,200,80,0.85)" stroke="rgba(255,160,40,0.9)" stroke-width="1"/><line x1="9" y1="15" x2="9" y2="17" stroke="rgba(255,255,255,0.35)" stroke-width="1"/></svg>` },
-            { label: "Fireplace", entity: "YOUR_LIVING_ROOM_FIREPLACE_SCENE_ENTITY",    color: "#8b3a10",
-              icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14c0 2 1.5 3.5 3.5 3.5s3.5-1.5 3.5-3.5c0-1.5-1-3-2-4 0 2-1 3-1 3s-.5-2-1.5-4c-1 2-2 3.5-2 4.5z"/><path d="M5 21V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14"/><line x1="3" y1="21" x2="21" y2="21"/></svg>` },
+            { label: "Relax",     entity: "YOUR_LIVING_ROOM_RELAX_SCENE_ENTITY",       color: "#4a2d7a",  icon: ICONS.scenes.relax      },
+            { label: "Romantic",  entity: "YOUR_LIVING_ROOM_ROMANTIC_SCENE_ENTITY",    color: "#8b2252",  icon: ICONS.scenes.romantic   },
+            { label: "Movie",     entity: "YOUR_LIVING_ROOM_MOVIE_SCENE_ENTITY",       color: "#f0ece4",  icon: ICONS.scenes.movie      },
+            { label: "Candle",    entity: "YOUR_LIVING_ROOM_CANDLE_SCENE_ENTITY",      color: "#7a4a1e",  icon: ICONS.scenes.candle     },
+            { label: "Fireplace", entity: "YOUR_LIVING_ROOM_FIREPLACE_SCENE_ENTITY",   color: "#8b3a10",  icon: ICONS.scenes.fireplace  },
           ],
         },
         {
           label: "Bedroom",
           scenes: [
-            { label: "Nightlight", entity: "YOUR_BEDROOM_NIGHTLIGHT_SCENE_ENTITY",      color: "#6b3800",
-              icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>` },
-            { label: "Romantic",   entity: "YOUR_BEDROOM_ROMANTIC_SCENE_ENTITY",         color: "#8b2252",
-              icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>` },
-            { label: "Candle",     entity: "YOUR_BEDROOM_CANDLE_SCENE_ENTITY",           color: "#7a4a1e",
-              icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="12" width="6" height="9" rx="1"/><path d="M12 12V9"/><path d="M12 9 C13.5 7 13.5 5 12 3.5 C10.5 5 10.5 7 12 9Z" fill="rgba(255,200,80,0.85)" stroke="rgba(255,160,40,0.9)" stroke-width="1"/><line x1="9" y1="15" x2="9" y2="17" stroke="rgba(255,255,255,0.35)" stroke-width="1"/></svg>` },
-            { label: "Fireplace",  entity: "YOUR_BEDROOM_FIREPLACE_SCENE_ENTITY",        color: "#8b3a10",
-              icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14c0 2 1.5 3.5 3.5 3.5s3.5-1.5 3.5-3.5c0-1.5-1-3-2-4 0 2-1 3-1 3s-.5-2-1.5-4c-1 2-2 3.5-2 4.5z"/><path d="M5 21V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14"/><line x1="3" y1="21" x2="21" y2="21"/></svg>` },
+            { label: "Nightlight", entity: "YOUR_BEDROOM_NIGHTLIGHT_SCENE_ENTITY",     color: "#6b3800",  icon: ICONS.scenes.nightlight },
+            { label: "Romantic",   entity: "YOUR_BEDROOM_ROMANTIC_SCENE_ENTITY",        color: "#8b2252",  icon: ICONS.scenes.romantic   },
+            { label: "Candle",     entity: "YOUR_BEDROOM_CANDLE_SCENE_ENTITY",          color: "#7a4a1e",  icon: ICONS.scenes.candle     },
+            { label: "Fireplace",  entity: "YOUR_BEDROOM_FIREPLACE_SCENE_ENTITY",       color: "#8b3a10",  icon: ICONS.scenes.fireplace  },
           ],
         },
       ],

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   ╔══════════════════════════════════════════════════════════════════════════╗
-  ║                        HOMIE  DASHBOARD v3.4.0                           ║
+  ║                        HOMIE  DASHBOARD v3.5.0                           ║
   ╠══════════════════════════════════════════════════════════════════════════╣
   ║  A custom Home Assistant dashboard designed for wall-mounted tablets.    ║
   ║                                                                          ║
@@ -91,7 +91,6 @@
     color: #ffffff;
   }
   .top-clock {
-    font-family: inherit;
     font-size: 1.4rem;
     font-weight: 300;
     letter-spacing: 0.08em;
@@ -129,7 +128,6 @@
     line-height: 1;
   }
   .weather-temp {
-    font-family: inherit;
     font-size: 1.4rem;
     font-weight: 300;
     color: #fff;
@@ -183,7 +181,7 @@
 
   /* ─── MODE LAUNCHER ─── */
   .mode-launcher {
-    position: relative;
+    position: static;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -213,12 +211,12 @@
     stroke: var(--accent-hi);
   }
   .mode-launcher-drawer {
-    position: absolute;
-    right: 48px;
-    top: 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    position: fixed;
+    /* top and right are set dynamically in _openLauncher() */
+    display: grid;
+    grid-template-columns: repeat(4, 40px);
+    grid-template-rows: repeat(2, 36px);
+    gap: 6px;
     overflow: hidden;
     max-width: 0;
     opacity: 0;
@@ -226,7 +224,7 @@
     pointer-events: none;
   }
   .mode-launcher-drawer.open {
-    max-width: 380px;
+    max-width: 192px;
     opacity: 1;
     pointer-events: auto;
   }
@@ -234,22 +232,8 @@
     flex-shrink: 0;
     position: relative;
   }
-  /* Label that briefly appears below each launcher button on first open */
-  .launcher-label {
-    position: absolute;
-    bottom: -16px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 8px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--accent-hi);
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  .launcher-label.visible { opacity: 1; }
+  /* Launcher labels hidden — no space in compact 2-row grid */
+  .launcher-label { display: none; }
 
   /* ─── PET STATS GRID (inside popup overlay) ─── */
   /* ── Litter Box Action Buttons ── */
@@ -365,15 +349,18 @@
     flex-direction: column;
     margin-bottom: 10vh;
   }
-  .hero-bg {
+  .hero-bg,
+  .ov2-hero-bg {
     position: fixed; inset: 0;
     background-size: cover;
     background-position: center;
     transition: background 1.2s ease;
     overflow: hidden;
     z-index: -1;
-    touch-action: none; /* prevent native scroll/pan on the background; individual scrollable areas re-enable with touch-action:auto */
   }
+  /* Prevent native scroll/pan on the main background — individual scrollable
+   * areas re-enable with touch-action: auto */
+  .hero-bg { touch-action: none; }
 
 
   /* Grain texture overlay */
@@ -650,7 +637,6 @@
   }
   .wx-popup-icon svg { width: 72px; height: 72px; }
   .wx-popup-main-temp {
-    font-family: inherit;
     font-size: 3.8rem;
     font-weight: 300;
     color: var(--accent);
@@ -732,7 +718,6 @@
   }
   .wx-forecast-day svg { width: 34px; height: 34px; }
   .wx-forecast-hi {
-    font-family: inherit;
     font-size: 22px;
     font-weight: 300;
     color: rgba(255,255,255,0.9);
@@ -1100,7 +1085,7 @@
     max-height: 0;
     overflow: hidden;
     opacity: 0;
-    padding: 0 0 0;
+    padding: 0;
     background: var(--ac-05);
     border: 1px solid var(--ac-4);
     border-top: none;
@@ -1748,6 +1733,56 @@
     50% { opacity: 0.4; }
   }
 
+  /* ─── ECHO TIMER BUBBLE ─── */
+  .timer-bubble-bar {
+    display: none;
+    position: fixed;
+    top: calc(var(--top-bar-h, 115px) + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 89;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-glow);
+    border: 1px solid var(--ac-6);
+    border-radius: 20px;
+    padding: 5px 16px;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: #fff;
+    text-transform: uppercase;
+    white-space: nowrap;
+    backdrop-filter: blur(4px);
+    pointer-events: none;
+  }
+  .timer-bubble-bar.visible { display: inline-flex; }
+  .timer-bubble-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .timer-bubble-icon {
+    flex-shrink: 0;
+    opacity: 0.75;
+  }
+  .timer-bubble-label {
+    opacity: 0.7;
+    color: #ffffff;
+  }
+  .timer-bubble-countdown {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+  .timer-bubble-countdown.urgent {
+    color: #ff6b6b;
+    animation: pulse 1s infinite;
+  }
+  .timer-bubble-sep {
+    opacity: 0.3;
+    margin: 0 2px;
+  }
+
   /* ─── CONNECTION LOST BANNER ─── */
   .connection-lost-bar {
     display: none;
@@ -1820,7 +1855,6 @@
     gap: 10px;
   }
   .np-artist {
-    font-family: inherit;
     font-size: 1.35rem;
     color: var(--accent);
     letter-spacing: 0.05em;
@@ -1916,12 +1950,15 @@
   }
   .np-vol-btn:hover { opacity: 1; }
   .np-vol-btn:active { transform: scale(0.88); }
-  /* Volume popup: floats above the bar */
-  .np-vol-popup {
+  /* Volume popup — shared base; floats above its trigger button.
+   * .np-vol-popup   sits inside the mini bar;
+   * .np-fs-vol-popup sits inside the fullscreen overlay.       */
+  .np-vol-popup,
+  .np-fs-vol-popup {
     position: absolute;
     bottom: calc(100% + 10px);
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(4px);
     background: rgba(15,15,18,0.92);
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 24px;
@@ -1934,11 +1971,11 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
-    transform: translateX(-50%) translateY(4px);
     backdrop-filter: blur(12px);
     z-index: 50;
   }
-  .np-vol-popup.open {
+  .np-vol-popup.open,
+  .np-fs-vol-popup.open {
     opacity: 1;
     pointer-events: auto;
     transform: translateX(-50%) translateY(0);
@@ -2002,31 +2039,6 @@
   .np-fs-vol-btn:hover { opacity: 1; background: rgba(255,255,255,0.08); }
   .np-fs-vol-btn:active { transform: scale(0.9); }
   /* FS volume popup — centred horizontally below the button */
-  .np-fs-vol-popup {
-    position: absolute;
-    bottom: calc(100% + 10px);
-    left: 50%;
-    transform: translateX(-50%) translateY(4px);
-    background: rgba(15,15,18,0.92);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 24px;
-    padding: 14px 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    width: 44px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    backdrop-filter: blur(12px);
-    z-index: 50;
-  }
-  .np-fs-vol-popup.open {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateX(-50%) translateY(0);
-  }
 
   /* Pills row below the FS playback controls */
   .np-fs-pills {
@@ -2268,7 +2280,6 @@
   }
   /* Track info */
   .np-fs-title {
-    font-family: inherit;
     font-size: clamp(1.6rem, 4.5vw, 2.4rem);
     font-weight: 300;
     color: #fff;
@@ -2414,7 +2425,6 @@
     padding: 3rem 2.5rem 3rem 2.8rem;
   }
   .np-ls-title {
-    font-family: inherit;
     font-size: clamp(2rem, 5vw, 3.2rem);
     font-weight: 300;
     color: #fff;
@@ -2536,7 +2546,6 @@
     gap: 4px;
   }
   .daily-header-clock {
-    font-family: inherit;
     font-size: 1.4rem;
     font-weight: 300;
     color: #ffffff;
@@ -2626,7 +2635,6 @@
   .daily-week-day.today .daily-week-day-name { color: var(--accent); }
   .daily-week-day.selected .daily-week-day-name { color: var(--accent); }
   .daily-week-day-num {
-    font-family: inherit;
     font-size: 1.1rem; color: rgba(255,255,255,0.7); line-height: 1;
   }
   .daily-week-day.today .daily-week-day-num { color: var(--accent-hi); }
@@ -3309,7 +3317,365 @@
   }
 
   /* ─── PHOTO FRAME OVERLAY ─── */
-  #photoframe-overlay {
+  /* ── Cameras overlay ─────────────────────────────────────────────────────── */
+  #cameras-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 700;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .cam-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 4px;
+    padding: 4px 4px 52px;
+    box-sizing: border-box;
+  }
+  #cameras-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  body.cam-open .top-bar,
+  body.cam-open .page-dots {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .cam-cell {
+    position: relative;
+    background: #111;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cam-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: none;
+    position: absolute;
+    top: 0; left: 0;
+  }
+  .cam-cell img.loaded {
+    opacity: 1;
+  }
+  .cam-cell-offline {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.25);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+  }
+  .cam-cell img.loaded ~ .cam-cell-offline {
+    display: none;
+  }
+  .cam-cell-label {
+    position: absolute;
+    bottom: 6px;
+    left: 8px;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,1);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    pointer-events: none;
+  }
+  .cam-cell-last-motion {
+    position: absolute;
+    bottom: 6px;
+    right: 8px;
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,1);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    pointer-events: none;
+    text-align: right;
+  }
+
+  .cam-cell { cursor: pointer; }
+  .cam-cell.empty { cursor: default; }
+  @keyframes cam-motion-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+  }
+  .cam-motion-icon {
+    position: absolute;
+    bottom: 24px;
+    right: 10px;
+    pointer-events: none;
+    color: rgba(255,255,255,0.35);
+    transition: color 0.3s ease;
+  }
+  .cam-motion-icon.active {
+    color: rgba(255, 80, 80, 0.95);
+    filter: drop-shadow(0 0 6px rgba(255,80,80,0.8));
+    animation: cam-motion-pulse 1.2s ease-in-out infinite;
+  }
+
+  /* ── Camera top bar (close + log buttons) ── */
+  #cam-topbar {
+    position: absolute;
+    bottom: 10px; left: 0; right: 0;
+    z-index: 730;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  #cam-topbar > * { pointer-events: auto; }
+  .cam-topbar-btn {
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.8);
+    border-radius: 4px;
+    padding: 5px 11px;
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s, border-color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cam-topbar-btn:active, .cam-topbar-btn.active {
+    background: var(--ac-20, rgba(184,150,92,0.2));
+    border-color: var(--accent-hi);
+    color: var(--accent-hi);
+  }
+  .cam-topbar-btn svg { flex-shrink: 0; }
+
+  /* ── Motion log panel ── */
+  #cam-motion-log {
+    position: absolute;
+    bottom: 52px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 720;
+    width: 340px;
+    background: rgba(8,9,12,0.97);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px 16px 0 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1);
+  }
+  #cam-motion-log.open {
+    max-height: 50vh;
+  }
+  .cam-log-inner {
+    padding: 14px 16px 24px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .cam-log-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+  .cam-log-title {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--accent-hi, #d4ae78);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .cam-log-range {
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
+  }
+  .cam-log-filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+  }
+  .cam-log-filter-chip {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+  }
+  .cam-log-filter-chip.active {
+    background: var(--ac-20, rgba(184,150,92,0.2));
+    border-color: var(--accent-hi, #d4ae78);
+    color: var(--accent-hi, #d4ae78);
+  }
+  .cam-log-scroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.12) transparent;
+    max-height: calc(50vh - 70px);
+  }
+  .cam-log-scroll::-webkit-scrollbar { width: 3px; }
+  .cam-log-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+  .cam-log-empty {
+    color: rgba(255,255,255,0.3);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-align: center;
+    padding: 24px 0;
+  }
+  .cam-log-day {
+    margin-bottom: 14px;
+  }
+  .cam-log-day-label {
+    font-size: 8px;
+    letter-spacing: 0.28em;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .cam-log-event {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .cam-log-event:last-child { border-bottom: none; }
+  .cam-log-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,80,80,0.7);
+    flex-shrink: 0;
+    box-shadow: 0 0 5px rgba(255,80,80,0.4);
+  }
+  .cam-log-dot.clear {
+    background: rgba(255,255,255,0.2);
+    box-shadow: none;
+  }
+  .cam-log-time {
+    font-size: 12px;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+    min-width: 46px;
+  }
+  .cam-log-cam {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--accent-hi, #d4ae78);
+    flex-shrink: 0;
+    min-width: 80px;
+    text-transform: uppercase;
+  }
+  .cam-log-state {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.45);
+    text-transform: uppercase;
+  }
+  .cam-log-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 0;
+    gap: 8px;
+    color: rgba(255,255,255,0.3);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+  }
+  @keyframes cam-log-spin {
+    to { transform: rotate(360deg); }
+  }
+  .cam-log-spinner {
+    width: 14px; height: 14px;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    border-top-color: var(--accent-hi, #d4ae78);
+    border-radius: 50%;
+    animation: cam-log-spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+
+  /* Fullscreen single camera */
+  #cam-fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 800;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  #cam-fullscreen.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  #cam-fullscreen img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  #cam-fullscreen-info {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+  }
+  #cam-fullscreen-info .cam-motion-icon {
+    position: static;
+  }
+  #cam-fullscreen-label {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.85);
+    text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+    white-space: nowrap;
+  }
+
+
+
+    #photoframe-overlay {
     position: fixed;
     inset: 0;
     z-index: 700;
@@ -3632,7 +3998,6 @@
     gap: 1.5rem;
   }
   .wfs-temp-big {
-    font-family: inherit;
     font-size: clamp(5rem, 18vw, 9rem);
     font-weight: 300;
     color: #fff;
@@ -3957,6 +4322,19 @@
     text-align: right;
     white-space: nowrap;
   }
+  /* Column layout used by the 5-stat bottom row in weather fullscreen */
+  .wfs-stat-col {
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-bottom: none;
+    padding: 0 10px;
+    gap: 4px;
+  }
+  .wfs-stat-col:not(:last-child) {
+    border-right: 1px solid var(--ac-25);
+  }
   /* 7-day forecast bar */
   .wfs-forecast-title {
     font-size: 11px;
@@ -4037,7 +4415,6 @@
   }
   /* Hi temp — above the bar */
   .wfs-fc-hi {
-    font-family: inherit;
     font-size: clamp(1.1rem, 2vw, 1.6rem);
     font-weight: 300;
     color: #fff;
@@ -4048,7 +4425,6 @@
   }
   /* Lo temp — below the bar, same size, white */
   .wfs-fc-lo {
-    font-family: inherit;
     font-size: clamp(1.1rem, 2vw, 1.6rem);
     font-weight: 300;
     color: #fff;
@@ -4086,13 +4462,6 @@
     pointer-events: auto;
   }
 
-  .therm-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.2rem 2rem 0.8rem;
-    flex-shrink: 0;
-  }
   .therm-current-temp {
     font-size: 12px;
     letter-spacing: 0.35em;
@@ -4227,7 +4596,6 @@
     line-height: 1;
   }
   .therm-current-deg {
-    font-family: inherit;
     font-size: 2rem;
     font-weight: 300;
     color: rgba(255,255,255,0.6);
@@ -4250,7 +4618,6 @@
     letter-spacing: 0.1em;
   }
   .therm-current-temp {
-    font-family: inherit;
     font-size: 4.5rem;
     font-weight: 300;
     letter-spacing: -0.02em;
@@ -4530,14 +4897,6 @@
     justify-content: center;
     overflow: hidden;
   }
-  .ov2-hero-bg {
-    position: fixed; inset: 0;
-    background-size: cover;
-    background-position: center;
-    transition: background 1.2s ease;
-    overflow: hidden;
-    z-index: -1;
-  }
   .ov2-hero-content {
     position: relative;
     z-index: 2;
@@ -4646,8 +5005,6 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* CSS var not yet set — guard for opacity refs */
-  :root { --ac-08: rgba(255,255,255,0.08); }
 
   /* ─── SCREEN 2 BODY-CLASS ADJUSTMENTS ──────────────────────────────────────
    * When screen 2 is active we add .ov2-active to <body>. This shifts the
@@ -4754,7 +5111,6 @@
   }
   .ac-wx-icon-wrap { display: flex; align-items: center; justify-content: center; line-height: 1; }
   .ac-wx-temp {
-    font-family: inherit;
     font-size: 1.45rem;
     font-weight: 300;
     color: #fff;
@@ -4949,7 +5305,6 @@
     height: clamp(28px, 5vw, 46px) !important;
   }
   .fc-temp {
-    font-family: inherit;
     font-size: clamp(1.4rem, 3.2vw, 2.6rem);
     font-weight: 300;
     color: #fff;
@@ -5286,6 +5641,232 @@
   }
   .settings-reset:hover { color: rgba(255,255,255,0.7); border-color: var(--ac-50); }
 
+  /* ─── SOLAR FULLSCREEN OVERLAY ─────────────────────────────────────────── */
+  #solar-fs-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 600;
+    background: #020d06;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: inherit;
+  }
+  #solar-fs-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  /* Animated gradient background */
+  .sfs-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse at 15% 20%, rgba(255,180,0,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 80%, rgba(0,200,80,0.10) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(0,120,50,0.08) 0%, transparent 70%),
+      linear-gradient(160deg, #020d06 0%, #041510 50%, #020d06 100%);
+  }
+  /* Grid scanlines overlay for techy feel */
+  .sfs-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(0,220,100,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,220,100,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  /* Main content wrapper */
+  .sfs-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 4rem 2rem 2rem;
+    gap: 1.5rem;
+  }
+  /* Close / back button */
+  .sfs-close { display: none; }
+  .sfs-title  { display: none; }
+
+  /* ── FLOW DIAGRAM ── */
+  .sfs-flow-wrap {
+    width: 100%;
+    max-width: 700px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .sfs-flow-svg {
+    width: 100%;
+    height: auto;
+  }
+  /* Animated flow dots along paths */
+  @keyframes sfs-flow-dot {
+    0%   { stroke-dashoffset: 200; opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { stroke-dashoffset: 0; opacity: 0; }
+  }
+  .sfs-flow-line {
+    fill: none;
+    stroke-width: 2;
+    opacity: 0.15;
+  }
+  .sfs-flow-dot {
+    fill: none;
+    stroke-width: 3;
+    stroke-dasharray: 8 192;
+    stroke-linecap: round;
+  }
+  .sfs-dot-solar    { animation: sfs-flow-dot 1.8s linear infinite; }
+  .sfs-dot-solar-2  { animation: sfs-flow-dot 1.8s linear infinite 0.9s; }
+  .sfs-dot-battery  { animation: sfs-flow-dot 2.2s linear infinite; }
+  .sfs-dot-battery-2{ animation: sfs-flow-dot 2.2s linear infinite 1.1s; }
+  .sfs-dot-grid-exp { animation: sfs-flow-dot 2.6s linear infinite; }
+  .sfs-dot-grid-exp-2 { animation: sfs-flow-dot 2.6s linear infinite 1.3s; }
+  .sfs-dot-home     { animation: sfs-flow-dot 1.6s linear infinite; }
+  .sfs-dot-home-2   { animation: sfs-flow-dot 1.6s linear infinite 0.8s; }
+  /* Node cards in the SVG are handled inline */
+
+  /* ── STATS CARDS ROW ── */
+  .sfs-stats-row {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 700px;
+    justify-content: center;
+  }
+  .sfs-stat-card {
+    flex: 1;
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(0,220,100,0.12);
+    border-radius: 8px;
+    padding: 0.8rem 0.6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .sfs-stat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,220,100,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .sfs-stat-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2px;
+  }
+  .sfs-stat-value {
+    font-size: 1.1rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    color: #fff;
+    line-height: 1;
+  }
+  .sfs-stat-label {
+    font-size: 8px;
+    letter-spacing: 0.28em;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .sfs-stat-unit {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* ── DAILY ENERGY BAR ── */
+  .sfs-chart-row {
+    width: 100%;
+    max-width: 700px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(0,220,100,0.1);
+    border-radius: 8px;
+    padding: 0.8rem 1rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .sfs-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sfs-chart-title {
+    font-size: 8px;
+    letter-spacing: 0.28em;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
+  }
+  .sfs-chart-legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: #ffffff;
+  }
+  .sfs-legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    margin-right: 3px;
+    vertical-align: middle;
+    opacity: 0.85;
+  }
+  .sfs-legend-lbl { vertical-align: middle; }
+  .sfs-chart-area {
+    position: relative;
+    width: 100%;
+    height: 90px;
+  }
+  .sfs-chart-area svg { display: block; overflow: visible; }
+  .sfs-chart-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+  }
+  .sfs-chart-xaxis {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2px;
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    color: #ffffff;
+  }
+
+  /* Node glow pulse */
+  @keyframes sfs-node-pulse {
+    0%, 100% { opacity: 0.6; }
+    50%       { opacity: 1; }
+  }
+  .sfs-node-active { animation: sfs-node-pulse 2s ease-in-out infinite; }
+
 </style>
 </head>
 <body>
@@ -5330,6 +5911,10 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             <span class="launcher-label" data-label>Memories</span>
           </button>
+          <button class="topbar-btn" id="cameras-open-btn" onclick="openCameras()" title="Cameras">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            <span class="launcher-label" data-label>Cameras</span>
+          </button>
           <button class="topbar-btn" id="thermostat-open-btn" onclick="openThermostat()" title="Thermostat">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
             <span class="launcher-label" data-label>Thermostat</span>
@@ -5341,6 +5926,10 @@
           <button class="topbar-btn" id="weather-fs-open-btn" onclick="openWeatherFS()" title="Weather">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
             <span class="launcher-label" data-label>Weather</span>
+          </button>
+          <button class="topbar-btn" id="solar-fs-open-btn" onclick="openSolarFS()" title="Solar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <span class="launcher-label" data-label>Solar</span>
           </button>
         </div>
         <!-- Toggle button -->
@@ -5370,6 +5959,7 @@
 </div>
 
 <div id="notification-bar" class="notification-bar"></div>
+<div id="timer-bubble-bar" class="timer-bubble-bar"></div>
 <div id="connection-lost-bar" class="connection-lost-bar">
   <div class="connection-lost-dot"></div>
   <span>Connection lost — retrying…</span>
@@ -5690,6 +6280,35 @@
   </div>
 </div>
 
+
+<script>
+/* ── Meal, Habit & Scene Icons ──────────────────────────────────────────────
+ * Defined before config.js loads so CONFIG can reference ICONS.* freely.
+ * ─────────────────────────────────────────────────────────────────────────── */
+const ICONS = {
+  meals: {
+    breakfast: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
+    lunch:     `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>`,
+    snack:     `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+    dinner:    `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>`,
+  },
+  habits: {
+    water:    `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`,
+    workout:  `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11M6.5 17.5h11M3 10h3v4H3zM18 10h3v4h-3z"/><line x1="6" y1="12" x2="18" y2="12"/></svg>`,
+    read:     `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
+    meditate: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" fill="var(--accent)" stroke="none"/><path d="M5 12c0-2 2-4 7-4s7 2 7 4"/><path d="M3 16c1-3 4-4 9-4s8 1 9 4"/><path d="M6 16c0 2 2.5 3 6 3s6-1 6-3"/><line x1="12" y1="8" x2="12" y2="12"/></svg>`,
+    snacks:   `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1 0-3.5 1-3.5 4 0 0 1.5-1 3.5-1s3.5 1 3.5 1C15.5 4 13 3 12 3z"/><path d="M14 2c0 0 1-2 3-1"/><path d="M6.5 8C4 8 2 10.5 2 13.5 2 17.5 5 22 8 22c1.5 0 2-0.5 4-0.5s2.5 0.5 4 0.5c3 0 6-4.5 6-8.5C22 10.5 20 8 17.5 8c-1.5 0-2.5 1-5.5 1S8 8 6.5 8z"/></svg>`,
+  },
+  scenes: {
+    relax:      `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="1.5"/><path d="M9 9 Q8 13 10 15 L8 21"/><path d="M9 9 L15 9 Q17 9 17 12 L17 15"/><path d="M10 15 L17 15 L19 21"/><path d="M6 21 L20 21"/></svg>`,
+    romantic:   `<svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(255,255,255,0.9)" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
+    movie:      `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(20,16,12,0.85)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>`,
+    candle:     `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="12" width="6" height="9" rx="1"/><path d="M12 12V9"/><path d="M12 9 C13.5 7 13.5 5 12 3.5 C10.5 5 10.5 7 12 9Z" fill="rgba(255,200,80,0.85)" stroke="rgba(255,160,40,0.9)" stroke-width="1"/><line x1="9" y1="15" x2="9" y2="17" stroke="rgba(255,255,255,0.35)" stroke-width="1"/></svg>`,
+    fireplace:  `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14c0 2 1.5 3.5 3.5 3.5s3.5-1.5 3.5-3.5c0-1.5-1-3-2-4 0 2-1 3-1 3s-.5-2-1.5-4c-1 2-2 3.5-2 4.5z"/><path d="M5 21V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14"/><line x1="3" y1="21" x2="21" y2="21"/></svg>`,
+    nightlight: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,
+  },
+};
+</script>
 
 <!-- ─── CONFIGURATION ────────────────────────────────────────────────────────
      All user-facing settings (entities, tokens, sensors, controls, etc.)
@@ -6168,6 +6787,9 @@ function _getWxIcons() {
 }
 const WX_ICON_DEFAULT = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="stroke:var(--accent-hi)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>`;
 
+// Compass directions — shared by openWeatherPopup and _refreshWeatherFS.
+const WIND_DIRS = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+
 /**
  * refreshWeather — reads the weather entity from cache and updates
  * the icon, temperature, and description in the top-centre bar.
@@ -6226,8 +6848,7 @@ function openWeatherPopup() {
   if (attrs.wind_speed != null) {
     wind = Math.round(attrs.wind_speed) + " km/h";
     if (attrs.wind_bearing != null) {
-      const dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
-      wind += " " + dirs[Math.round(attrs.wind_bearing / 22.5) % 16];
+      wind += " " + WIND_DIRS[Math.round(attrs.wind_bearing / 22.5) % 16];
     }
   }
   document.getElementById("wx-popup-humidity").textContent = humidity;
@@ -6278,7 +6899,6 @@ function openWeatherPopup() {
 function _renderWxForecast(forecast, unit, icons) {
   const fRow = document.getElementById("wx-popup-forecast");
   if (!fRow) return;
-  const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]; // kept as fallback
   if (!forecast.length) {
     fRow.innerHTML = `<div style="font-size:9px;letter-spacing:0.15em;color:rgba(255,255,255,0.3);padding:8px 0;">No forecast available</div>`;
     return;
@@ -6320,7 +6940,7 @@ let _wfsPrevAqi = null;
 
 // Snapshot weather attrs periodically so trends always reflect real change
 function _wfsSnapshotAttrs() {
-  const entity = CONFIG.weather && CONFIG.weather.entity;
+  const entity = CONFIG.weather.entity;
   const d = entity ? haGetCached(entity) : null;
   if (!d) return;
   const attrs = d.attributes || {};
@@ -6349,52 +6969,41 @@ setTimeout(function _wfsInitSnapshot() {
 }, 30 * 1000); // wait 30s for WS cache to populate
 
 function _refreshWeatherFS() {
-  const entity = CONFIG.weather && CONFIG.weather.entity;
+  const entity = CONFIG.weather.entity;
   const d = entity ? haGetCached(entity) : null;
   const attrs = d ? (d.attributes || {}) : {};
-  const unit = (attrs.temperature_unit === "°F" || (CONFIG.weather && CONFIG.weather.unit === "°F")) ? "°F" : "°C";
+  const unit = (attrs.temperature_unit === "°F" || CONFIG.weather.unit === "°F") ? "°F" : "°C";
   const icons = _getWxIcons ? _getWxIcons() : {};
 
-  // Big temperature
-  const tempEl = document.getElementById("wfs-temp-big");
-  if (tempEl) {
-    const temp = attrs.temperature != null ? Math.round(attrs.temperature) : "—";
-    tempEl.innerHTML = `${temp}<span class="wfs-temp-unit" id="wfs-temp-unit">${unit}</span>`;
-  }
-  // Mirror to card
-  const tempCardEl = document.getElementById("wfs-temp-big-card");
-  if (tempCardEl) {
-    const temp = attrs.temperature != null ? Math.round(attrs.temperature) : "—";
-    tempCardEl.innerHTML = `${temp}<span class="wfs-temp-unit">${unit}</span>`;
-  }
+  // Helper: write the same value to a main element and its card mirror.
+  // method = 'innerHTML' | 'textContent'
+  const _setWfsPair = (mainId, cardId, value, method = 'textContent') => {
+    const a = document.getElementById(mainId);
+    const b = document.getElementById(cardId);
+    if (a) a[method] = value;
+    if (b) b[method] = value;
+  };
 
-  // Weather icon (large)
-  const iconWrap = document.getElementById("wfs-icon-wrap");
-  if (iconWrap) {
-    const cond = d ? d.state : "cloudy";
-    const rawIcon = icons[cond] || icons["cloudy"] || "";
-    iconWrap.innerHTML = rawIcon.replace(/width="32" height="32"/g, 'width="80" height="80"');
-  }
-  // Mirror icon to card
+  // Big temperature — main (80 px icon) and card (60 px icon)
+  const temp = attrs.temperature != null ? Math.round(attrs.temperature) : "—";
+  const tempHtml = `${temp}<span class="wfs-temp-unit">${unit}</span>`;
+  const tempMainEl = document.getElementById("wfs-temp-big");
+  const tempCardEl = document.getElementById("wfs-temp-big-card");
+  // wfs-temp-unit id only needed on the first element for JS targeting
+  if (tempMainEl) tempMainEl.innerHTML = `${temp}<span class="wfs-temp-unit" id="wfs-temp-unit">${unit}</span>`;
+  if (tempCardEl) tempCardEl.innerHTML = tempHtml;
+
+  // Weather icon — different sizes for main vs card
+  const cond = d ? d.state : "cloudy";
+  const rawIcon = icons[cond] || icons["cloudy"] || "";
+  const iconWrap     = document.getElementById("wfs-icon-wrap");
   const iconCardWrap = document.getElementById("wfs-icon-wrap-card");
-  if (iconCardWrap) {
-    const cond = d ? d.state : "cloudy";
-    const rawIcon = icons[cond] || icons["cloudy"] || "";
-    iconCardWrap.innerHTML = rawIcon.replace(/width="32" height="32"/g, 'width="60" height="60"');
-  }
+  if (iconWrap)     iconWrap.innerHTML     = rawIcon.replace(/width="32" height="32"/g, 'width="80" height="80"');
+  if (iconCardWrap) iconCardWrap.innerHTML = rawIcon.replace(/width="32" height="32"/g, 'width="60" height="60"');
 
   // Condition text
-  const condEl = document.getElementById("wfs-condition");
-  if (condEl) {
-    const cond = d ? d.state : "—";
-    condEl.textContent = cond.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-  }
-  // Mirror condition to card
-  const condCardEl = document.getElementById("wfs-condition-card");
-  if (condCardEl) {
-    const cond = d ? d.state : "—";
-    condCardEl.textContent = cond.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-  }
+  const condText = (d ? d.state : "—").replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  _setWfsPair("wfs-condition", "wfs-condition-card", condText);
 
   // Stats
   const humidity = attrs.humidity       != null ? attrs.humidity + "%" : "—";
@@ -6405,8 +7014,7 @@ function _refreshWeatherFS() {
   if (attrs.wind_speed != null) {
     wind = Math.round(attrs.wind_speed) + " km/h";
     if (attrs.wind_bearing != null) {
-      const dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
-      wind = dirs[Math.round(attrs.wind_bearing / 22.5) % 16] + " " + Math.round(attrs.wind_speed) + " km/h";
+      wind = WIND_DIRS[Math.round(attrs.wind_bearing / 22.5) % 16] + " " + Math.round(attrs.wind_speed) + " km/h";
     }
   }
   const setWfsStat = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
@@ -6574,10 +7182,11 @@ function openWeatherFS() {
   _wfsOpen = true;
   _refreshWeatherFS();
   document.getElementById("weather-fs-overlay").classList.add("open");
-  const entity = CONFIG.weather && CONFIG.weather.entity;
-  const d = entity ? haGetCached(entity) : null;
-  const attrs = d ? (d.attributes || {}) : {};
-  const unit = (attrs.temperature_unit === "°F" || (CONFIG.weather && CONFIG.weather.unit === "°F")) ? "°F" : "°C";
+  // unit and icons are derived the same way _refreshWeatherFS does internally;
+  // avoid a second haGetCached call by reading the already-set unit span if present,
+  // then falling back to CONFIG so _wfsFetchForecast gets the right labels.
+  const unitEl = document.getElementById("wfs-temp-unit");
+  const unit = unitEl ? unitEl.textContent : (CONFIG.weather.unit === "°F" ? "°F" : "°C");
   const icons = _getWxIcons ? _getWxIcons() : {};
   _wfsFetchForecast(unit, icons);
   window._showSwipeDownHint?.();
@@ -6587,6 +7196,284 @@ function closeWeatherFS() {
   haptic("light");
   _wfsOpen = false;
   document.getElementById("weather-fs-overlay").classList.remove("open");
+}
+
+/* ─── SOLAR FULLSCREEN ─── */
+let _sfsOpen = false;
+let _sfsInterval = null;
+
+function openSolarFS() {
+  haptic("light");
+  _closeLauncher && _closeLauncher();
+  _sfsOpen = true;
+  document.getElementById("solar-fs-overlay").classList.add("open");
+  _sfsRefresh();
+  _sfsInterval = setInterval(_sfsRefresh, 5000);
+  window._showSwipeDownHint?.();
+}
+
+function closeSolarFS() {
+  haptic("light");
+  _sfsOpen = false;
+  document.getElementById("solar-fs-overlay").classList.remove("open");
+  clearInterval(_sfsInterval);
+  _sfsInterval = null;
+}
+
+function _sfsRefresh() {
+  const cfg = CONFIG.floorSensors
+    ? CONFIG.floorSensors.find(f => f.label === "Solar")
+    : null;
+  if (!cfg) return;
+
+  function _val(type) {
+    const s = cfg.sensors.find(x => x.type === type);
+    if (!s) return null;
+    const d = haGetCached(s.entity);
+    const v = d ? parseFloat(d.state) : null;
+    return (!v && v !== 0) || isNaN(v) ? null : v;
+  }
+
+  const solar = _val("solar");
+  const home  = _val("power");
+  const bat   = _val("battery");
+  const exp   = _val("export");
+  const temp  = _val("solar-temp");
+
+  // Update stat values
+  const fmt = (v, dec) => v === null ? "—" : (dec ? v.toFixed(2) : Math.round(v));
+  document.getElementById("sfs-stat-solar").textContent   = fmt(solar, true);
+  document.getElementById("sfs-stat-home").textContent    = fmt(home, true);
+  document.getElementById("sfs-stat-battery").textContent = fmt(bat, false);
+  document.getElementById("sfs-stat-export").textContent  = fmt(exp, true);
+  document.getElementById("sfs-stat-temp").textContent    = fmt(temp, true);
+
+  // Update grid stat icon arrow: left = exporting (positive), right = importing (negative)
+  const exportIconEl = document.getElementById("sfs-stat-export-icon");
+  if (exportIconEl && exp !== null) {
+    exportIconEl.innerHTML = exp > 0
+      ? `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 5 5 12 12 19"/></svg>`
+      : `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>`;
+  }
+
+  // Update node labels
+  document.getElementById("sfs-node-solar-val").textContent = solar !== null ? solar.toFixed(2) + " kW" : "—";
+  document.getElementById("sfs-node-bat-val").textContent   = bat !== null ? bat + "%" : "—";
+  document.getElementById("sfs-node-home-val").textContent  = home !== null ? home.toFixed(2) + " kW" : "—";
+  document.getElementById("sfs-node-grid-val").textContent  = exp !== null ? Math.abs(exp).toFixed(2) + " kW" : "—";
+
+  // Battery fill bar (SVG rect width proportional to %)
+  if (bat !== null) {
+    const w = Math.max(1, Math.round((bat / 100) * 20));
+    document.getElementById("sfs-bat-fill")?.setAttribute("width", w);
+  }
+
+  // Trigger hourly chart refresh (non-blocking)
+  _sfsRefreshChart(cfg);
+
+  // Show/hide flow animations based on values
+  const solarFlowing = solar !== null && solar > 0.05;
+  const batCharging  = solar !== null && bat !== null && solar > 0.2;
+  const exporting    = exp !== null && exp > 0.05;
+
+  const setFlow = (ids, active) => ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.opacity = active ? null : "0";
+  });
+  setFlow(["sfs-ani-solar-home", "sfs-ani-solar-home-2", "sfs-ani-home", "sfs-ani-home-2"], solarFlowing);
+  setFlow(["sfs-ani-solar-bat", "sfs-ani-solar-bat-2"], batCharging);
+  setFlow(["sfs-ani-solar-grid", "sfs-ani-solar-grid-2"], exporting);
+
+  // Show/hide flow labels
+  const expLbl = document.getElementById("sfs-lbl-export");
+  const chgLbl = document.getElementById("sfs-lbl-charge");
+  if (expLbl) expLbl.style.opacity = exporting ? "1" : "0.2";
+  if (chgLbl) chgLbl.style.opacity = batCharging ? "1" : "0.2";
+}
+
+/* ─── SOLAR HOURLY CHART ─── */
+let _sfsChartCache = null;
+let _sfsChartLastFetch = 0;
+
+async function _sfsRefreshChart(cfg) {
+  const now = Date.now();
+  if (_sfsChartCache && now - _sfsChartLastFetch < 300_000) {
+    _sfsDraw(_sfsChartCache);
+    return;
+  }
+
+  const solarSensor = cfg.sensors.find(x => x.type === 'solar');
+  const powerSensor = cfg.sensors.find(x => x.type === 'power');
+  if (!solarSensor || !powerSensor || !HA_TOKEN) return;
+
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date();
+
+  // For instantaneous sensors (e.g. solar W): average readings per hour
+  async function fetchHourlyAvg(entity) {
+    try {
+      const r = await fetch(
+        `${BASE}/api/history/period/${start.toISOString()}?filter_entity_id=${entity}&end_time=${end.toISOString()}&minimal_response`,
+        { headers: { Authorization: `Bearer ${HA_TOKEN}` } }
+      );
+      if (!r.ok) return null;
+      const raw = await r.json();
+      if (!raw || !raw[0]) return null;
+      const buckets = {};
+      for (const entry of raw[0]) {
+        const v = parseFloat(entry.state);
+        if (isNaN(v) || v < 0) continue;
+        const h = new Date(entry.last_changed).getHours();
+        if (!buckets[h]) buckets[h] = { sum: 0, n: 0 };
+        buckets[h].sum += v;
+        buckets[h].n++;
+      }
+      const result = [];
+      for (let h = 0; h < 24; h++) {
+        result.push(buckets[h] ? buckets[h].sum / buckets[h].n : 0);
+      }
+      return result;
+    } catch { return null; }
+  }
+
+  // For cumulative sensors (e.g. consumption kWh): delta per hour
+  async function fetchHourlyDelta(entity) {
+    try {
+      const r = await fetch(
+        `${BASE}/api/history/period/${start.toISOString()}?filter_entity_id=${entity}&end_time=${end.toISOString()}&minimal_response`,
+        { headers: { Authorization: `Bearer ${HA_TOKEN}` } }
+      );
+      if (!r.ok) return null;
+      const raw = await r.json();
+      if (!raw || !raw[0]) return null;
+      const lastPerHour = {};
+      for (const entry of raw[0]) {
+        const v = parseFloat(entry.state);
+        if (isNaN(v) || v < 0) continue;
+        const h = new Date(entry.last_changed).getHours();
+        lastPerHour[h] = v;
+      }
+      const result = [];
+      for (let h = 0; h < 24; h++) {
+        if (lastPerHour[h] == null) { result.push(0); continue; }
+        let prevVal = null;
+        for (let p = h - 1; p >= 0; p--) {
+          if (lastPerHour[p] != null) { prevVal = lastPerHour[p]; break; }
+        }
+        result.push(prevVal != null ? Math.max(0, lastPerHour[h] - prevVal) : 0);
+      }
+      return result;
+    } catch { return null; }
+  }
+
+  const loading = document.getElementById('sfs-chart-loading');
+  if (loading) loading.style.display = 'flex';
+
+  const [solarH, powerH] = await Promise.all([
+    fetchHourlyAvg(solarSensor.entity),
+    fetchHourlyDelta(powerSensor.entity)
+  ]);
+
+  if (loading) loading.style.display = 'none';
+  if (!solarH && !powerH) return;
+
+  const data = { solar: solarH || Array(24).fill(0), power: powerH || Array(24).fill(0) };
+  _sfsChartCache = data;
+  _sfsChartLastFetch = now;
+  _sfsDraw(data);
+}
+
+function _sfsDraw(data) {
+  const container = document.querySelector('.sfs-chart-area');
+  const xax = document.getElementById('sfs-chart-xaxis');
+  if (!container) return;
+
+  const W = container.clientWidth || 660;
+  const H = 90;
+  const PAD_L = 32, PAD_R = 4, PAD_T = 8, PAD_B = 4;
+  const chartW = W - PAD_L - PAD_R;
+  const chartH = H - PAD_T - PAD_B;
+
+  const currentHour = new Date().getHours();
+  const hours = 24;
+  const allVals = [...data.solar, ...data.power].filter(v => v > 0);
+  const maxVal  = allVals.length ? Math.max(...allVals) * 1.12 : 1;
+
+  const barGroupW = chartW / hours;
+  const barW = Math.max(2, barGroupW * 0.38);
+  const gap  = barW * 0.25;
+
+  let html = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">`;
+
+  // Fixed y-axis scale 0-0.5 kWh
+  const Y_MAX = 1.0;
+  const Y_STEPS = 5;
+
+  // Subtle grid lines (one per step)
+  for (let i = 0; i <= Y_STEPS; i++) {
+    const y = PAD_T + (chartH / Y_STEPS) * i;
+    html += `<line x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`;
+  }
+
+  // Y-axis labels: 5 at top, 0 at bottom
+  for (let i = 0; i <= Y_STEPS; i++) {
+    const val = Math.round((Y_MAX - (Y_MAX / Y_STEPS) * i) * 100) / 100;
+    const y = PAD_T + (chartH / Y_STEPS) * i;
+    html += `<text x="${PAD_L - 4}" y="${y + 3}" text-anchor="end" font-size="7" fill="#ffffff" font-family="inherit" opacity="0.85">${val.toFixed(1)}</text>`;
+  }
+  // kWh unit label (rotated)
+  html += `<text x="7" y="${PAD_T + chartH / 2}" text-anchor="middle" font-size="7" fill="#ffffff" font-family="inherit" opacity="0.85" transform="rotate(-90, 7, ${PAD_T + chartH / 2})">kWh</text>`;
+
+  for (let h = 0; h < hours; h++) {
+    const cx   = PAD_L + h * barGroupW + barGroupW / 2;
+    const past = h <= currentHour;
+    const alpha = past ? '1' : '0.3';
+
+    // Solar bar (left of pair, gold)
+    const sv = data.solar[h] || 0;
+    const sh = (Math.min(sv, Y_MAX) / Y_MAX) * chartH;
+    const sx = cx - barW - gap / 2;
+    const sy = PAD_T + chartH - sh;
+    if (sv > 0) {
+      html += `<rect x="${sx.toFixed(1)}" y="${sy.toFixed(1)}" width="${barW.toFixed(1)}" height="${sh.toFixed(1)}"
+        fill="rgba(255,215,0,${alpha})" rx="1.5"/>`;
+    }
+
+    // Consumption bar (right of pair, blue)
+    const pv = data.power[h] || 0;
+    const ph2 = (Math.min(pv, Y_MAX) / Y_MAX) * chartH;
+    const px = cx + gap / 2;
+    const py = PAD_T + chartH - ph2;
+    if (pv > 0) {
+      html += `<rect x="${px.toFixed(1)}" y="${py.toFixed(1)}" width="${barW.toFixed(1)}" height="${ph2.toFixed(1)}"
+        fill="rgba(96,165,250,${alpha})" rx="1.5"/>`;
+    }
+
+    // Current hour indicator
+    if (h === currentHour) {
+      html += `<line x1="${cx.toFixed(1)}" y1="${PAD_T}" x2="${cx.toFixed(1)}" y2="${PAD_T + chartH}"
+        stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="2,3"/>`;
+    }
+  }
+
+  html += '</svg>';
+  // Re-inject SVG (keeps id available for subsequent redraws)
+  const loading2 = container.querySelector('.sfs-chart-loading');
+  const existingSvg = container.querySelector('svg');
+  if (existingSvg) existingSvg.remove();
+  container.insertAdjacentHTML('afterbegin', html);
+  if (loading2) loading2.style.display = 'none';
+
+  // X axis labels: every 4 hours, 12AM through 12AM (7 labels: 0,4,8,12,16,20,24)
+  if (xax) {
+    const labels = [];
+    for (let h = 0; h <= 24; h += 4) {
+      const disp = h === 0 || h === 24 ? '12 AM' : h === 12 ? '12 PM' : h < 12 ? `${h} AM` : `${h - 12} PM`;
+      labels.push(disp);
+    }
+    xax.innerHTML = labels.map(l => `<span>${l}</span>`).join('');
+  }
 }
 
 function _wfsApplyBg(condition) {
@@ -6874,7 +7761,6 @@ function _wfsFetchForecast(unit, icons) {
 
   if (!_ws || !_wsReady) return;
   const msgId = _wsNextId();
-  const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]; // kept as fallback
   const handler = (evt) => {
     let msg;
     try { msg = JSON.parse(evt.data); } catch { return; }
@@ -7256,6 +8142,110 @@ function refreshNotifications() {
  *
  * @param {string} entity — the full HA entity_id (e.g. "input_boolean.vitamins_taken")
  */
+/* ─── ECHO TIMER BUBBLE ────────────────────────────────────────────────────
+ * refreshEchoTimers — reads each echo timer sensor from the state cache and
+ * renders live countdowns in the timer bubble bar.
+ *
+ * The HA Amazon Echo integration exposes next-timer as an ISO-8601 datetime
+ * string (e.g. "2024-03-15T14:30:00+00:00") in the sensor state. When no
+ * timer is active the state is "unavailable", "unknown", or "none".
+ *
+ * A local interval (_timerBubbleTick) ticks every second to update the
+ * countdown display without hammering HA. Started/stopped based on
+ * whether any timers are active.
+ * ─────────────────────────────────────────────────────────────────────── */
+let _timerBubbleTick = null;
+
+function _fmtCountdown(ms) {
+  if (ms <= 0) return "0:00";
+  const totalSec = Math.ceil(ms / 1000);
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function _getActiveTimers() {
+  const timers = (typeof CONFIG !== "undefined" && CONFIG.echoTimers) ? CONFIG.echoTimers : [];
+  const now = Date.now();
+  return timers.map(t => {
+    const d = haGetCached(t.entity);
+    if (!d || !d.state || ["unavailable","unknown","none",""].includes(d.state)) return null;
+
+    // Prefer triggerTime from sorted_all — it is an absolute epoch ms end timestamp
+    // set by the Echo when the timer was created, not a stale remainingTime snapshot.
+    let end = null;
+    const sortedAll = d.attributes?.sorted_all;
+    if (Array.isArray(sortedAll)) {
+      const active = sortedAll.find(item => item.status === "ON" && item.type === "Timer");
+      if (active && active.triggerTime) {
+        end = active.triggerTime;
+      }
+    }
+
+    // Fall back to the entity state, which HA sets to the same end timestamp as an ISO string.
+    if (!end || isNaN(end)) {
+      end = new Date(d.state).getTime();
+    }
+
+    if (isNaN(end) || end <= now) return null;
+    return { label: t.label, end: end };
+  }).filter(Boolean);
+}
+
+function refreshEchoTimers() {
+  const bar = document.getElementById("timer-bubble-bar");
+  if (!bar) return;
+  const active = _getActiveTimers();
+  if (active.length === 0) {
+    bar.classList.remove("visible");
+    bar.innerHTML = "";
+    if (_timerBubbleTick) { clearInterval(_timerBubbleTick); _timerBubbleTick = null; }
+    return;
+  }
+  if (!_timerBubbleTick) {
+    _timerBubbleTick = setInterval(_tickTimerBubble, 1000);
+  }
+  _renderTimerBubble(bar);
+}
+
+function _tickTimerBubble() {
+  const bar = document.getElementById("timer-bubble-bar");
+  if (!bar) return;
+  const active = _getActiveTimers();
+  if (active.length === 0) {
+    bar.classList.remove("visible");
+    bar.innerHTML = "";
+    clearInterval(_timerBubbleTick);
+    _timerBubbleTick = null;
+    return;
+  }
+  _renderTimerBubble(bar);
+}
+
+function _renderTimerBubble(bar) {
+  const active = _getActiveTimers();
+  if (!active.length) return;
+  const now = Date.now();
+  // Position the timer bubble: if notification bar is visible, stack below it; otherwise same tier
+  const notifBar = document.getElementById("notification-bar");
+  if (notifBar && notifBar.classList.contains("visible")) {
+    const notifH = notifBar.offsetHeight || 36;
+    bar.style.top = `calc(var(--top-bar-h, 115px) + ${8 + notifH + 6}px)`;
+  } else {
+    bar.style.top = "calc(var(--top-bar-h, 115px) + 8px)";
+  }
+  const timerIcon = `<svg class="timer-bubble-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9 3h6"/><path d="M12 3v2"/></svg>`;
+  bar.innerHTML = active.map((t, i) => {
+    const ms = t.end - now;
+    const urgent = ms < 60_000;
+    const sep = i < active.length - 1 ? '<span class="timer-bubble-sep">\u00b7</span>' : "";
+    return `<div class="timer-bubble-item">${timerIcon}<span class="timer-bubble-label">${escapeHtml(t.label)}</span><span class="timer-bubble-countdown${urgent ? " urgent" : ""}">${_fmtCountdown(ms)}</span></div>${sep}`;
+  }).join("");
+  bar.classList.add("visible");
+}
+
 async function dismissNotification(entity) {
   haptic("light");
   const domain = entity.split(".")[0];
@@ -9790,6 +10780,7 @@ function refreshAllUI() {
   refreshSensors();
   refreshWeather();
   refreshNotifications(); // always refresh — notification bar sits outside popup stack
+  refreshEchoTimers();     // always refresh — timer bubble sits outside popup stack
   const popupOpen = isPopupOpen();
   if (!popupOpen) {
     refreshControls();
@@ -9799,8 +10790,8 @@ function refreshAllUI() {
     refreshOpenAcCards();
   }
   refreshMusic();
-  // Keep overview 2 in sync whenever it has been opened at least once
-  if (_activeOverview === 1 && _ov2Built) _refreshOv2();
+  // Keep overview 2 in sync whenever it has been built (regardless of active screen)
+  if (_ov2Built) _refreshOv2();
 }
 
 /**
@@ -9952,6 +10943,10 @@ function init() {
     setTimeout(() => { openClock(); acGoToSlide(1); }, 300);
   } else if (_startupMode === "weather") {
     setTimeout(() => openWeatherFS(), 300);
+  } else if (_startupMode === "cameras") {
+    setTimeout(() => openCameras(), 300);
+  } else if (_startupMode === "solar") {
+    setTimeout(() => openSolarFS(), 300);
   }
 
   // Apply petName from CONFIG to the button label and popup title
@@ -9971,9 +10966,11 @@ function init() {
     { id: "daily-open-btn",      flag: "showDailyButton"       },
     { id: "photoframe-open-btn", flag: "showPhotoButton"       },
     { id: "thermostat-open-btn", flag: "showThermostatButton"  },
+    { id: "cameras-open-btn",    flag: "showCamerasButton"     },
     { id: "clock-open-btn",  flag: "showClockButton" },
     { id: "security-btn",        flag: "showSecurityButton"    },
     { id: "weather-fs-open-btn", flag: "showWeatherFSButton"   },
+    { id: "solar-fs-open-btn",   flag: "showSolarFSButton"     },
   ].forEach(({ id, flag }) => {
     if (CONFIG[flag] === false) {
       const el = document.getElementById(id);
@@ -10001,7 +10998,7 @@ function init() {
   setInterval(_tickMusicProgress, 1_000);
 
   // Overview 2: UI refresh (only does work when ov2 is active/built)
-  setInterval(() => { if (_activeOverview === 1 && _ov2Built) _refreshOv2(); }, 2_000);
+  setInterval(() => { if (_ov2Built) _refreshOv2(); }, 2_000);
 
   // Cache elements used by every resize handler — querySelector runs once here,
   // never again on each of the potentially many resize events.
@@ -10083,6 +11080,318 @@ const _pf = {
   progressTimer: null,
   elapsed:       0,
 };
+
+/* ── Cameras overlay ─────────────────────────────────────────────────────── */
+// All camera config comes from CONFIG.cameras — see config.js
+function _getCamEntities() {
+  return (typeof CONFIG !== "undefined" && Array.isArray(CONFIG.cameras))
+    ? CONFIG.cameras.filter(c => !c.hidden)
+    : [];
+}
+function _camRefreshMs() {
+  return ((typeof CONFIG !== "undefined" && CONFIG.cameraRefreshSeconds) || 3) * 1000;
+}
+
+let _camRefreshInterval  = null;
+let _camMotionInterval   = null;
+let _camFsIndex          = -1;
+let _camFullscreenInterval = null;
+
+// Fetch a single frame flicker-free via back-buffer pre-load.
+// A hidden Image() pre-loads the new frame completely before it is assigned
+// to the visible imgEl, so the displayed image is never blank between frames.
+function _camRefreshOne(entity, imgEl) {
+  if (!imgEl) return;
+  fetch(`${BASE}/api/camera_proxy/${entity}`, {
+    headers: { Authorization: `Bearer ${HA_TOKEN}` }
+  })
+  .then(r => r.ok ? r.blob() : Promise.reject(r.status))
+  .then(blob => {
+    const newUrl = URL.createObjectURL(blob);
+    const buf = new Image();
+    buf.onload = () => {
+      // Frame is fully decoded — now do the atomic src swap on the visible element
+      const oldUrl = imgEl.src;
+      imgEl.src = newUrl;
+      imgEl.classList.add("loaded");
+      // Revoke the old blob only after the browser has had a frame to paint the new one
+      setTimeout(() => {
+        if (oldUrl.startsWith("blob:")) URL.revokeObjectURL(oldUrl);
+      }, 100);
+    };
+    buf.onerror = () => URL.revokeObjectURL(newUrl);
+    buf.src = newUrl;
+  })
+  .catch(() => {}); // silently ignore network errors — keep showing last good frame
+}
+
+// Refresh all grid cells (skipped when fullscreen is open).
+// Cameras are staggered 150 ms apart to avoid simultaneous request bursts.
+function _camRefresh() {
+  if (_camFsIndex >= 0) return; // paused while fullscreen
+  _getCamEntities().forEach((cam, i) => {
+    setTimeout(() => {
+      _camRefreshOne(cam.entity, document.getElementById(`cam-img-${i}`));
+    }, i * 150);
+  });
+}
+
+// Poll motion sensors and update icon state + last-motion timestamp
+function _camMotionPoll() {
+  _getCamEntities().forEach((cam, i) => {
+    if (!cam.motionEntity) return;
+    const d    = haGetCached(cam.motionEntity);
+    const icon = document.getElementById(`cam-motion-${i}`);
+    if (icon) icon.classList.toggle("active", d?.state === "on");
+
+    // Update last-motion label
+    const lastEl = document.getElementById(`cam-last-motion-${i}`);
+    if (lastEl && d?.last_changed) {
+      const ago = _camMotionAgo(new Date(d.last_changed));
+      lastEl.textContent = d.state === "on" ? "Motion now" : (ago ? `${ago}` : "");
+    }
+  });
+}
+
+function _camMotionAgo(date) {
+  const secs = Math.floor((Date.now() - date) / 1000);
+  if (secs < 60)  return `${secs}s ago`;
+  if (secs < 3600) return `${Math.floor(secs / 60)}m ago`;
+  if (secs < 86400) return `${Math.floor(secs / 3600)}h ago`;
+  return `${Math.floor(secs / 86400)}d ago`;
+}
+
+// ── Fullscreen ──
+function openCamFullscreen(idx) {
+  const cams = _getCamEntities();
+  const cam  = cams[idx];
+  if (!cam) return;
+  const srcImg = document.getElementById(`cam-img-${idx}`);
+  if (!srcImg?.classList.contains("loaded")) return; // only if live
+  haptic("light");
+  _camFsIndex = idx;
+  const fsImg   = document.getElementById("cam-fullscreen-img");
+  const fsLabel = document.getElementById("cam-fullscreen-label");
+  fsImg.src           = srcImg.src;
+  fsImg.classList.add("loaded");
+  fsLabel.textContent = cam.label || cam.entity;
+  // Motion icon in fullscreen
+  const fsMicon = document.getElementById("cam-fs-motion-icon");
+  if (fsMicon) {
+    if (cam.motionEntity) {
+      fsMicon.style.display = "";
+      const d = haGetCached(cam.motionEntity);
+      fsMicon.classList.toggle("active", d?.state === "on");
+    } else {
+      fsMicon.style.display = "none";
+    }
+  }
+  document.getElementById("cam-fullscreen").classList.add("open");
+  _camFullscreenInterval = setInterval(() => {
+    _camRefreshOne(cam.entity, fsImg);
+    // Keep motion icon in sync
+    if (cam.motionEntity && fsMicon) {
+      const d = haGetCached(cam.motionEntity);
+      fsMicon.classList.toggle("active", d?.state === "on");
+    }
+  }, _camRefreshMs());
+}
+
+
+function closeCamFullscreen() {
+  clearInterval(_camFullscreenInterval);
+  _camFullscreenInterval = null;
+  _camFsIndex = -1;
+  const fs    = document.getElementById("cam-fullscreen");
+  const fsImg = document.getElementById("cam-fullscreen-img");
+  fs.classList.remove("open");
+  if (fsImg.src.startsWith("blob:")) URL.revokeObjectURL(fsImg.src);
+  fsImg.src = "";
+}
+
+// ── Open / Close ──
+function openCameras() {
+  haptic("light");
+  _closeLauncher();
+  _camLogOpen = false;
+  const logEl = document.getElementById("cam-motion-log");
+  if (logEl) logEl.classList.remove("open");
+  const logBtn = document.getElementById("cam-log-btn");
+  if (logBtn) logBtn.classList.remove("active");
+  const cams = _getCamEntities();
+  const grid = document.getElementById("cam-grid");
+  grid.innerHTML = cams.map((cam, i) => `
+    <div class="cam-cell" id="cam-cell-${i}" onclick="openCamFullscreen(${i})">
+      <img id="cam-img-${i}" src="" alt="" onload="this.classList.add('loaded')">
+      <div class="cam-cell-offline">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/><line x1="1" y1="1" x2="23" y2="23" stroke="currentColor"/></svg>
+        Offline
+      </div>
+      ${cam.motionEntity ? `<div class="cam-motion-icon" id="cam-motion-${i}"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="13" cy="3.5" r="1.8"/><path d="M9.5 8.5L7 21h2l1.5-6 2 3v6h2v-7l-2-3 .5-3.5L15 13h4v-2h-3.5l-2-4.5L9.5 8.5z"/><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>` : ''}
+      ${cam.motionEntity ? `<span class="cam-cell-last-motion" id="cam-last-motion-${i}"></span>` : ''}
+      <div class="cam-cell-label"><span>${cam.label || cam.entity}</span></div>
+    </div>`).join("");
+  const empty = 6 - cams.length;
+  for (let i = 0; i < empty; i++) grid.innerHTML += `<div class="cam-cell cam-cell-empty"></div>`;
+
+  document.body.classList.add("cam-open");
+  document.getElementById("cameras-overlay").classList.add("open");
+  _camRefresh();
+  _camRefreshInterval = setInterval(_camRefresh, _camRefreshMs());
+  _camMotionPoll();
+  _camMotionInterval  = setInterval(_camMotionPoll, 5000);
+}
+
+function closeCameras() {
+  haptic("light");
+  closeCamFullscreen();
+  clearInterval(_camRefreshInterval);
+  clearInterval(_camMotionInterval);
+  _camRefreshInterval = null;
+  _camMotionInterval  = null;
+  document.body.classList.remove("cam-open");
+  document.getElementById("cameras-overlay").classList.remove("open");
+  document.getElementById("cam-grid").innerHTML = "";
+  // also close log if open
+  const log = document.getElementById("cam-motion-log");
+  if (log) log.classList.remove("open");
+  const btn = document.getElementById("cam-log-btn");
+  if (btn) btn.classList.remove("active");
+  clearInterval(_camLogAutoRefresh);
+  _camLogAutoRefresh = null;
+  _camLogOpen = false;
+}
+
+/* ── Motion Log ──────────────────────────────────────────────────────────── */
+let _camLogOpen        = false;
+let _camLogFilter      = null;   // null = All, or a camera label string
+let _camLogAutoRefresh = null;
+
+function toggleCamMotionLog() {
+  _camLogOpen = !_camLogOpen;
+  const log = document.getElementById("cam-motion-log");
+  const btn = document.getElementById("cam-log-btn");
+  log.classList.toggle("open", _camLogOpen);
+  if (btn) btn.classList.toggle("active", _camLogOpen);
+  if (_camLogOpen) {
+    _camLogFilter = null;
+    _buildLogFilterChips();
+    _loadMotionLog();
+    _camLogAutoRefresh = setInterval(_loadMotionLog, 30_000);
+  } else {
+    clearInterval(_camLogAutoRefresh);
+    _camLogAutoRefresh = null;
+  }
+}
+
+function _buildLogFilterChips() {
+  const filtersEl = document.getElementById("cam-log-filters");
+  if (!filtersEl) return;
+  const cams = _getCamEntities();
+  if (cams.length <= 1) { filtersEl.innerHTML = ""; return; }
+
+  const chips = [{ label: "All", value: null }, ...cams.map(c => ({ label: c.label || c.entity, value: c.label || c.entity }))];
+  filtersEl.innerHTML = chips.map(c =>
+    `<div class="cam-log-filter-chip${_camLogFilter === c.value ? " active" : ""}" onclick="_setCamLogFilter(${c.value === null ? "null" : `'${c.value}'`})">${c.label}</div>`
+  ).join("");
+}
+
+function _setCamLogFilter(value) {
+  _camLogFilter = value;
+  _buildLogFilterChips();
+  _loadMotionLog();
+}
+
+async function _loadMotionLog() {
+  const scroll  = document.getElementById("cam-log-scroll");
+  const rangeEl = document.getElementById("cam-log-range");
+  if (!scroll) return;
+
+  // Only show spinner on first load (scroll is empty), not on auto-refresh
+  if (!scroll.children.length || scroll.querySelector(".cam-log-loading")) {
+    scroll.innerHTML = `<div class="cam-log-loading"><div class="cam-log-spinner"></div> Loading\u2026</div>`;
+  }
+
+  // Collect all motion entities from camera config
+  const cams = _getCamEntities().filter(c => c.motionEntity);
+  if (!cams.length) {
+    scroll.innerHTML = `<div class="cam-log-empty">No motion sensors configured.<br>Add a motionEntity to your cameras in config.js.</div>`;
+    return;
+  }
+
+  // Fetch last 24h from HA history API
+  const now   = new Date();
+  const start = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const entityIds = cams.map(c => c.motionEntity).join(",");
+
+  try {
+    const r = await fetch(
+      `${BASE}/api/history/period/${start.toISOString()}?filter_entity_id=${entityIds}&end_time=${now.toISOString()}&minimal_response`,
+      { headers: { Authorization: `Bearer ${HA_TOKEN}` } }
+    );
+    if (!r.ok) throw new Error(r.status);
+    const raw = await r.json();
+
+    // Build flat event list
+    const events = [];
+    (raw || []).forEach((entityHistory, idx) => {
+      if (!entityHistory || !entityHistory.length) return;
+      const cam   = cams[idx] || cams.find(c => entityHistory[0]?.entity_id === c.motionEntity);
+      const label = cam ? (cam.label || cam.motionEntity) : (entityHistory[0]?.entity_id || "");
+      entityHistory.forEach(entry => {
+        events.push({ time: new Date(entry.last_changed), state: entry.state, cam: label });
+      });
+    });
+
+    // Filter by selected camera, sort newest first, drop unavailable
+    const filtered = events
+      .filter(e => (e.state === "on" || e.state === "off") && (_camLogFilter === null || e.cam === _camLogFilter))
+      .sort((a, b) => b.time - a.time);
+
+    if (!filtered.length) {
+      scroll.innerHTML = `<div class="cam-log-empty">No motion events in the last 24 hours.</div>`;
+      if (rangeEl) rangeEl.textContent = "0 events · last 24 h";
+      return;
+    }
+
+    // Group by calendar day
+    const days    = {};
+    const fmt     = new Intl.DateTimeFormat(undefined, { weekday: "long", month: "short", day: "numeric" });
+    const timeFmt = new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit", hour12: false });
+    filtered.forEach(e => {
+      const key = e.time.toDateString();
+      if (!days[key]) days[key] = { label: fmt.format(e.time), events: [] };
+      days[key].events.push(e);
+    });
+
+    const todayKey = now.toDateString();
+    let html = "";
+    for (const [key, day] of Object.entries(days)) {
+      const dayLabel = key === todayKey ? "Today" : day.label;
+      html += `<div class="cam-log-day"><div class="cam-log-day-label">${dayLabel}</div>`;
+      day.events.forEach(e => {
+        const isOn = e.state === "on";
+        html += `<div class="cam-log-event">
+          <div class="cam-log-dot${isOn ? "" : " clear"}"></div>
+          <div class="cam-log-time">${timeFmt.format(e.time)}</div>
+          <div class="cam-log-cam">${e.cam}</div>
+          <div class="cam-log-state">${isOn ? "Detected" : "Cleared"}</div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    // Preserve scroll position on auto-refresh
+    const prevTop = scroll.scrollTop;
+    scroll.innerHTML = html;
+    scroll.scrollTop = prevTop;
+
+    if (rangeEl) rangeEl.textContent = `${filtered.length} event${filtered.length !== 1 ? "s" : ""} · last 24 h`;
+
+  } catch (err) {
+    scroll.innerHTML = `<div class="cam-log-empty">Could not load history.<br><span style="font-size:9px;opacity:0.5">${err}</span></div>`;
+  }
+}
 
 function openPhotoFrame() {
   haptic("light");
@@ -11499,12 +12808,17 @@ function renderHabits() {
   if (countEl) countEl.textContent = `${completed} / ${habits.length} completed`;
 }
 
-// Build grid on load, pull from HA (source of truth), then render; refresh every minute for midnight reset
+// Build grids on load, pull from HA (source of truth), then render;
+// refresh every minute for midnight reset
 document.addEventListener('DOMContentLoaded', () => {
   buildHabitGrid();
   renderHabits(); // render from localStorage immediately (fast)
   syncHabitsFromHA().then(() => renderHabits()); // then sync from HA and re-render
   setInterval(renderHabits, 60_000);
+
+  buildMoodGrid(); // renders from localStorage immediately
+  syncMoodFromHA().then(() => renderMood()); // then sync from HA and re-render
+  setInterval(renderMood, 60_000);
 });
 
 /* ─── END HABIT TRACKER ─────────────────────────────────────────────────── */
@@ -11552,12 +12866,6 @@ function renderMood() {
     labelEl.textContent = mood ? `Feeling ${mood.label.toLowerCase()} today` : "How are you feeling?";
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  buildMoodGrid(); // renders from localStorage immediately
-  syncMoodFromHA().then(() => renderMood()); // then sync from HA and re-render
-  setInterval(renderMood, 60_000);
-});
 
 /* ─── END MOOD TRACKER ──────────────────────────────────────────────────── */
 
@@ -11697,35 +13005,33 @@ function closeMoodHistory() {
   document.getElementById("mood-history-overlay")?.classList.remove("open");
 }
 
-// Close history panels with Escape key
-document.addEventListener('keydown', e => {
-  if (e.key !== 'Escape') return;
-  closeHabitHistory();
-  closeMoodHistory();
-});
-
 /* ─── END HISTORY PANELS ────────────────────────────────────────────────── */
 
 // Apply saved theme on load
 applyTheme(_activeTheme);
 
-// Escape key closes any open overlay — theme picker, popup, daily view,
-// now playing, photo frame, and media browser.
+// Escape key closes any open overlay — history panels, popup, daily view,
+// now playing, photo frame, media browser, and all fullscreen overlays.
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
+  // Close history panels
+  closeHabitHistory();
+  closeMoodHistory();
   // Close main popup if open
   const popup = document.getElementById("popup-overlay");
   if (popup?.classList.contains("open")) closePopup();
   // Close fullscreen overlays
   if (document.getElementById("daily-overlay")?.classList.contains("open"))       closeDailyView();
   if (document.getElementById("nowplaying-overlay")?.classList.contains("open"))  closeNowPlayingFS();
+  if (document.getElementById("cameras-overlay")?.classList.contains("open"))     closeCameras();
   if (document.getElementById("photoframe-overlay")?.classList.contains("open"))  closePhotoFrame();
-  if (document.getElementById("clock-overlay")?.classList.contains("open")) closeClock();
+  if (document.getElementById("clock-overlay")?.classList.contains("open"))       closeClock();
   if (document.getElementById("media-browser-overlay")?.classList.contains("open")) closeMediaBrowser();
-  if (document.getElementById("pet-overlay")?.classList.contains("open"))        closePetStats();
-  if (document.getElementById("security-overlay")?.classList.contains("open"))   closeSecurity();
-  if (document.getElementById("thermostat-overlay")?.classList.contains("open")) closeThermostat();
-  if (document.getElementById("weather-fs-overlay")?.classList.contains("open")) closeWeatherFS();
+  if (document.getElementById("pet-overlay")?.classList.contains("open"))         closePetStats();
+  if (document.getElementById("security-overlay")?.classList.contains("open"))    closeSecurity();
+  if (document.getElementById("thermostat-overlay")?.classList.contains("open"))  closeThermostat();
+  if (document.getElementById("weather-fs-overlay")?.classList.contains("open"))  closeWeatherFS();
+  if (document.getElementById("solar-fs-overlay")?.classList.contains("open"))    closeSolarFS();
 });
 
 /* ─── END THEME PICKER ─────────────────────────────────────────────────── */
@@ -11993,7 +13299,18 @@ function toggleModeLauncher() {
 
 function _openLauncher() {
   _modeLauncherOpen = true;
-  document.getElementById("mode-launcher-drawer")?.classList.add("open");
+  // Position the drawer so its 2 rows align with both topbar rows,
+  // anchored to the right edge of the toggle button
+  const drawer = document.getElementById("mode-launcher-drawer");
+  const toggle = document.getElementById("mode-launcher-toggle");
+  const topRight = document.querySelector(".top-right");
+  if (drawer && toggle && topRight) {
+    const toggleRect = toggle.getBoundingClientRect();
+    const topRect = topRight.getBoundingClientRect();
+    drawer.style.top  = topRect.top + "px";
+    drawer.style.right = (window.innerWidth - toggleRect.left + 8) + "px";
+  }
+  drawer?.classList.add("open");
   document.getElementById("mode-launcher-toggle")?.classList.add("open");
   // On first-ever open: stagger the labels in then fade them out after 2 s
   if (!_launcherSeen) {
@@ -12118,10 +13435,12 @@ function switchOverview(idx) {
   const MODE_OVERLAYS = [
     { id: "nowplaying-overlay",  close: () => closeNowPlayingFS() },
     { id: "daily-overlay",       close: () => closeDailyView()    },
+    { id: "cameras-overlay",     close: () => closeCameras()      },
     { id: "photoframe-overlay",  close: () => closePhotoFrame()   },
     { id: "thermostat-overlay",  close: () => closeThermostat()   },
     { id: "clock-overlay",       close: () => closeClock()        },
     { id: "weather-fs-overlay",  close: () => closeWeatherFS()    },
+    { id: "solar-fs-overlay",    close: () => closeSolarFS()      },
   ];
 
   // ── Hint arrow ──────────────────────────────────────────────────────────
@@ -12463,8 +13782,10 @@ const SETTINGS_DEFAULTS = {
   showDailyButton:     true,
   showPhotoButton:     true,
   showThermostatButton:true,
+  showCamerasButton:   true,
   showClockButton:true,
   showWeatherFSButton: true,
+  showSolarFSButton:   true,
   showPetButton:       true,
   showSecurityButton:  true,
   sensorPanels:        {},     // keyed by floor label → true/false
@@ -12547,8 +13868,10 @@ function applyAllSettings() {
     "daily-open-btn":      "showDailyButton",
     "photoframe-open-btn": "showPhotoButton",
     "thermostat-open-btn": "showThermostatButton",
+    "cameras-open-btn":    "showCamerasButton",
     "clock-open-btn": "showClockButton",
     "weather-fs-open-btn": "showWeatherFSButton",
+    "solar-fs-open-btn":   "showSolarFSButton",
     "pet-btn":             "showPetButton",
     "security-btn":        "showSecurityButton",
   };
@@ -12643,8 +13966,10 @@ function openSettings() {
   syncChk("st-myday",      _settings.showDailyButton);
   syncChk("st-memories",   _settings.showPhotoButton);
   syncChk("st-thermostat", _settings.showThermostatButton);
+  syncChk("st-cameras",   _settings.showCamerasButton);
   syncChk("st-clock-mode", _settings.showClockButton);
   syncChk("st-weather-fs", _settings.showWeatherFSButton);
+  syncChk("st-solar-fs",   _settings.showSolarFSButton);
   syncChk("st-pet",        _settings.showPetButton);
   syncChk("st-security",   _settings.showSecurityButton);
   const nameEl = document.getElementById("st-dashboard-name");
@@ -13003,7 +14328,7 @@ _applyDailyI18n();
     <div class="popup-title popup-title--spread mb-header">
       <div class="mb-header-left">
         <button class="mb-back-btn" id="mb-back-btn" onclick="mediaBrowserBack()" style="display:none">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
         <span id="mb-title">Browse Media</span>
       </div>
@@ -13283,6 +14608,45 @@ _applyDailyI18n();
 </div>
 
 <!-- ─── PHOTO FRAME OVERLAY ─── -->
+<div id="cameras-overlay">
+  <!-- Top bar: close + motion log toggle -->
+  <div id="cam-topbar">
+    <button class="cam-topbar-btn" id="cam-log-btn" onclick="toggleCamMotionLog()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Motion Log
+    </button>
+  </div>
+
+  <div id="cam-grid" class="cam-grid"></div>
+
+  <!-- Motion log slide-up panel -->
+  <div id="cam-motion-log">
+    <div class="cam-log-inner">
+      <div class="cam-log-header">
+        <div class="cam-log-title">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+          Motion Events
+        </div>
+        <div class="cam-log-range" id="cam-log-range">Last 24 hours</div>
+      </div>
+      <div class="cam-log-filters" id="cam-log-filters"></div>
+      <div class="cam-log-scroll" id="cam-log-scroll">
+        <div class="cam-log-loading"><div class="cam-log-spinner"></div> Loading…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="cam-fullscreen" onclick="closeCamFullscreen()">
+  <img id="cam-fullscreen-img" src="" alt="">
+  <div id="cam-fullscreen-info">
+    <div class="cam-motion-icon" id="cam-fs-motion-icon" style="display:none;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="13" cy="3.5" r="1.8"/><path d="M9.5 8.5L7 21h2l1.5-6 2 3v6h2v-7l-2-3 .5-3.5L15 13h4v-2h-3.5l-2-4.5L9.5 8.5z"/><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </div>
+    <div id="cam-fullscreen-label"></div>
+  </div>
+</div>
+
 <div id="photoframe-overlay">
   <!-- Single image display -->
   <img class="pf-img" id="pf-img" src="" alt="">
@@ -13497,7 +14861,7 @@ _applyDailyI18n();
     <div class="wfs-forecast">
       <div class="wfs-extra-cards" style="padding-top:0; padding-bottom:0; margin-bottom:1.2rem;">
         <div class="wfs-extra-card wfs-stats-card" style="flex-direction:row; align-items:stretch; gap:0; padding: 10px 14px; background:transparent; border:none;">
-          <div class="wfs-stat-row" style="flex:1; flex-direction:column; align-items:center; justify-content:center; border-bottom:none; border-right:1px solid var(--ac-25); padding: 0 10px; gap:4px;">
+          <div class="wfs-stat-row wfs-stat-col">
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="wfs-stat-row-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(180,220,255,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
               <div class="wfs-stat-row-label">Humidity</div>
@@ -13508,7 +14872,7 @@ _applyDailyI18n();
 
             </div>
           </div>
-          <div class="wfs-stat-row" style="flex:1; flex-direction:column; align-items:center; justify-content:center; border-bottom:none; border-right:1px solid var(--ac-25); padding: 0 10px; gap:4px;">
+          <div class="wfs-stat-row wfs-stat-col">
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="wfs-stat-row-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(180,220,255,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg></div>
               <div class="wfs-stat-row-label">Wind</div>
@@ -13519,7 +14883,7 @@ _applyDailyI18n();
 
             </div>
           </div>
-          <div class="wfs-stat-row" style="flex:1; flex-direction:column; align-items:center; justify-content:center; border-bottom:none; border-right:1px solid var(--ac-25); padding: 0 10px; gap:4px;">
+          <div class="wfs-stat-row wfs-stat-col">
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="wfs-stat-row-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(180,220,255,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
               <div class="wfs-stat-row-label">UV Index</div>
@@ -13530,7 +14894,7 @@ _applyDailyI18n();
 
             </div>
           </div>
-          <div class="wfs-stat-row" style="flex:1; flex-direction:column; align-items:center; justify-content:center; border-bottom:none; border-right:1px solid var(--ac-25); padding: 0 10px; gap:4px;">
+          <div class="wfs-stat-row wfs-stat-col">
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="wfs-stat-row-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(180,220,255,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
               <div class="wfs-stat-row-label">Pressure</div>
@@ -13541,7 +14905,7 @@ _applyDailyI18n();
 
             </div>
           </div>
-          <div class="wfs-stat-row" style="flex:1; flex-direction:column; align-items:center; justify-content:center; border-bottom:none; padding: 0 10px; gap:4px;">
+          <div class="wfs-stat-row wfs-stat-col">
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="wfs-stat-row-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(180,220,255,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15h4l4-12 4 17 4-12 2 7h4"/></svg></div>
               <div class="wfs-stat-row-label">Cloud</div>
@@ -13566,9 +14930,6 @@ _applyDailyI18n();
 <!-- ─── THERMOSTAT OVERLAY ─── -->
 <div id="thermostat-overlay">
   <div id="thermostat-overlay-tint"></div>
-
-  <div class="therm-header">
-  </div>
 
   <div class="therm-body">
     <!-- Room tabs (built by JS) -->
@@ -13811,6 +15172,13 @@ _applyDailyI18n();
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </span>
       </label>
+      <label class="startup-mode-option" onclick="applySetting('startupMode','memories')">
+        <input type="radio" name="startupMode" value="memories" id="sm-memories">
+        <span class="startup-mode-label">Memories</span>
+        <span class="startup-mode-check">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+      </label>
       <label class="startup-mode-option" onclick="applySetting('startupMode','myday')">
         <input type="radio" name="startupMode" value="myday" id="sm-myday">
         <span class="startup-mode-label">My Day</span>
@@ -13818,9 +15186,9 @@ _applyDailyI18n();
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </span>
       </label>
-      <label class="startup-mode-option" onclick="applySetting('startupMode','memories')">
-        <input type="radio" name="startupMode" value="memories" id="sm-memories">
-        <span class="startup-mode-label">Memories</span>
+      <label class="startup-mode-option" onclick="applySetting('startupMode','cameras')">
+        <input type="radio" name="startupMode" value="cameras" id="sm-cameras">
+        <span class="startup-mode-label">Cameras</span>
         <span class="startup-mode-check">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </span>
@@ -13849,6 +15217,13 @@ _applyDailyI18n();
       <label class="startup-mode-option" onclick="applySetting('startupMode','weather')">
         <input type="radio" name="startupMode" value="weather" id="sm-weather">
         <span class="startup-mode-label">Weather</span>
+        <span class="startup-mode-check">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+      </label>
+      <label class="startup-mode-option" onclick="applySetting('startupMode','solar')">
+        <input type="radio" name="startupMode" value="solar" id="sm-solar">
+        <span class="startup-mode-label">Solar</span>
         <span class="startup-mode-check">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </span>
@@ -14083,7 +15458,7 @@ _applyDailyI18n();
 
     <hr class="settings-divider">
     <div class="settings-section-title" onclick="toggleSettingsSection(this)">
-      TOP-RIGHT BUTTONS
+      TOP-RIGHT ELEMENTS
       <span class="settings-section-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
     </div>
     <div class="settings-section-body">
@@ -14096,12 +15471,16 @@ _applyDailyI18n();
       <label class="settings-toggle"><input type="checkbox" id="st-nowplaying" onchange="applySetting('showNowPlayingButton', this.checked)"><span class="settings-knob"></span></label>
     </div>
     <div class="settings-item settings-sub">
+      <span class="settings-label">Memories</span>
+      <label class="settings-toggle"><input type="checkbox" id="st-memories" onchange="applySetting('showPhotoButton', this.checked)"><span class="settings-knob"></span></label>
+    </div>
+    <div class="settings-item settings-sub">
       <span class="settings-label">My Day</span>
       <label class="settings-toggle"><input type="checkbox" id="st-myday" onchange="applySetting('showDailyButton', this.checked)"><span class="settings-knob"></span></label>
     </div>
     <div class="settings-item settings-sub">
-      <span class="settings-label">Memories</span>
-      <label class="settings-toggle"><input type="checkbox" id="st-memories" onchange="applySetting('showPhotoButton', this.checked)"><span class="settings-knob"></span></label>
+      <span class="settings-label">Cameras</span>
+      <label class="settings-toggle"><input type="checkbox" id="st-cameras" onchange="applySetting('showCamerasButton', this.checked)"><span class="settings-knob"></span></label>
     </div>
     <div class="settings-item settings-sub">
       <span class="settings-label">Thermostat</span>
@@ -14114,6 +15493,10 @@ _applyDailyI18n();
     <div class="settings-item settings-sub">
       <span class="settings-label">Weather</span>
       <label class="settings-toggle"><input type="checkbox" id="st-weather-fs" onchange="applySetting('showWeatherFSButton', this.checked)"><span class="settings-knob"></span></label>
+    </div>
+    <div class="settings-item settings-sub">
+      <span class="settings-label">Solar</span>
+      <label class="settings-toggle"><input type="checkbox" id="st-solar-fs" onchange="applySetting('showSolarFSButton', this.checked)"><span class="settings-knob"></span></label>
     </div>
     <div class="settings-item">
       <span class="settings-label">Pet Stats</span>
@@ -14159,6 +15542,204 @@ _applyDailyI18n();
     <div class="history-panel-body" id="habit-history-body">
       <div class="history-empty">Loading…</div>
     </div>
+  </div>
+</div>
+
+<!-- ── SOLAR FULLSCREEN OVERLAY ── -->
+<div id="solar-fs-overlay">
+  <div class="sfs-bg"></div>
+  <div class="sfs-grid"></div>
+
+  <button class="sfs-close" onclick="closeSolarFS()" title="Back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <div class="sfs-title">SOLAR ENERGY</div>
+
+  <div class="sfs-content">
+
+    <!-- Flow Diagram SVG -->
+    <div class="sfs-flow-wrap">
+      <svg class="sfs-flow-svg" viewBox="0 -20 700 310" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="sfs-glow-green" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="sfs-glow-yellow" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="sfs-glow-blue" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="sfs-glow-orange" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- ═══ FLOW LINES (background tracks) ═══ -->
+        <!-- Solar → Home (top center to right center) -->
+        <path id="sfs-path-solar-home" d="M350,87 L350,140 L530,140" class="sfs-flow-line" stroke="#ffd700"/>
+        <!-- Solar → Battery -->
+        <path id="sfs-path-solar-bat" d="M350,87 L350,140 L170,140" class="sfs-flow-line" stroke="#00dc64"/>
+        <!-- Solar → Grid export -->
+        <path id="sfs-path-solar-grid" d="M350,87 L350,213" class="sfs-flow-line" stroke="#f97316"/>
+        <!-- Battery → Home -->
+        <path id="sfs-path-bat-home" d="M170,140 L530,140" class="sfs-flow-line" stroke="#00dc64"/>
+        <!-- Grid → Home (import) -->
+        <path id="sfs-path-grid-home" d="M350,213 L530,213 L530,140" class="sfs-flow-line" stroke="#60a5fa"/>
+
+        <!-- ═══ ANIMATED FLOW DOTS ═══ -->
+        <!-- Solar → Home -->
+        <path d="M350,87 L350,140 L530,140" class="sfs-flow-dot sfs-dot-solar" stroke="#ffd700" id="sfs-ani-solar-home"/>
+        <path d="M350,87 L350,140 L530,140" class="sfs-flow-dot sfs-dot-solar-2" stroke="#ffd700" id="sfs-ani-solar-home-2"/>
+        <!-- Solar → Battery -->
+        <path d="M350,87 L350,140 L170,140" class="sfs-flow-dot sfs-dot-battery" stroke="#00dc64" id="sfs-ani-solar-bat"/>
+        <path d="M350,87 L350,140 L170,140" class="sfs-flow-dot sfs-dot-battery-2" stroke="#00dc64" id="sfs-ani-solar-bat-2"/>
+        <!-- Solar → Grid export -->
+        <path d="M350,87 L350,213" class="sfs-flow-dot sfs-dot-grid-exp" stroke="#f97316" id="sfs-ani-solar-grid"/>
+        <path d="M350,87 L350,213" class="sfs-flow-dot sfs-dot-grid-exp-2" stroke="#f97316" id="sfs-ani-solar-grid-2"/>
+        <!-- Home load dots -->
+        <path d="M350,140 L530,140" class="sfs-flow-dot sfs-dot-home" stroke="#ffffff" id="sfs-ani-home"/>
+        <path d="M350,140 L530,140" class="sfs-flow-dot sfs-dot-home-2" stroke="#ffffff" id="sfs-ani-home-2"/>
+
+        <!-- ═══ NODE: SOLAR PANELS (top center) ═══ -->
+        <g transform="translate(350,45)">
+          <!-- Glow aura -->
+          <circle r="56" fill="rgba(255,215,0,0.07)" filter="url(#sfs-glow-yellow)"/>
+          <!-- Hexagonal node bg -->
+          <circle r="52" fill="rgba(0,0,0,0.6)" stroke="rgba(255,215,0,0.5)" stroke-width="1.5"/>
+          <!-- Solar panel icon -->
+          <g fill="none" stroke="#ffd700" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+            <rect x="-13" y="-14" width="26" height="20" rx="2"/>
+            <line x1="-4" y1="-14" x2="-4" y2="6"/>
+            <line x1="4" y1="-14" x2="4" y2="6"/>
+            <line x1="-13" y1="-5" x2="13" y2="-5"/>
+            <line x1="-13" y1="2" x2="13" y2="2"/>
+            <line x1="0" y1="6" x2="0" y2="12"/>
+            <line x1="-6" y1="12" x2="6" y2="12"/>
+          </g>
+          <!-- Label -->
+          <text y="30" text-anchor="middle" font-size="8" letter-spacing="0.22em" fill="rgba(255,215,0,0.7)" font-family="inherit">SOLAR</text>
+          <!-- Value -->
+          <text id="sfs-node-solar-val" y="-26" text-anchor="middle" font-size="11" font-weight="500" fill="#ffd700" font-family="inherit">—</text>
+        </g>
+
+        <!-- ═══ NODE: BATTERY (left) ═══ -->
+        <g transform="translate(170,140)">
+          <circle r="52" fill="rgba(0,0,0,0.6)" stroke="rgba(0,220,100,0.45)" stroke-width="1.5"/>
+          <circle r="56" fill="rgba(0,220,100,0.05)" filter="url(#sfs-glow-green)"/>
+          <!-- Battery icon -->
+          <g fill="none" stroke="#00dc64" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+            <rect x="-12" y="-9" width="22" height="14" rx="2"/>
+            <line x1="10" y1="-4" x2="14" y2="-4"/>
+            <line x1="10" y1="1" x2="14" y2="1"/>
+            <!-- Charge fill (dynamic via JS) -->
+            <rect id="sfs-bat-fill" x="-10" y="-7" width="8" height="10" rx="1" fill="rgba(0,220,100,0.5)" stroke="none"/>
+          </g>
+          <text y="30" text-anchor="middle" font-size="8" letter-spacing="0.22em" fill="rgba(0,220,100,0.7)" font-family="inherit">BATTERY</text>
+          <text id="sfs-node-bat-val" y="-26" text-anchor="middle" font-size="11" font-weight="500" fill="#00dc64" font-family="inherit">—</text>
+        </g>
+
+        <!-- ═══ NODE: HOME (right) ═══ -->
+        <g transform="translate(530,140)">
+          <circle r="52" fill="rgba(0,0,0,0.6)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+          <!-- House icon -->
+          <g fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+            <polyline points="-13,2 0,-12 13,2"/>
+            <polyline points="-10,2 -10,13 10,13 10,2"/>
+            <rect x="-4" y="6" width="8" height="7" rx="1"/>
+          </g>
+          <text y="30" text-anchor="middle" font-size="8" letter-spacing="0.22em" fill="#ffffff" font-family="inherit">HOME</text>
+          <text id="sfs-node-home-val" y="-26" text-anchor="middle" font-size="11" font-weight="500" fill="#fff" font-family="inherit">—</text>
+        </g>
+
+        <!-- ═══ NODE: GRID (bottom center) ═══ -->
+        <g transform="translate(350,213)">
+          <circle r="52" fill="rgba(0,0,0,0.6)" stroke="rgba(249,115,22,0.45)" stroke-width="1.5"/>
+          <circle r="56" fill="rgba(249,115,22,0.05)" filter="url(#sfs-glow-orange)"/>
+          <!-- Grid / tower icon -->
+          <g fill="none" stroke="#f97316" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+            <line x1="0" y1="-13" x2="0" y2="10"/>
+            <line x1="-9" y1="-9" x2="9" y2="-9"/>
+            <line x1="-12" y1="-4" x2="12" y2="-4"/>
+            <line x1="-9" y1="1" x2="9" y2="1"/>
+            <line x1="-7" y1="10" x2="-3" y2="1"/>
+            <line x1="7" y1="10" x2="3" y2="1"/>
+            <line x1="-7" y1="10" x2="7" y2="10"/>
+          </g>
+          <text y="30" text-anchor="middle" font-size="8" letter-spacing="0.22em" fill="rgba(249,115,22,0.7)" font-family="inherit">GRID</text>
+          <text id="sfs-node-grid-val" y="-26" text-anchor="middle" font-size="11" font-weight="500" fill="#f97316" font-family="inherit">—</text>
+        </g>
+
+        <!-- ═══ FLOW LABELS ═══ -->
+        <text id="sfs-lbl-export" x="385" y="158" font-size="8" fill="rgba(249,115,22,0.6)" font-family="inherit" letter-spacing="0.1em">EXPORT</text>
+        <text id="sfs-lbl-charge" x="215" y="132" font-size="8" fill="rgba(0,220,100,0.6)" font-family="inherit" letter-spacing="0.1em">CHARGE</text>
+      </svg>
+    </div>
+
+    <!-- Stats row -->
+    <div class="sfs-stats-row">
+      <!-- Solar Production -->
+      <div class="sfs-stat-card">
+        <div class="sfs-stat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </div>
+        <div class="sfs-stat-value"><span id="sfs-stat-solar">—</span><span class="sfs-stat-unit"> kW</span></div>
+        <div class="sfs-stat-label">Production</div>
+      </div>
+      <!-- Home Consumption -->
+      <div class="sfs-stat-card">
+        <div class="sfs-stat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="sfs-stat-value"><span id="sfs-stat-home">—</span><span class="sfs-stat-unit"> kW</span></div>
+        <div class="sfs-stat-label">Consumption</div>
+      </div>
+      <!-- Grid Export -->
+      <div class="sfs-stat-card">
+        <div class="sfs-stat-icon" id="sfs-stat-export-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 8 22 12 18 16"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+        </div>
+        <div class="sfs-stat-value"><span id="sfs-stat-export">—</span><span class="sfs-stat-unit"> kW</span></div>
+        <div class="sfs-stat-label">Grid</div>
+      </div>
+      <!-- Battery -->
+      <div class="sfs-stat-card">
+        <div class="sfs-stat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00dc64" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="10" x2="23" y2="14"/><line x1="5" y1="9" x2="5" y2="15"/><line x1="9" y1="9" x2="9" y2="15"/><line x1="13" y1="9" x2="13" y2="15"/></svg>
+        </div>
+        <div class="sfs-stat-value"><span id="sfs-stat-battery">—</span><span class="sfs-stat-unit"> %</span></div>
+        <div class="sfs-stat-label">Battery</div>
+      </div>
+      <!-- Inverter Temp -->
+      <div class="sfs-stat-card">
+        <div class="sfs-stat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.6" stroke-linecap="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+        </div>
+        <div class="sfs-stat-value"><span id="sfs-stat-temp">—</span><span class="sfs-stat-unit"> °C</span></div>
+        <div class="sfs-stat-label">Inverter Temp</div>
+      </div>
+    </div>
+
+    <!-- Hourly chart -->
+    <div class="sfs-chart-row">
+      <div class="sfs-chart-header">
+        <span class="sfs-chart-title">HOURLY ENERGY</span>
+        <div class="sfs-chart-legend">
+          <span class="sfs-legend-dot" style="background:#ffd700"></span><span class="sfs-legend-lbl">Solar</span>
+          <span class="sfs-legend-dot" style="background:#60a5fa"></span><span class="sfs-legend-lbl">Consumption</span>
+        </div>
+      </div>
+      <div class="sfs-chart-area">
+        <svg id="sfs-hourly-svg" width="100%" height="100%" preserveAspectRatio="none"></svg>
+        <div id="sfs-chart-loading" class="sfs-chart-loading">Loading…</div>
+      </div>
+      <div id="sfs-chart-xaxis" class="sfs-chart-xaxis"></div>
+    </div>
+
   </div>
 </div>
 
