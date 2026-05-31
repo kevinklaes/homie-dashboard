@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- DASHBOARD VERSION — update this when releasing a new version -->
-<script>const DASHBOARD_VERSION = "3.5.1";</script>
+<script>const DASHBOARD_VERSION = "3.5.2";</script>
 <!--
   ╔══════════════════════════════════════════════════════════════════════════╗
   ║                             HOMIE  DASHBOARD                             ║
@@ -3334,8 +3334,7 @@
   .cam-grid {
     flex: 1;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    /* columns/rows injected at runtime by openCameras() */
     gap: 4px;
     padding: 4px 4px 52px;
     box-sizing: border-box;
@@ -7249,8 +7248,12 @@ function _sfsRefresh() {
     const s = cfg.sensors.find(x => x.type === type);
     if (!s) return null;
     const d = haGetCached(s.entity);
-    const v = d ? parseFloat(d.state) : null;
-    return (!v && v !== 0) || isNaN(v) ? null : v;
+    let v = d ? parseFloat(d.state) : null;
+    if ((!v && v !== 0) || isNaN(v)) return null;
+    // Auto-convert W → kW if the sensor reports in watts
+    const unit = d?.attributes?.unit_of_measurement;
+    if (unit === "W") v = v / 1000;
+    return v;
   }
 
   const solar = _val("solar");
@@ -7339,6 +7342,9 @@ async function _sfsRefreshChart(cfg) {
       if (!r.ok) return null;
       const raw = await r.json();
       if (!raw || !raw[0]) return null;
+      // Detect unit from the cached entity (attributes.unit_of_measurement)
+      const cachedEntity = haGetCached(entity);
+      const isWatts = cachedEntity?.attributes?.unit_of_measurement === "W";
       const buckets = {};
       for (const entry of raw[0]) {
         const v = parseFloat(entry.state);
@@ -7350,7 +7356,9 @@ async function _sfsRefreshChart(cfg) {
       }
       const result = [];
       for (let h = 0; h < 24; h++) {
-        result.push(buckets[h] ? buckets[h].sum / buckets[h].n : 0);
+        let avg = buckets[h] ? buckets[h].sum / buckets[h].n : 0;
+        if (isWatts) avg = avg / 1000; // convert W → kW
+        result.push(avg);
       }
       return result;
     } catch { return null; }
@@ -11245,8 +11253,35 @@ function openCameras() {
   if (logBtn) logBtn.classList.remove("active");
   const cams = _getCamEntities();
   const grid = document.getElementById("cam-grid");
-  grid.innerHTML = cams.map((cam, i) => `
-    <div class="cam-cell" id="cam-cell-${i}" onclick="openCamFullscreen(${i})">
+
+  // ── Dynamic grid layout based on camera count ──────────────────────────────
+  // Picks the most natural cols×rows arrangement and removes blank filler cells.
+  (function _applyGridLayout(n) {
+    let cols, rows;
+    if      (n <= 1) { cols = 1; rows = 1; }
+    else if (n === 2) { cols = 2; rows = 1; }
+    else if (n === 3) { cols = 2; rows = 2; }  // 2 side-by-side top, 1 full-width bottom
+    else if (n === 4) { cols = 2; rows = 2; }
+    else if (n <= 6)  { cols = 3; rows = 2; }
+    else if (n <= 9)  { cols = 3; rows = 3; }
+    else              { cols = 4; rows = Math.ceil(n / 4); }
+    grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    grid.style.gridTemplateRows    = `repeat(${rows}, 1fr)`;
+    grid._camCols = cols;
+  })(cams.length);
+
+  grid.innerHTML = cams.map((cam, i) => {
+    const cols = grid._camCols;
+    const n    = cams.length;
+    // For 3 cameras: last cell spans both columns to fill the bottom row
+    // For other counts: last cell spans remaining columns if the row is incomplete
+    const isLast = i === n - 1;
+    const remainder = n % cols;
+    const needsSpan = isLast && (n === 3 || (remainder !== 0 && n !== 4));
+    const spanCols  = n === 3 ? 2 : (cols - remainder + 1);
+    const spanStyle = needsSpan ? ` style="grid-column: span ${spanCols}"` : "";
+    return `
+    <div class="cam-cell" id="cam-cell-${i}" onclick="openCamFullscreen(${i})"${spanStyle}>
       <img id="cam-img-${i}" src="" alt="" onload="this.classList.add('loaded')">
       <div class="cam-cell-offline">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/><line x1="1" y1="1" x2="23" y2="23" stroke="currentColor"/></svg>
@@ -11255,9 +11290,9 @@ function openCameras() {
       ${cam.motionEntity ? `<div class="cam-motion-icon" id="cam-motion-${i}"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="13" cy="3.5" r="1.8"/><path d="M9.5 8.5L7 21h2l1.5-6 2 3v6h2v-7l-2-3 .5-3.5L15 13h4v-2h-3.5l-2-4.5L9.5 8.5z"/><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>` : ''}
       ${cam.motionEntity ? `<span class="cam-cell-last-motion" id="cam-last-motion-${i}"></span>` : ''}
       <div class="cam-cell-label"><span>${cam.label || cam.entity}</span></div>
-    </div>`).join("");
-  const empty = 6 - cams.length;
-  for (let i = 0; i < empty; i++) grid.innerHTML += `<div class="cam-cell cam-cell-empty"></div>`;
+    </div>`;
+  }).join("");
+  // No empty filler cells — the grid fills exactly the camera count.
 
   document.body.classList.add("cam-open");
   document.getElementById("cameras-overlay").classList.add("open");
