@@ -1,7 +1,9 @@
 <!DOCTYPE html>
+<!-- DASHBOARD VERSION — update this when releasing a new version -->
+<script>const DASHBOARD_VERSION = "3.5.1";</script>
 <!--
   ╔══════════════════════════════════════════════════════════════════════════╗
-  ║                        HOMIE  DASHBOARD v3.5.0                           ║
+  ║                             HOMIE  DASHBOARD                             ║
   ╠══════════════════════════════════════════════════════════════════════════╣
   ║  A custom Home Assistant dashboard designed for wall-mounted tablets.    ║
   ║                                                                          ║
@@ -3976,7 +3978,6 @@
     8%   { opacity: 0; }
     100% { opacity: 0; }
   }
-  /* Test weather buttons (dev only — toggle via JS) */
   /* Content layout */
   .wfs-content {
     position: relative;
@@ -5640,6 +5641,14 @@
     transition: color 0.2s, border-color 0.2s;
   }
   .settings-reset:hover { color: rgba(255,255,255,0.7); border-color: var(--ac-50); }
+  .settings-version {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: #fff;
+    text-transform: uppercase;
+  }
 
   /* ─── SOLAR FULLSCREEN OVERLAY ─────────────────────────────────────────── */
   #solar-fs-overlay {
@@ -6281,6 +6290,10 @@
 </div>
 
 
+<!-- ─── DASHBOARD VERSION ───────────────────────────────────────────────────
+     Update this when releasing a new version. This is the only place to change it.
+     ─────────────────────────────────────────────────────────────────────── -->
+
 <script>
 /* ── Meal, Habit & Scene Icons ──────────────────────────────────────────────
  * Defined before config.js loads so CONFIG can reference ICONS.* freely.
@@ -6790,6 +6803,11 @@ const WX_ICON_DEFAULT = `<svg width="32" height="32" viewBox="0 0 24 24" fill="n
 // Compass directions — shared by openWeatherPopup and _refreshWeatherFS.
 const WIND_DIRS = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
 
+// Last condition applied to _wfsApplyBg — prevents unnecessary DOM rebuilds
+// (and animation resets) when HA pushes state updates that haven't changed
+// the weather condition itself.
+let _wfsLastCondition = null;
+
 /**
  * refreshWeather — reads the weather entity from cache and updates
  * the icon, temperature, and description in the top-centre bar.
@@ -7195,6 +7213,7 @@ function openWeatherFS() {
 function closeWeatherFS() {
   haptic("light");
   _wfsOpen = false;
+  _wfsLastCondition = null; // force a full bg rebuild on next open
   document.getElementById("weather-fs-overlay").classList.remove("open");
 }
 
@@ -7477,6 +7496,12 @@ function _sfsDraw(data) {
 }
 
 function _wfsApplyBg(condition) {
+  // Only rebuild cloud/particle DOM when the condition actually changes.
+  // Without this, every HA state push resets CSS animations to frame 0,
+  // causing clouds/rain/snow/stars to flash or jump visibly.
+  if (condition === _wfsLastCondition) return;
+  _wfsLastCondition = condition;
+
   const bg        = document.getElementById("wfs-bg");
   const rain      = document.getElementById("wfs-rain-wrap");
   const snow      = document.getElementById("wfs-snow-wrap");
@@ -12811,6 +12836,10 @@ function renderHabits() {
 // Build grids on load, pull from HA (source of truth), then render;
 // refresh every minute for midnight reset
 document.addEventListener('DOMContentLoaded', () => {
+  // Populate version from the single DASHBOARD_VERSION constant
+  const vEl = document.getElementById("settings-version-num");
+  if (vEl) vEl.textContent = DASHBOARD_VERSION;
+
   buildHabitGrid();
   renderHabits(); // render from localStorage immediately (fast)
   syncHabitsFromHA().then(() => renderHabits()); // then sync from HA and re-render
@@ -15519,6 +15548,7 @@ _applyDailyI18n();
 
     <div class="settings-footer">
       <button class="settings-reset" onclick="resetSettings()">Reset to defaults</button>
+      <div class="settings-version">Homie Dashboard v<span id="settings-version-num"></span></div>
     </div>
   </div>
 </div>
