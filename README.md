@@ -1,5 +1,8 @@
 # **Homie Dashboard**
-![Home Assistant](https://img.shields.io/badge/Home%20Assistant-compatible-41BDF5?logo=home-assistant&logoColor=white)
+
+![Release](https://img.shields.io/github/v/release/Big-Edge2297/homie-dashboard?style=for-the-badge) ![Downloads](https://img.shields.io/github/downloads/Big-Edge2297/homie-dashboard/total?style=for-the-badge) ![Latest Release Downloads](https://img.shields.io/github/downloads/Big-Edge2297/homie-dashboard/latest/total?style=for-the-badge) ![Commit Activity](https://img.shields.io/github/commit-activity/w/Big-Edge2297/homie-dashboard?style=for-the-badge)
+
+[![Home Assistant](https://img.shields.io/badge/Home%20Assistant-Dashboard-41BDF5?style=for-the-badge&logo=homeassistant&logoColor=white)](https://www.home-assistant.io/) [![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://hacs.xyz/)
 
 A custom Home Assistant dashboard built for wall-mounted tablets. 
 
