@@ -4,14 +4,36 @@
 
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-Dashboard-41BDF5?style=for-the-badge&logo=homeassistant&logoColor=white)](https://www.home-assistant.io/) [![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://hacs.xyz/) [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
-A custom Home Assistant dashboard built for wall-mounted tablets. 
+Homie Dashboard is a touch-first Home Assistant dashboard designed for wall-mounted tablets.
 
-I created this dashboard with the design philosophy of a single page overview for accessing the most important functions and controls of my house easily. It gives the flexibility to be used in different dashboard modes (Overview, Music player, Calendar, Photo frame, Thermostat, Clock, Weather, Cameras, Solar)
+It provides a customizable overview of your home while supporting dedicated dashboard modes for music, calendars, weather, photos, thermostats, cameras, clocks, and solar monitoring.
 
-Homie connects directly to Home Assistant over a Long-Lived Access Token and a local WebSocket connection which results in automatic caching.
+Homie Dashboard is designed for:
+✅ Wall-mounted tablets
+✅ Dedicated Home Assistant displays
+✅ Touch-first interfaces
 
-[HACS Setup](https://github.com/Big-Edge2297/homie-dashboard/blob/main/README.md#get-started-with-hacs-integation) · [Security](https://github.com/Big-Edge2297/homie-dashboard/blob/main/README.md#security) · [New Features](https://github.com/Big-Edge2297/homie-dashboard/blob/main/README.md#new-features-summary-per-version)
+Not designed for:
+❌ Phones
+❌ Desktop browsers as primary usage
+❌ Small screens
 
+[Screenshots](https://github.com/Big-Edge2297/homie-dashboard/blob/main/README.md#Screenshots) · [Installation](https://github.com/Big-Edge2297/homie-dashboard/blob/main/README.md#Installation) · [Security](https://github.com/Big-Edge2297/homie-dashboard/blob/main/README.md#security) · [Release Highlights](https://github.com/Big-Edge2297/homie-dashboard/blob/main/README.md#Release-Highlights)
+
+## Quick Start
+
+### HACS
+1. Add the repository to HACS
+2. Download Homie Dashboard
+3. Register the resource
+4. Create the dashboard
+5. Configure config.js
+
+### Standalone
+1. Copy homie-dashboard.html and config.js to config/www
+2. Configure config.js
+3. Open:
+http://YOUR_HA_IP:8123/local/homie-dashboard.html
 
 ## Screenshots
 
@@ -80,9 +102,12 @@ Homie connects directly to Home Assistant over a Long-Lived Access Token and a l
 | <img src="https://github.com/user-attachments/assets/9decdabc-1f36-4a4d-ac34-80860b4b6020" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/2b8ba98d-a56d-4516-9cd6-a1a2af7cc68c" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/7b7f9b44-41a2-4544-bab2-6903d8dbd505" width="320" height="200"/> |
 
 ---
-## Get Started with HACS Integation (Option A)
+## Installation
 
-⚠️ Save/Backup your config.js file in Step 6 after you make your changes! Every time you download a new release, the config file will be overwritten and you will lose your changes. ⚠️
+<details>
+<summary>HACS Installation</summary>
+
+⚠️ **Warning:** Keep a backup of `config.js`. HACS updates will overwrite the file.
 
 ### Step 1: Add the Custom Repository in HACS
 1. In your Home Assistant sidebar, click on HACS.
@@ -127,7 +152,7 @@ Result: You will now see a Homie Dashboard tab in your left sidebar. Clicking it
 
 ### Step 5: Configure Your config.js File
 5A. Generate an Access Token
-1. Click your username in the bottom-left sidebar to open your Profile
+1. Click your profile in the lower-left corner
 2. Go to Security at the top of the page
 3. Scroll to the bottom of the Profile page to Long-Lived Access Tokens
 4. Click Create Token
@@ -138,28 +163,33 @@ Result: You will now see a Homie Dashboard tab in your left sidebar. Clicking it
 5B. Set Up the Configuration File
 Navigate to your Home Assistant folder: config/www/community/homie-dashboard/
 1. Look for a file named config.js.
-2. Edit the config.js file (create a backup file before each change in case you mess up something).
+2. Edit the config.js file (create a backup before making changes in case you mess up something).
 3. Paste your Long-Lived Access Token into the token field and update the server URL configuration to match your Home Assistant IP address.
 4. Follow the config.js file documentation to make changes to the entity names and save the file
 5. DELETE THE FILE config.js.gz. This is something that HACS serves and it's causing issues, more info [here](https://www.hacs.xyz/docs/use/repositories/type/dashboard/#custom-features-for-files-stored-under-hacsfiles) 
 6. Refresh your Homie Dashboard sidebar page, and it will connect directly to your Home Assistant entities!
 
-⚠️ Save/Backup your config.js file! Every time you download a new release, the config file will be overwritten and you will lose your changes. ⚠️  
-
 Remember to clear the cache/hard refresh so the new file changes apply in the browser. On a tablet you will need to clear the Home Assistant companion app cache, in the app storage settings. Do not clear storage, only cache.
+
+</details>
 
 ---
 
-Standalone Setup without HACS (Option B)
+<details>
+<summary>Standalone Installation (without HACS)</summary>
+   
 1. Copy homie-dashboard.html and config.js into your HA config/www/ folder
 2. Access it in a browser at http://YOUR_HA_IP:8123/local/homie-dashboard.html or create a dashboard in HA like in Step 4 above with but use /local/homie-dashboard.html
 3. Follow step 5 to configure your config.js file
+
+</details>
 
 ---
 
 ## Security
 
-⚠️ The HA Long-Lived Access Token is stored in plain text inside the config.js file. Anyone who can read the file has full access to your Home Assistant instance.
+> [!WARNING]
+> The HA Long-Lived Access Token is stored in plain text inside the config.js file. Anyone who can read the file has full access to your Home Assistant instance.
 
 > DON'T BE like the guy in Massachusetts that has a room named Jason's room - if you have been on Reddit long enough, you will get the joke :)
 
@@ -171,8 +201,11 @@ Standalone Setup without HACS (Option B)
 
 ---
 
-## New Features Summary per version
+## Release Highlights
 
+<details>
+<summary>View version history</summary>
+   
 New in v3.5.0
 - Countdown Timers from Amazon Alexa integration or other HA integrations
 - Camera Dashboard
@@ -200,7 +233,7 @@ New in v3.0.0
 - Habit and Mood history for up to 30 days
 - Volume Control in Music Players
 - Themed Background based on theme selection
-- Bloom Intensiy for brighter/darker background
+- Bloom Intensity for brighter/darker background
 - Greeting and dashboard name personalization
 - Weather popup in the main overview screens
 - Language selection
@@ -232,5 +265,7 @@ First Release v1.0.0
 - Notifications/Reminders
 - Music playback and controls
 - Haptic Feedback on supported Android devices
+  
+</details>
 
 More information for the Homie Dashboard Elements can be found [homie-dashboard-elements](https://github.com/Big-Edge2297/homie-dashboard/blob/main/docs/homie-dashboard-elements.md)
