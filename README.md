@@ -1,6 +1,6 @@
 # **Homie Dashboard**
 
-![Release](https://img.shields.io/github/v/release/Big-Edge2297/homie-dashboard?style=for-the-badge) ![Downloads](https://img.shields.io/github/downloads/Big-Edge2297/homie-dashboard/total?style=for-the-badge) ![Latest Release Downloads](https://img.shields.io/github/downloads/Big-Edge2297/homie-dashboard/latest/total?style=for-the-badge) ![Commit Activity](https://img.shields.io/github/commit-activity/w/Big-Edge2297/homie-dashboard?style=for-the-badge)
+![Release](https://img.shields.io/github/v/release/Big-Edge2297/homie-dashboard?style=for-the-badge) ![Downloads](https://img.shields.io/github/downloads/Big-Edge2297/homie-dashboard/total?style=for-the-badge) ![Latest Release Downloads](https://img.shields.io/github/downloads/Big-Edge2297/homie-dashboard/latest/total?style=for-the-badge)
 
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-Dashboard-41BDF5?style=for-the-badge&logo=homeassistant&logoColor=white)](https://www.home-assistant.io/) [![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://hacs.xyz/) [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
@@ -209,6 +209,7 @@ Remember to clear the cache/hard refresh so the new file changes apply in the br
 New in v3.6.0
 - Time of Day Theme - Apply different themes based on time of day
 - Waze travel notification customizable for selected days/times
+- Gestures settings for scroll from the top, scroll from the bottom and pinch to exit the dashboard back to the overview screen
 - More stats in the Solar dashboard
    
 New in v3.5.0
