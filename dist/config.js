@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
- * HOMIE DASHBOARD CONFIGURATION v3.5.2
+ * HOMIE DASHBOARD CONFIGURATION v3.6.0
  * ═══════════════════════════════════════════════════════════════════════════
  * This is the main configuration file. Edit the sections below to customise the dashboard for your home.
  * Both homie-dashboard.html and config.js must be in the same folder.
@@ -57,27 +57,37 @@ const CONFIG = {
 
   /* ── WELCOME GREETING ────────────────────────────────────────────────────
    * Automatically changes based on the time of day.
-   * You can adjust the hour ranges below to suit your schedule.
-   * ──────────────────────────────────────────────────────────────────── */
+   * Edit `from` (inclusive) for each slot to match your schedule.
+   * Slots are evaluated in order — the first match wins.
+   * The last slot acts as the fallback (its `from` is ignored).
+        * ──────────────────────────────────────────────────────────────────── */
+  greetingSlots: [
+    { slot: 'morning',   from:  5, label: 'GOOD MORNING'   },
+    { slot: 'afternoon', from: 12, label: 'GOOD AFTERNOON' },
+    { slot: 'evening',   from: 18, label: 'GOOD EVENING'   },
+    { slot: 'night',     from: 22, label: 'GOOD NIGHT'     },
+  ],
+
   get welcomeText() {
     const h = new Date().getHours();
-    if (h >= 5 && h < 12)  return "GOOD MORNING";
-    if (h >= 12 && h < 18) return "GOOD AFTERNOON";
-    if (h >= 18 && h < 22) return "GOOD EVENING";
-    return "GOOD NIGHT";
+    const slots = this.greetingSlots;
+    for (let i = slots.length - 1; i >= 0; i--) {
+      if (h >= slots[i].from) return slots[i].label;
+    }
+    return slots[slots.length - 1].label;
   },
 
   /* ── SERVER CONNECTION ───────────────────────────────────────────────────
    * References the constants defined above. Do not edit here — edit
    * WS_URL and ALARM_ENTITY at the top of this file instead.
-   * ──────────────────────────────────────────────────────────────────── */
+        * ──────────────────────────────────────────────────────────────────── */
   wsUrl:       WS_URL,
   alarmEntity: ALARM_ENTITY,
 
   /* ── WEATHER ─────────────────────────────────────────────────────────────
    * HA weather entity shown at the top-centre of the dashboard.
    * Change tempUnit to "°F" if you prefer Fahrenheit.
-   * ──────────────────────────────────────────────────────────────────── */
+        * ──────────────────────────────────────────────────────────────────── */
   weather: {
     entity: "YOUR_WEATHER_ENTITY",
     tempUnit: "°C",
@@ -90,7 +100,7 @@ const CONFIG = {
    * HA → Developer Tools → States and search for "sun".
    *
    * timezone — IANA timezone string (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
-   * ──────────────────────────────────────────────────────────────────── */
+        * ──────────────────────────────────────────────────────────────────── */
   sun: {
     sunrise: "YOUR_SUNRISE_ENTITY",   // check HA → Developer Tools → States if unsure
     sunset:  "YOUR_SUNSET_ENTITY",
@@ -100,7 +110,7 @@ const CONFIG = {
   /* ── AIR QUALITY INDEX ───────────────────────────────────────────────────
    * Sensor entity for the AQI ring card in the weather screen.
    * You can use worlds-air-quality-index from HACS.
-   * ──────────────────────────────────────────────────────────────────── */
+        * ──────────────────────────────────────────────────────────────────── */
   aqi: {
     entity: "YOUR_AQI_ENTITY",
     pm25:   "YOUR_AQI_PM25_ENTITY",
@@ -120,7 +130,7 @@ const CONFIG = {
      *   label — short name shown inside the AQI ring (e.g. "Good").
      *   text  — longer description shown below the ring.
      *   color — hex colour used for the label text and the lit ring dots.
-     * ──────────────────────────────────────────────────────────────────── */
+             * ──────────────────────────────────────────────────────────────────── */
     bands: [
       { max:  50, label: "Good",                            color: "#4caf8a", text: "The air is in standard level and is healthy for everyone." },
       { max: 100, label: "Moderate",                        color: "#f0c040", text: "Air quality is acceptable; some pollutants may affect sensitive groups." },
@@ -134,7 +144,7 @@ const CONFIG = {
   /* ── MOON PHASE ──────────────────────────────────────────────────────────
    * Sensor entity for the moon phase display in the weather screen.
    * You can use the moon integration from HA.
-   * ──────────────────────────────────────────────────────────────────── */
+        * ──────────────────────────────────────────────────────────────────── */
   moon: {
     entity: "YOUR_MOON_PHASE_ENTITY",
   },
@@ -148,7 +158,7 @@ const CONFIG = {
    *   cover.* / binary_sensor.* — "on" triggers on "open" or "opening" state.
    *
    * If a stat shows "—", verify the entity ID at HA → Developer Tools → States.
-   * ──────────────────────────────────────────────────────────────────── */
+        * ──────────────────────────────────────────────────────────────────── */
   homeStats: [
     { label: "Doors",       entity: "YOUR_ALL_DOORS_ENTITY",            onValue: "Open",     offValue: "Closed" },
     { label: "Windows",     entity: "YOUR_ALL_WINDOWS_ENTITY",          onValue: "Open",     offValue: "Closed" },
@@ -156,10 +166,10 @@ const CONFIG = {
     { label: "Cameras",     entity: "YOUR_CAMERA_PRIVACY_ENTITY",       onValue: "Off",      offValue: "Active" },
     { label: "Motion",      entity: "YOUR_ALL_MOTION_SENSORS_ENTITY",   onValue: "Detected", offValue: "Clear" },
     { label: "Lights",      entity: "YOUR_ALL_LIGHTS_ENTITY",           onValue: "On",       offValue: "Off" },
-    { label: "Air Con",     entity: "YOUR_ALL_AC_GROUP_ENTITY",         onValue: "On",       offValue: "Off" },
+    { label: "Air Con",     entity: "YOUR_ALL_AC_UNITS_ENTITY",         onValue: "On",       offValue: "Off" },
     { label: "Purifiers",   entity: "YOUR_ALL_PURIFIERS_ENTITY",        onValue: "On",       offValue: "Off" },
     { label: "W. Heater",   entity: "YOUR_WATER_HEATER_ENTITY",         onValue: "On",       offValue: "Off" },
-    { label: "T. Warmer",   entity: "YOUR_TOWEL_WARMER_ENTITY",         onValue: "On",       offValue: "Off" },
+    { label: "T. Warmer",   entity: "YOUR_ALL_TOWEL_WARMERS_ENTITY",    onValue: "On",       offValue: "Off" },
   ],
 
   /* ── SENSOR ROW ──────────────────────────────────────────────────────────
@@ -171,42 +181,64 @@ const CONFIG = {
     {
       label: "First Floor",
       sensors: [
-        { type: "temp",     entity: "YOUR_FIRST_FLOOR_TEMP_ENTITY",     unit: "°C",    decimal: true },
-        { type: "humidity", entity: "YOUR_FIRST_FLOOR_HUMIDITY_ENTITY", unit: "%"                    },
-        { type: "pm25",     entity: "YOUR_FIRST_FLOOR_PM25_ENTITY",     unit: "μg/m³"                },
+        { type: "temp",     entity: "YOUR_FLOOR1_TEMP_ENTITY",     unit: "°C",    decimal: true },
+        { type: "humidity", entity: "YOUR_FLOOR1_HUMIDITY_ENTITY", unit: "%"                    },
+        { type: "pm25",     entity: "YOUR_FLOOR1_PM25_ENTITY",     unit: "μg/m³"                },
       ],
     },
     {
       label: "Second Floor",
       sensors: [
-        { type: "temp",     entity: "YOUR_SECOND_FLOOR_TEMP_ENTITY",     unit: "°C", decimal: true },
-        { type: "humidity", entity: "YOUR_SECOND_FLOOR_HUMIDITY_ENTITY", unit: "%"                 },
-        { type: "pm25",     entity: "YOUR_SECOND_FLOOR_PM25_ENTITY",     unit: "μg/m³"             },
+        { type: "temp",     entity: "YOUR_FLOOR2_TEMP_ENTITY",     unit: "°C", decimal: true },
+        { type: "humidity", entity: "YOUR_FLOOR2_HUMIDITY_ENTITY", unit: "%"                 },
+        { type: "pm25",     entity: "YOUR_FLOOR2_PM25_ENTITY",     unit: "μg/m³"             },
       ],
     },
     {
       label: "Solar",
-      sensors: [
-        { type: "solar",      entity: "YOUR_SOLAR_PRODUCTION_ENTITY", unit: "kW", decimal: true },
-        { type: "power",      entity: "YOUR_POWER_SENSOR_ENTITY",     unit: "kW", decimal: true },
-        { type: "export",     entity: "YOUR_SOLAR_EXPORT_ENTITY",     unit: "kW", decimal: true },
-        { type: "battery",    entity: "YOUR_BATTERY_SOC_ENTITY",      unit: "%"                 },
-        { type: "solar-temp", entity: "YOUR_INVERTER_TEMP_ENTITY",    unit: "°C", decimal: true },
-      ],
+      get sensors() { return CONFIG.solar.sensorRow; },
     },
   ],
+
+  /* ── SOLAR DASHBOARD ─────────────────────────────────────────────────────
+   * All entities used by the Solar fullscreen dashboard.
+   * sensorRow   — shown in the floor sensor strip (keep this lean).
+   * stats        — drives the two stat rows inside the solar dashboard.
+   *   The first 5 types (solar, power, export, battery, solar-temp) feed the
+   *   bottom stat row. The remaining 4 feed the top consumption/cost row.
+   * ──────────────────────────────────────────────────────────────────────── */
+  solar: {
+    sensorRow: [
+      { type: "solar",      entity: "YOUR_SOLAR_PRODUCTION_KW_ENTITY",    unit: "kW", decimal: true },
+      { type: "power",      entity: "YOUR_TODAYS_ENERGY_KW_ENTITY",       unit: "kW", decimal: true },
+      { type: "export",     entity: "YOUR_SOLAR_EXPORT_KW_ENTITY",        unit: "kW", decimal: true },
+      { type: "battery",    entity: "YOUR_BATTERY_SOC_ENTITY",            unit: "%"                 },
+      { type: "solar-temp", entity: "YOUR_INVERTER_TEMP_ENTITY",          unit: "°C", decimal: true },
+    ],
+    stats: [
+      { type: "solar",            entity: "YOUR_SOLAR_PRODUCTION_KW_ENTITY",    unit: "kW",  decimal: true  },
+      { type: "power",            entity: "YOUR_TODAYS_ENERGY_KW_ENTITY",       unit: "kW",  decimal: true  },
+      { type: "export",           entity: "YOUR_SOLAR_EXPORT_KW_ENTITY",        unit: "kW",  decimal: true  },
+      { type: "battery",          entity: "YOUR_BATTERY_SOC_ENTITY",            unit: "%",   decimal: false },
+      { type: "solar-temp",       entity: "YOUR_INVERTER_TEMP_ENTITY",          unit: "°C",  decimal: true  },
+      { type: "live-consumption", entity: "YOUR_TODAYS_ENERGY_W_ENTITY",        unit: "W",   decimal: false },
+      { type: "monthly-kwh",      entity: "YOUR_MONTHLY_ENERGY_KWH_ENTITY",     unit: "kWh", decimal: true  },
+      { type: "today-cost",       entity: "YOUR_TODAYS_ENERGY_COST_ENTITY",     unit: "€",   decimal: true  },
+      { type: "monthly-cost",     entity: "YOUR_MONTHLY_ENERGY_COST_ENTITY",    unit: "€",   decimal: true  },
+    ],
+  },
 
   /* ── MUSIC PLAYERS ───────────────────────────────────────────────────────
    * Each entry: entity (required), label (optional; derived from entity ID if omitted).
    * The dashboard shows whichever player is currently active. Tap the source
    * pill to cycle through multiple active players.
-   * ──────────────────────────────────────────────────────────────────── */
+        * ──────────────────────────────────────────────────────────────────── */
   musicPlayers: [
-    { entity: "YOUR_PRIMARY_MEDIA_PLAYER_ENTITY",    label: "Spotify" },
-    // { entity: "YOUR_SECONDARY_MEDIA_PLAYER_ENTITY",  label: "Echo"    },
-    // { entity: "YOUR_THIRD_MEDIA_PLAYER_ENTITY",      label: "Sonos"   },
-    // { entity: "media_player.apple_tv",               label: "Apple TV" },
-    // { entity: "media_player.music_assistant",        label: "MA"       },
+    { entity: "YOUR_SPOTIFY_PLAYER_ENTITY",  label: "Spotify" },
+    { entity: "YOUR_ECHO_PLAYER_ENTITY",     label: "Echo"    },
+    { entity: "YOUR_SONOS_PLAYER_ENTITY",    label: "Sonos"   },
+    // { entity: "media_player.apple_tv",    label: "Apple TV" },
+    // { entity: "media_player.music_assistant", label: "MA"   },
   ],
 
   /* musicHideDelay — ms the Now Playing bar stays visible after music stops.
@@ -236,14 +268,9 @@ const CONFIG = {
    * Add as many as you like.
    * ──────────────────────────────────────────────────────────────────── */
   notifications: [
-    { label: "Pet Maintenance",                     entity: "YOUR_PET_MAINTENANCE_ENTITY" },
-    { label: "Car Maintenance",                     entity: "YOUR_CAR_MAINTENANCE_ENTITY" },
-    { label: "Home Maintenance",                    entity: "YOUR_HOME_MAINTENANCE_ENTITY" },
-    { label: "Personal Maintenance",                entity: "YOUR_PERSONAL_MAINTENANCE_ENTITY" },
-    { label: "Take Your Vitamins",                  entity: "YOUR_VITAMINS_ENTITY" },
-    { label: "Litter Box Needs Cleaning",           entity: "YOUR_LITTER_BOX_CLEAN_ENTITY" },
-    { label: "Pet Food/Water Problem",              entity: "YOUR_PET_FOOD_WATER_ENTITY" },
-    { label: "Prepare Coffee for Tomorrow",         entity: "YOUR_COFFEE_PREPARATION_ENTITY" },
+    { label: "YOUR_NOTIFICATION_LABEL_1", entity: "YOUR_NOTIFICATION_ENTITY_1" },
+    { label: "YOUR_NOTIFICATION_LABEL_2", entity: "YOUR_NOTIFICATION_ENTITY_2" },
+    // Add more notifications as needed
   ],
 
   /* ── ECHO TIMERS ─────────────────────────────────────────────────────────
@@ -252,9 +279,26 @@ const CONFIG = {
    * Add/remove entries to match your Echo devices.
    * ──────────────────────────────────────────────────────────────────── */
   echoTimers: [
-    { label: "Office",      entity: "YOUR_ECHO_OFFICE_TIMER_ENTITY"      },
-    { label: "Bedroom",     entity: "YOUR_ECHO_BEDROOM_TIMER_ENTITY"     },
-    { label: "Living Room", entity: "YOUR_ECHO_LIVING_ROOM_TIMER_ENTITY" },
+    { label: "YOUR_ECHO_LABEL_1", entity: "YOUR_ECHO_TIMER_ENTITY_1" },
+    { label: "YOUR_ECHO_LABEL_2", entity: "YOUR_ECHO_TIMER_ENTITY_2" },
+    { label: "YOUR_ECHO_LABEL_3", entity: "YOUR_ECHO_TIMER_ENTITY_3" },
+  ],
+
+  /* ── WAZE TRAVEL TIME ────────────────────────────────────────────────────
+   * Displays a travel-time notification bubble (same style as Echo timers)
+   * only on the configured days and within the specified time window.
+   *
+   * label     — text shown in the bubble (e.g. "Work Travel")
+   * entity    — HA sensor entity_id (e.g. "sensor.work_travel_time")
+   * days      — days of the week to show it (0 = Sunday … 6 = Saturday)
+   * timeStart — hour (0–23) at which the bubble starts appearing (inclusive)
+   * timeEnd   — hour (0–23) at which the bubble stops appearing (exclusive)
+   * ──────────────────────────────────────────────────────────────────── */
+  wazeTravelTime: [
+    // Add as many entries as you like. Each one becomes its own bubble.
+    // days: 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+    { label: "Work Travel",   entity: "YOUR_WAZE_TRAVEL_TIME_ENTITY", days: [2, 4], timeStart: 7, timeEnd: 20 },
+    // { label: "Home Travel", entity: "YOUR_HOME_TRAVEL_TIME_ENTITY", days: [1,2,3,4,5], timeStart: 16, timeEnd: 19 },
   ],
 
   /* ── CAMERAS ─────────────────────────────────────────────────────────────
@@ -271,12 +315,12 @@ const CONFIG = {
   cameraRefreshSeconds: 1,
 
   cameras: [
-    { entity: "YOUR_CAMERA_1_ENTITY",  label: "Camera 1", motionEntity: "YOUR_CAMERA_1_MOTION_ENTITY" },
-    { entity: "YOUR_CAMERA_2_ENTITY",  label: "Camera 2", motionEntity: "YOUR_CAMERA_2_MOTION_ENTITY" },
-    { entity: "YOUR_CAMERA_3_ENTITY",  label: "Camera 3", motionEntity: "YOUR_CAMERA_3_MOTION_ENTITY" },
-    { entity: "YOUR_CAMERA_4_ENTITY",  label: "Camera 4", motionEntity: "YOUR_CAMERA_4_MOTION_ENTITY" },
-    { entity: "YOUR_CAMERA_5_ENTITY",  label: "Camera 5", motionEntity: "YOUR_CAMERA_5_MOTION_ENTITY" },
-    { entity: "YOUR_CAMERA_6_ENTITY",  label: "Camera 6", motionEntity: "YOUR_CAMERA_6_MOTION_ENTITY" },
+    { entity: "YOUR_CAMERA_1_ENTITY", label: "Camera 1", motionEntity: "YOUR_CAMERA_1_MOTION_ENTITY" },
+    { entity: "YOUR_CAMERA_2_ENTITY", label: "Camera 2", motionEntity: "YOUR_CAMERA_2_MOTION_ENTITY" },
+    { entity: "YOUR_CAMERA_3_ENTITY", label: "Camera 3", motionEntity: "YOUR_CAMERA_3_MOTION_ENTITY" },
+    { entity: "YOUR_CAMERA_4_ENTITY", label: "Camera 4", motionEntity: "YOUR_CAMERA_4_MOTION_ENTITY" },
+    { entity: "YOUR_CAMERA_5_ENTITY", label: "Camera 5", motionEntity: "YOUR_CAMERA_5_MOTION_ENTITY" },
+    { entity: "YOUR_CAMERA_6_ENTITY", label: "Camera 6", motionEntity: "YOUR_CAMERA_6_MOTION_ENTITY" },
   ],
 
   /* ── PET STATS ───────────────────────────────────────────────────────────
@@ -289,21 +333,21 @@ const CONFIG = {
    * ──────────────────────────────────────────────────────────────────── */
   petName: "YOUR_PET_NAME",
   petStats: {
-    litterCount:        "YOUR_LITTER_BOX_USES_TODAY_ENTITY",
-    litterLast:         "YOUR_LITTER_BOX_LAST_USED_ENTITY",
-    litterCounter:      "YOUR_LITTER_BOX_COUNTER_ENTITY",
-    litterResetAuto:    "YOUR_LITTER_BOX_COUNTER_RESET_AUTOMATION",
-    litterCleanBoolean: "YOUR_LITTER_BOX_CLEAN_BOOLEAN_ENTITY",
-    foodCount:          "YOUR_FEEDER_TIMES_DISPENSED_ENTITY",
-    foodWeight:         "YOUR_FEEDER_WEIGHT_DISPENSED_ENTITY",
-    foodDes:            "YOUR_FEEDER_DESICCANT_DAYS_ENTITY",
-    waterVol:           "YOUR_WATER_FOUNTAIN_VOLUME_ENTITY",
-    waterFilter:        "YOUR_WATER_FOUNTAIN_FILTER_ENTITY",
+    litterCount:        "YOUR_LITTER_COUNT_ENTITY",
+    litterLast:         "YOUR_LITTER_LAST_ENTITY",
+    litterCounter:      "YOUR_LITTER_COUNTER_ENTITY",
+    litterResetAuto:    "YOUR_LITTER_RESET_AUTO_ENTITY",
+    litterCleanBoolean: "YOUR_LITTER_CLEAN_BOOLEAN_ENTITY",
+    foodCount:          "YOUR_FOOD_COUNT_ENTITY",
+    foodWeight:         "YOUR_FOOD_WEIGHT_ENTITY",
+    foodDes:            "YOUR_FOOD_DESICCANT_ENTITY",
+    waterVol:           "YOUR_WATER_VOL_ENTITY",
+    waterFilter:        "YOUR_WATER_FILTER_ENTITY",
 
   /* ── LITTER CHART COLOUR THRESHOLDS ──────────────────────────────────────────
    * Bar colours in the "Last 5 Days" litter chart.
    * ≤ okMax visits/day → green; ≤ warnMax → orange; above → red.
-   * ──────────────────────────────────────────────────────────────────── */
+        * ──────────────────────────────────────────────────────────────────── */
     litterChart: {
       okMax:   5,   // ≤ this many visits/day → green
       warnMax: 10,  // ≤ this many visits/day → orange  (anything above → red)
@@ -326,7 +370,7 @@ const CONFIG = {
    *          Set to [] to disable the mood tracker.
    * habits — each entry: key, label, icon (SVG; use stroke="var(--accent)").
    *          Set to [] to disable the habit tracker.
-   * ──────────────────────────────────────────────────────────────────── */
+        * ──────────────────────────────────────────────────────────────────── */
   habitsMoodHistoryEntities: {
     habits: "YOUR_HABITS_LOG_ENTITY",
     mood:   "YOUR_MOOD_LOG_ENTITY",
@@ -367,7 +411,7 @@ const CONFIG = {
    *   noRoomGrouping: true — flat list even when subGroups is used
    *   twoColumnGrid: true  — two-column layout for many small cards
    *   isSceneChip: true    — turns subGroups into scene category launchers
-   * ──────────────────────────────────────────────────────────────────── */
+        * ──────────────────────────────────────────────────────────────────── */
   controls: [
     {
       label: "Lights",
@@ -508,3 +552,4 @@ const CONFIG = {
   ],
 
 };
+
