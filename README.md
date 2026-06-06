@@ -4,6 +4,8 @@
 
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-Dashboard-41BDF5?style=for-the-badge&logo=homeassistant&logoColor=white)](https://www.home-assistant.io/) [![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://hacs.xyz/) [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
+<img src="https://github.com/user-attachments/assets/b9f66b35-5209-4fa8-bdc9-f92d6ed60517" width="500"/> <img src="https://github.com/user-attachments/assets/f17ef08f-a525-45c3-9d25-d641c6c273de" width="500"/>
+
 Homie Dashboard is a touch-first Home Assistant dashboard designed for wall-mounted tablets.
 
 It provides a customizable overview of your home while supporting dedicated dashboard modes for music, calendars, weather, photos, thermostats, cameras, clocks, and solar monitoring.
