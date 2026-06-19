@@ -208,6 +208,18 @@ Remember to clear the cache/hard refresh so the new file changes apply in the br
 <details>
 <summary>View version history</summary>
 
+New in v4.0.0
+- Card based overview screen
+- Siren and garage/gate in security
+- Plant moisture
+
+New in v3.7.0
+- Settings for clock 12/24hr, screesaver
+- Hourly forecast in weather
+- Moon phase in in sun arc
+- Doorbell to trigger full screen camera when someone rings the bell
+- Pop up selector for Music players instead of tap to switch
+
 New in v3.6.0
 - Time of Day Theme - Apply different themes based on time of day
 - Waze travel notification customizable for selected days/times
