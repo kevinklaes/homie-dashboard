@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
- * HOMIE DASHBOARD CONFIGURATION v3.7.0
+ * HOMIE DASHBOARD CONFIGURATION v4.0.0
  * ═══════════════════════════════════════════════════════════════════════════
  * This is the main configuration file. Edit the sections below to customise the dashboard for your home.
  * Both homie-dashboard.html and config.js must be in the same folder.
@@ -84,6 +84,17 @@ const CONFIG = {
   wsUrl:       WS_URL,
   alarmEntity: ALARM_ENTITY,
 
+  /* ── SECURITY ────────────────────────────────────────────────────────────
+   * Quick-action buttons for security devices (siren, garage/gate).
+   * Each entry: label, entity (service call), action (HA service to call).
+   * ─────────────────────────────────────────────────────────────────────── */
+  security: [
+    { label: "Siren On",          entity: "YOUR_SIREN_ON_ENTITY"          },
+    { label: "Siren Off",         entity: "YOUR_SIREN_OFF_ENTITY"         },
+    { label: "Garage/Gate Open",  entity: "YOUR_GARAGE_GATE_OPEN_ENTITY"  },
+    { label: "Garage/Gate Close", entity: "YOUR_GARAGE_GATE_CLOSE_ENTITY" },
+  ],
+
   /* ── WEATHER ─────────────────────────────────────────────────────────────
    * HA weather entity shown at the top-centre of the dashboard.
    * Change tempUnit to "°F" if you prefer Fahrenheit.
@@ -163,7 +174,7 @@ const CONFIG = {
     { label: "Doors",       entity: "YOUR_ALL_DOORS_ENTITY",            onValue: "Open",     offValue: "Closed" },
     { label: "Windows",     entity: "YOUR_ALL_WINDOWS_ENTITY",          onValue: "Open",     offValue: "Closed" },
     { label: "Alarm",       entity: "YOUR_ALARM_ENTITY",                onValue: "Armed",    offValue: "Disarmed" },
-    { label: "Cameras",     entity: "YOUR_CAMERA_PRIVACY_ENTITY",       onValue: "Off",      offValue: "Active" },
+    { label: "Cameras",     entity: "YOUR_CAMERAS_PRIVACY_ENTITY",      onValue: "Off",      offValue: "Active" },
     { label: "Motion",      entity: "YOUR_ALL_MOTION_SENSORS_ENTITY",   onValue: "Detected", offValue: "Clear" },
     { label: "Lights",      entity: "YOUR_ALL_LIGHTS_ENTITY",           onValue: "On",       offValue: "Off" },
     { label: "Air Con",     entity: "YOUR_ALL_AC_UNITS_ENTITY",         onValue: "On",       offValue: "Off" },
@@ -181,17 +192,17 @@ const CONFIG = {
     {
       label: "First Floor",
       sensors: [
-        { type: "temp",     entity: "YOUR_FLOOR1_TEMP_ENTITY",     unit: "°C",    decimal: true },
-        { type: "humidity", entity: "YOUR_FLOOR1_HUMIDITY_ENTITY", unit: "%"                    },
-        { type: "pm25",     entity: "YOUR_FLOOR1_PM25_ENTITY",     unit: "μg/m³"                },
+        { type: "temp",     entity: "YOUR_FIRST_FLOOR_TEMP_ENTITY",     unit: "°C",    decimal: true },
+        { type: "humidity", entity: "YOUR_FIRST_FLOOR_HUMIDITY_ENTITY", unit: "%"                    },
+        { type: "pm25",     entity: "YOUR_FIRST_FLOOR_PM25_ENTITY",     unit: "μg/m³"                },
       ],
     },
     {
       label: "Second Floor",
       sensors: [
-        { type: "temp",     entity: "YOUR_FLOOR2_TEMP_ENTITY",     unit: "°C", decimal: true },
-        { type: "humidity", entity: "YOUR_FLOOR2_HUMIDITY_ENTITY", unit: "%"                 },
-        { type: "pm25",     entity: "YOUR_FLOOR2_PM25_ENTITY",     unit: "μg/m³"             },
+        { type: "temp",     entity: "YOUR_SECOND_FLOOR_TEMP_ENTITY",     unit: "°C", decimal: true },
+        { type: "humidity", entity: "YOUR_SECOND_FLOOR_HUMIDITY_ENTITY", unit: "%"                 },
+        { type: "pm25",     entity: "YOUR_SECOND_FLOOR_PM25_ENTITY",     unit: "μg/m³"             },
       ],
     },
     {
@@ -209,22 +220,22 @@ const CONFIG = {
    * ──────────────────────────────────────────────────────────────────────── */
   solar: {
     sensorRow: [
-      { type: "solar",      entity: "YOUR_SOLAR_PRODUCTION_KW_ENTITY",    unit: "kW", decimal: true },
-      { type: "power",      entity: "YOUR_TODAYS_ENERGY_KW_ENTITY",       unit: "kW", decimal: true },
-      { type: "export",     entity: "YOUR_SOLAR_EXPORT_KW_ENTITY",        unit: "kW", decimal: true },
-      { type: "battery",    entity: "YOUR_BATTERY_SOC_ENTITY",            unit: "%"                 },
-      { type: "solar-temp", entity: "YOUR_INVERTER_TEMP_ENTITY",          unit: "°C", decimal: true },
+      { type: "solar",      entity: "YOUR_SOLAR_PRODUCTION_KW_ENTITY",     unit: "kW", decimal: true },
+      { type: "power",      entity: "YOUR_TODAYS_ENERGY_IN_KW_ENTITY",     unit: "kW", decimal: true },
+      { type: "export",     entity: "YOUR_SOLAR_EXPORT_KW_ENTITY",         unit: "kW", decimal: true },
+      { type: "battery",    entity: "YOUR_BATTERY_STATE_OF_CHARGE_ENTITY", unit: "%"                 },
+      { type: "solar-temp", entity: "YOUR_INVERTER_TEMPERATURE_ENTITY",    unit: "°C", decimal: true },
     ],
     stats: [
-      { type: "solar",            entity: "YOUR_SOLAR_PRODUCTION_KW_ENTITY",    unit: "kW",  decimal: true  },
-      { type: "power",            entity: "YOUR_TODAYS_ENERGY_KW_ENTITY",       unit: "kW",  decimal: true  },
-      { type: "export",           entity: "YOUR_SOLAR_EXPORT_KW_ENTITY",        unit: "kW",  decimal: true  },
-      { type: "battery",          entity: "YOUR_BATTERY_SOC_ENTITY",            unit: "%",   decimal: false },
-      { type: "solar-temp",       entity: "YOUR_INVERTER_TEMP_ENTITY",          unit: "°C",  decimal: true  },
-      { type: "live-consumption", entity: "YOUR_TODAYS_ENERGY_W_ENTITY",        unit: "W",   decimal: false },
-      { type: "monthly-kwh",      entity: "YOUR_MONTHLY_ENERGY_KWH_ENTITY",     unit: "kWh", decimal: true  },
-      { type: "today-cost",       entity: "YOUR_TODAYS_ENERGY_COST_ENTITY",     unit: "€",   decimal: true  },
-      { type: "monthly-cost",     entity: "YOUR_MONTHLY_ENERGY_COST_ENTITY",    unit: "€",   decimal: true  },
+      { type: "solar",            entity: "YOUR_SOLAR_PRODUCTION_KW_ENTITY",     unit: "kW",  decimal: true  },
+      { type: "power",            entity: "YOUR_TODAYS_ENERGY_IN_KW_ENTITY",     unit: "kW",  decimal: true  },
+      { type: "export",           entity: "YOUR_SOLAR_EXPORT_KW_ENTITY",         unit: "kW",  decimal: true  },
+      { type: "battery",          entity: "YOUR_BATTERY_STATE_OF_CHARGE_ENTITY", unit: "%",   decimal: false },
+      { type: "solar-temp",       entity: "YOUR_INVERTER_TEMPERATURE_ENTITY",    unit: "°C",  decimal: true  },
+      { type: "live-consumption", entity: "YOUR_TODAYS_ENERGY_IN_W_ENTITY",      unit: "W",   decimal: false },
+      { type: "monthly-kwh",      entity: "YOUR_MONTHLY_ENERGY_IN_KW_ENTITY",    unit: "kWh", decimal: true },
+      { type: "today-cost",       entity: "YOUR_TODAYS_ENERGY_COST_ENTITY",      unit: "€",   decimal: true  },
+      { type: "monthly-cost",     entity: "YOUR_MONTHLY_ENERGY_COST_ENTITY",     unit: "€",   decimal: true  },
     ],
   },
 
@@ -234,11 +245,11 @@ const CONFIG = {
    * pill to cycle through multiple active players.
         * ──────────────────────────────────────────────────────────────────── */
   musicPlayers: [
-    { entity: "YOUR_SPOTIFY_PLAYER_ENTITY",  label: "Spotify" },
-    { entity: "YOUR_ECHO_PLAYER_ENTITY",     label: "Echo"    },
-    { entity: "YOUR_SONOS_PLAYER_ENTITY",    label: "Sonos"   },
-    // { entity: "media_player.apple_tv",    label: "Apple TV" },
-    // { entity: "media_player.music_assistant", label: "MA"   },
+    { entity: "YOUR_SPOTIFY_MEDIA_PLAYER_ENTITY",  label: "Spotify" },
+    { entity: "YOUR_ECHO_MEDIA_PLAYER_ENTITY",     label: "Echo"    },
+    { entity: "YOUR_SONOS_MEDIA_PLAYER_ENTITY",    label: "Sonos"   },
+    // { entity: "YOUR_APPLE_TV_MEDIA_PLAYER_ENTITY", label: "Apple TV" },
+    // { entity: "YOUR_MA_MEDIA_PLAYER_ENTITY",       label: "MA"       },
   ],
 
   /* musicHideDelay — ms the Now Playing bar stays visible after music stops.
@@ -268,9 +279,14 @@ const CONFIG = {
    * Add as many as you like.
    * ──────────────────────────────────────────────────────────────────── */
   notifications: [
-    { label: "YOUR_NOTIFICATION_LABEL_1", entity: "YOUR_NOTIFICATION_ENTITY_1" },
-    { label: "YOUR_NOTIFICATION_LABEL_2", entity: "YOUR_NOTIFICATION_ENTITY_2" },
-    // Add more notifications as needed
+    { label: "Cat Maintenance",                    entity: "YOUR_CAT_MAINTENANCE_ENTITY" },
+    { label: "Car Maintenance",                    entity: "YOUR_CAR_MAINTENANCE_ENTITY" },
+    { label: "Home Maintenance",                   entity: "YOUR_HOME_MAINTENANCE_ENTITY" },
+    { label: "Personal Maintenance",               entity: "YOUR_PERSONAL_MAINTENANCE_ENTITY" },
+    { label: "Take Your Vitamins",                 entity: "YOUR_VITAMINS_TAKEN_ENTITY" },
+    { label: "Shumi Litter Box Needs Cleaning",    entity: "YOUR_LITTER_BOX_CLEAN_ENTITY" },
+    { label: "Shumi Food/Water Problem",           entity: "YOUR_FOOD_WATER_PROBLEM_ENTITY" },
+    { label: "Prepare Coffee for Tomorrow",        entity: "YOUR_COFFEE_PREPARATION_ENTITY" },
   ],
 
   /* ── ECHO TIMERS ─────────────────────────────────────────────────────────
@@ -279,9 +295,9 @@ const CONFIG = {
    * Add/remove entries to match your Echo devices.
    * ──────────────────────────────────────────────────────────────────── */
   echoTimers: [
-    { label: "YOUR_ECHO_LABEL_1", entity: "YOUR_ECHO_TIMER_ENTITY_1" },
-    { label: "YOUR_ECHO_LABEL_2", entity: "YOUR_ECHO_TIMER_ENTITY_2" },
-    { label: "YOUR_ECHO_LABEL_3", entity: "YOUR_ECHO_TIMER_ENTITY_3" },
+    { label: "Office",      entity: "YOUR_ECHO_OFFICE_TIMER_ENTITY"      },
+    { label: "Bedroom",     entity: "YOUR_ECHO_BEDROOM_TIMER_ENTITY"     },
+    { label: "Living Room", entity: "YOUR_ECHO_LIVING_ROOM_TIMER_ENTITY" },
   ],
 
   /* ── WAZE TRAVEL TIME ────────────────────────────────────────────────────
@@ -297,8 +313,8 @@ const CONFIG = {
   wazeTravelTime: [
     // Add as many entries as you like. Each one becomes its own bubble.
     // days: 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
-    { label: "Work Travel",   entity: "YOUR_WAZE_TRAVEL_TIME_ENTITY", days: [2, 4], timeStart: 7, timeEnd: 20 },
-    // { label: "Home Travel", entity: "YOUR_HOME_TRAVEL_TIME_ENTITY", days: [1,2,3,4,5], timeStart: 16, timeEnd: 19 },
+    { label: "Work Travel",   entity: "YOUR_WORK_TRAVEL_TIME_ENTITY", days: [2, 4, 5], timeStart: 7, timeEnd: 21 },
+    // { label: "Home Travel", entity: "sensor.home_travel_time", days: [1,2,3,4,5], timeStart: 16, timeEnd: 19 },
   ],
 
   /* ── CAMERAS ─────────────────────────────────────────────────────────────
@@ -334,6 +350,7 @@ const CONFIG = {
     label:        "Doorbell · Front Door",
   },
 
+
   /* ── PET STATS ───────────────────────────────────────────────────────────
    * Entities for the pet stats popup (top-right button).
    *  petName           — name shown on the button and popup title
@@ -351,7 +368,7 @@ const CONFIG = {
     litterCleanBoolean: "YOUR_LITTER_CLEAN_BOOLEAN_ENTITY",
     foodCount:          "YOUR_FOOD_COUNT_ENTITY",
     foodWeight:         "YOUR_FOOD_WEIGHT_ENTITY",
-    foodDes:            "YOUR_FOOD_DESICCANT_ENTITY",
+    foodDes:            "YOUR_FOOD_DES_ENTITY",
     waterVol:           "YOUR_WATER_VOL_ENTITY",
     waterFilter:        "YOUR_WATER_FILTER_ENTITY",
 
@@ -561,6 +578,40 @@ const CONFIG = {
       ],
     },
   ],
+
+  /* ── GARDEN ──────────────────────────────────────────────────────────────
+   * Soil moisture sensors for your plants.
+   * Add as many entries as you like — one per plant.
+   *
+   * Each entry:
+   *   label  — display name for the plant
+   *   entity — HA sensor entity_id for the soil moisture reading
+   *   unit   — unit of measurement (default "%")
+   *
+   * Moisture thresholds (used for colour coding):
+   *   dryBelow  — below this % → dry (amber warning)
+   *   wetAbove  — above this % → overwatered (blue warning)
+   *   (between the two → healthy, green)
+   * ──────────────────────────────────────────────────────────────────────── */
+  garden: {
+    soilMoisture: [
+      { label: "Plant 1", entity: "YOUR_SOIL_MOISTURE_1_ENTITY", unit: "%" },
+      { label: "Plant 2", entity: "YOUR_SOIL_MOISTURE_2_ENTITY", unit: "%" },
+      { label: "Plant 3", entity: "YOUR_SOIL_MOISTURE_3_ENTITY", unit: "%" },
+      { label: "Plant 4", entity: "YOUR_SOIL_MOISTURE_4_ENTITY", unit: "%" },
+      { label: "Plant 5", entity: "YOUR_SOIL_MOISTURE_5_ENTITY", unit: "%" },
+      { label: "Plant 6", entity: "YOUR_SOIL_MOISTURE_6_ENTITY", unit: "%" },
+      { label: "Plant 7", entity: "YOUR_SOIL_MOISTURE_7_ENTITY", unit: "%" },
+      { label: "Plant 8", entity: "YOUR_SOIL_MOISTURE_8_ENTITY", unit: "%" },
+      // Add more plants below — copy and paste a line above:
+      // { label: "Plant x", entity: "YOUR_SOIL_MOISTURE_X_ENTITY", unit: "%" },
+    ],
+
+    thresholds: {
+      dryBelow: 30,   // % — below this → dry (show amber)
+      wetAbove: 80,   // % — above this → overwatered (show blue)
+    },
+  },
 
 };
 
