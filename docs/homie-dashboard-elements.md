@@ -9,7 +9,6 @@
 - Tapping the weather will open a popup with more info
 
 **Top bar - Right**
-- Pet icon — pet stats popup (litter box, feeder, water fountain, litter box usage)
 - Security icon — Alarmo controls
 - Dashboard Mode icon — select from multiple dashboards
 - Setting Cog - Modify Dashboard settings

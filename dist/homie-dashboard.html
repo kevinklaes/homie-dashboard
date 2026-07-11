@@ -257,110 +257,6 @@
   }
   .launcher-label.visible { display: block; }
 
-  /* ─── PET STATS GRID (inside popup overlay) ─── */
-  /* ── Litter Box Action Buttons ── */
-  .litter-action-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 14px;
-  }
-  .litter-action-btn {
-    background: #111;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    padding: 15px 10px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .litter-action-btn:active { background: rgba(255,255,255,0.07); transform: scale(0.97); }
-
-  .pet-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-top: 10px;
-  }
-  /* ─── LITTER CHART ─── */
-  .litter-chart-section {
-    margin-top: 14px;
-    background: #111;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    padding: 14px 14px 10px;
-  }
-  .litter-chart-title {
-    font-size: 8px;
-    letter-spacing: 0.28em;
-    color: #fff;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-    text-align: center;
-  }
-  .litter-chart-bars {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-around;
-    gap: 6px;
-    height: 90px;
-  }
-  .litter-bar-col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-  }
-  .litter-bar-val {
-    font-size: 9px;
-    color: #fff;
-    letter-spacing: 0.05em;
-    min-height: 12px;
-  }
-  .litter-bar-wrap {
-    width: 100%;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    height: 56px;
-  }
-  .litter-bar {
-    width: 70%;
-    border-radius: 4px 4px 2px 2px;
-    transition: height 0.4s ease;
-    min-height: 3px;
-  }
-  .litter-bar-label {
-    font-size: 8px;
-    color: #fff;
-    letter-spacing: 0.1em;
-    text-align: center;
-  }
-  .pet-card {
-    background: #111;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    padding: 15px 10px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-  .pet-card-icon { display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
-  .pet-card-text {
-    font-size: 9px;
-    line-height: 1.4;
-    color: rgba(255,255,255,0.9);
-    letter-spacing: 0.25em;
-  }
-
   /* ─── HERO ─── */
   .hero {
     position: fixed;
@@ -685,7 +581,6 @@
   }
   .popup-overlay.open .popup { transform: scale(1); }
   /* Width overrides for specific popup types — avoids inline style attributes */
-  .popup--pet      { max-width: 550px; }
   /* Compact accordion: just the room list, no room expanded yet */
   .popup--compact {
     max-width: 300px;
@@ -7855,11 +7750,8 @@
   </div>
 
   <div class="top-right">
-    <!-- Row 1: Pet · Security -->
+    <!-- Row 1: Security -->
     <div class="topbar-row">
-      <button class="topbar-btn" onclick="openPetStats()" id="pet-btn" title="Pet Stats">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="4" r="1.5"/><circle cx="17" cy="4" r="1.5"/><circle cx="3.5" cy="10" r="1.5"/><circle cx="20.5" cy="10" r="1.5"/><path d="M12 22c-4 0-7-2.5-7-6 0-2 1-3.5 2.5-4.5S10 10 12 10s3.5.5 4.5 1.5S19 14 19 16c0 3.5-3 6-7 6z"/></svg>
-      </button>
       <button class="topbar-btn topbar-security-btn" id="security-btn" onclick="openSecurity()" title="Security">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.25C17.25 23.15 21 18.25 21 13V7L12 2z"/></svg>
       </button>
@@ -8082,18 +7974,6 @@
         <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/>
         <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
         <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/>
-      </svg>
-    </button>
-
-    <div class="ov3-sb-divider"></div>
-
-    <!-- Pet stats -->
-    <button class="ov3-sb-btn" id="ov3-pet-btn" onclick="openPetStats()" title="Pet">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.826"/>
-        <path d="M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.96-1.45-2.344-2.826"/>
-        <path d="M8 14v.5A3.5 3.5 0 0 0 11.5 18h1a3.5 3.5 0 0 0 3.5-3.5V14a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2z"/>
-        <path d="M6.5 10.5c-.5-3 1-5 1-5M17.5 10.5c.5-3-1-5-1-5"/>
       </svg>
     </button>
 
@@ -8608,125 +8488,7 @@
   </div>
 </div>
 
-<div class="popup-overlay" id="pet-overlay" onclick="closePetStats(event)">
-  <div class="popup popup--pet">
-    <div class="popup-title">Pet Status</div>
-    <!-- Litter Box Actions -->
-    <div class="litter-action-row">
-      <!-- Reset Counter -->
-      <button class="litter-action-btn" onclick="litterAction()" title="Reset counter">
-        <div class="pet-card-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--accent)">
-            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-            <path d="M3 3v5h5"/>
-          </svg>
-        </div>
-        <div class="pet-card-text">Reset Counter</div>
-      </button>
 
-      <!-- Since Last Clean — number only -->
-      <div class="litter-action-btn" style="cursor:default; pointer-events:none;">
-        <div class="pet-card-icon">
-          <span id="litter-gauge-num" style="font-size:22px;font-weight:600;color:var(--accent);letter-spacing:0.05em;line-height:1;">—</span>
-        </div>
-        <div class="pet-card-text">Since Last Clean</div>
-      </div>
-
-      <!-- Toggle Clean -->
-      <button class="litter-action-btn" id="litter-toggle-btn" onclick="litterToggleAction()" title="Toggle clean">
-        <div class="pet-card-icon">
-          <!-- Default icon: checkmark -->
-          <svg id="litter-icon-check" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--accent)">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-          <!-- Cleaning icon: broom (shown when active) -->
-          <svg id="litter-icon-clean" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--accent);display:none">
-            <path d="M3 21l7-7"/>
-            <path d="M10 14l1.5-1.5"/>
-            <path d="M14 10l5-5"/>
-            <path d="M17 3l4 4-8.5 8.5-4-4L17 3z"/>
-            <path d="M10 14c-.5 1.5-1.5 3.5-4 4.5 1-2.5.5-4 .5-4"/>
-          </svg>
-        </div>
-        <div class="pet-card-text" id="litter-toggle-label">Toggle Clean</div>
-      </button>
-    </div>
-
-    <div class="pet-grid" id="pet-stats-content">
-      <div class="pet-card">
-        <div class="pet-card-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Cat face -->
-            <ellipse cx="12" cy="13" rx="8" ry="7" fill="none" style="stroke:var(--accent)" stroke-width="1.4"/>
-            <!-- Ears -->
-            <path d="M5.5 8 L4 3.5 L8 6.5 Z" fill="none" style="stroke:var(--accent)" stroke-width="1.3" stroke-linejoin="round"/>
-            <path d="M18.5 8 L20 3.5 L16 6.5 Z" fill="none" style="stroke:var(--accent)" stroke-width="1.3" stroke-linejoin="round"/>
-            <!-- Eyes -->
-            <ellipse cx="9.5" cy="12" rx="1" ry="1.3" style="fill:var(--accent)"/>
-            <ellipse cx="14.5" cy="12" rx="1" ry="1.3" style="fill:var(--accent)"/>
-            <!-- Nose -->
-            <path d="M11.2 14.5 L12 15.2 L12.8 14.5" fill="none" style="stroke:var(--accent)" stroke-width="1" stroke-linejoin="round"/>
-            <!-- Whiskers left -->
-            <line x1="4" y1="13.5" x2="9" y2="14" style="stroke:var(--accent)" stroke-width="0.8" opacity="0.7"/>
-            <line x1="4" y1="15" x2="9" y2="14.8" style="stroke:var(--accent)" stroke-width="0.8" opacity="0.7"/>
-            <!-- Whiskers right -->
-            <line x1="20" y1="13.5" x2="15" y2="14" style="stroke:var(--accent)" stroke-width="0.8" opacity="0.7"/>
-            <line x1="20" y1="15" x2="15" y2="14.8" style="stroke:var(--accent)" stroke-width="0.8" opacity="0.7"/>
-          </svg>
-        </div>
-        <div class="pet-card-text">
-          Visits Today: <span id="pet-litter-today">—</span><br>
-          <span id="pet-litter-last" style="opacity:0.7">—</span>
-        </div>
-      </div>
-      <div class="pet-card">
-        <div class="pet-card-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Bowl base -->
-            <path d="M4 11 Q4 18 12 18 Q20 18 20 11 Z" fill="none" style="stroke:var(--accent)" stroke-width="1.4" stroke-linejoin="round"/>
-            <!-- Bowl rim -->
-            <line x1="3.5" y1="11" x2="20.5" y2="11" style="stroke:var(--accent)" stroke-width="1.4" stroke-linecap="round"/>
-            <!-- Food pellets -->
-            <circle cx="9" cy="14" r="1.2" style="fill:var(--accent)" opacity="0.8"/>
-            <circle cx="12" cy="14.8" r="1.2" style="fill:var(--accent)" opacity="0.8"/>
-            <circle cx="15" cy="14" r="1.2" style="fill:var(--accent)" opacity="0.8"/>
-            <!-- Steam lines -->
-            <path d="M9 8 Q9.5 6.5 9 5" style="stroke:var(--accent)" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
-            <path d="M12 7.5 Q12.5 6 12 4.5" style="stroke:var(--accent)" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
-            <path d="M15 8 Q15.5 6.5 15 5" style="stroke:var(--accent)" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
-          </svg>
-        </div>
-        <div class="pet-card-text">
-          Feeds: <span id="pet-food-count">—</span>, <span id="pet-food-weight">—</span>g<br>
-          Desiccant: <span id="pet-food-desiccant">—</span>d
-        </div>
-      </div>
-      <div class="pet-card">
-        <div class="pet-card-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 3 Q12 3 7 10 Q4.5 14 4.5 16 A7.5 7.5 0 0 0 19.5 16 Q19.5 14 17 10 Z" fill="none" style="stroke:var(--accent)" stroke-width="1.4" stroke-linejoin="round"/>
-            <!-- Shine -->
-            <path d="M9.5 14 Q9 12 10.5 11" style="stroke:var(--accent)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
-          </svg>
-        </div>
-        <div class="pet-card-text">
-          Purified: <span id="pet-water-vol">—</span><br>
-          Filter: <span id="pet-water-filter-wrap">—</span>
-        </div>
-      </div>
-    </div>
-    <div class="litter-chart-section">
-      <div class="litter-chart-title">Litter Box — Last 5 Days</div>
-      <div class="litter-chart-bars" id="litter-chart-bars">
-        <div class="litter-bar-col"><div class="litter-bar-val" id="lbc-v0"></div><div class="litter-bar-wrap"><div class="litter-bar" id="lbc-b0" style="height:3px;background:rgba(255,255,255,0.1)"></div></div><div class="litter-bar-label" id="lbc-l0">—</div></div>
-        <div class="litter-bar-col"><div class="litter-bar-val" id="lbc-v1"></div><div class="litter-bar-wrap"><div class="litter-bar" id="lbc-b1" style="height:3px;background:rgba(255,255,255,0.1)"></div></div><div class="litter-bar-label" id="lbc-l1">—</div></div>
-        <div class="litter-bar-col"><div class="litter-bar-val" id="lbc-v2"></div><div class="litter-bar-wrap"><div class="litter-bar" id="lbc-b2" style="height:3px;background:rgba(255,255,255,0.1)"></div></div><div class="litter-bar-label" id="lbc-l2">—</div></div>
-        <div class="litter-bar-col"><div class="litter-bar-val" id="lbc-v3"></div><div class="litter-bar-wrap"><div class="litter-bar" id="lbc-b3" style="height:3px;background:rgba(255,255,255,0.1)"></div></div><div class="litter-bar-label" id="lbc-l3">—</div></div>
-        <div class="litter-bar-col"><div class="litter-bar-val" id="lbc-v4"></div><div class="litter-bar-wrap"><div class="litter-bar" id="lbc-b4" style="height:3px;background:rgba(255,255,255,0.1)"></div></div><div class="litter-bar-label" id="lbc-l4">—</div></div>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 <!-- ─── DASHBOARD VERSION ───────────────────────────────────────────────────
@@ -9102,12 +8864,6 @@ function _wsConnect() {
             // todo.* entity changes — avoids REST polling every 10 s.
             if (_dailyOpen && newState.entity_id.startsWith("todo.")) {
               _dailyLoadTodos(true);
-            }
-            // Live-refresh the pet popup when it is open and a pet entity changes,
-            // so external toggles (phone, other devices) appear instantly.
-            const petOpen = document.getElementById("pet-overlay")?.classList.contains("open");
-            if (petOpen && CONFIG.petStats && Object.values(CONFIG.petStats).includes(newState.entity_id)) {
-              _refreshPetStatsLive();
             }
             // Doorbell: watch automation entity — any state_changed means it was triggered
             if (CONFIG.doorbell?.buttonEntity && newState.entity_id === CONFIG.doorbell.buttonEntity) {
@@ -13580,293 +13336,6 @@ function _ov3SecFeedback(msg, cls, timed = false) {
   }
 }
 
-/* ─── PET STATS LOGIC ─── */
-/**
- * getRelativeTime — converts a HA timestamp string into a human-readable
- * relative time string (e.g. "Last used 3h ago").
- * @param {string} timestamp — ISO date string from HA
- * @returns {string}
- */
-function getRelativeTime(timestamp) {
-  if (!timestamp || timestamp === "—" || timestamp === "unknown") return "—";
-  const now = new Date();
-  const then = new Date(timestamp);
-  const diffInSeconds = Math.floor((now - then) / 1000);
-  if (isNaN(diffInSeconds)) return timestamp;
-  if (diffInSeconds < 60) return "Just now";
-  const diffInMinutes = Math.floor(diffInSeconds / 60);
-  if (diffInMinutes < 60) return `Last used ${diffInMinutes}m ago`;
-  const diffInHours = Math.floor(diffInMinutes / 60);
-  if (diffInHours < 24) return `Last used ${diffInHours}h ago`;
-  return `Last used ${Math.floor(diffInHours / 24)}d ago`;
-}
-
-/**
- * openPetStats — fetches pet sensor values from CONFIG.petStats and populates
- * the pet stats popup. To change which entities are shown, edit CONFIG.petStats
- * at the top of the script — no need to touch this function.
- */
-async function openPetStats() {
-  haptic("light");
-  document.getElementById("pet-overlay").classList.add("open");
-  const sensors = CONFIG.petStats;
-  const keys = Object.keys(sensors);
-  const results = await Promise.all(keys.map(k => haGet(sensors[k])));
-  const data = {};
-  keys.forEach((k, i) => { data[k] = results[i] ? results[i].state : "—"; });
-
-  safeText("pet-litter-today", data.litterCount);
-  safeText("pet-litter-last", getRelativeTime(data.litterLast));
-  safeText("pet-food-count", data.foodCount);
-  safeText("pet-food-weight", data.foodWeight);
-  safeText("pet-food-desiccant", data.foodDes);
-  safeText("pet-water-vol", data.waterVol);
-  const filterVal = data.waterFilter;
-  const filterEl = document.getElementById("pet-water-filter-wrap");
-  if (filterEl) {
-    const isKnown = filterVal !== "—" && filterVal !== "unavailable" && filterVal !== "unknown";
-    filterEl.textContent = isKnown ? `${filterVal}%` : filterVal;
-  }
-
-  // Seed the toggle-clean button from the litterCleanBoolean entity in CONFIG.petStats.
-  // Reading from stateCache means we get the current live value instantly
-  // without an extra REST round-trip.
-  const boolEntity = CONFIG.petStats.litterCleanBoolean;
-  if (boolEntity) {
-    const cached = stateCache.get(boolEntity);
-    const isActive = cached ? cached.state === "on" : false;
-    _litterToggleActive = isActive;
-    _applyLitterToggleUI(_litterToggleActive);
-  }
-
-  // Fetch and render the "since last clean" gauge
-  _updateLitterGauge();
-
-  // Fetch litter history and render the 5-day bar chart.
-  // Re-uses a cached result if it is less than 5 minutes old so repeated
-  // popup opens don't hammer the HA history API.
-  const now = Date.now();
-  if (_litterHistoryCache && (now - _litterHistoryFetchedAt) < _LITTER_HISTORY_TTL) {
-    renderLitterChart(_litterHistoryCache);
-  } else {
-    fetchLitterHistory().then(days => {
-      if (days) {
-        _litterHistoryCache    = days;
-        _litterHistoryFetchedAt = Date.now();
-      }
-      renderLitterChart(days);
-    });
-  }
-}
-
-/**
- * _refreshPetStatsLive — lightweight live-refresh for the pet popup, called
- * whenever the WebSocket fires a state_changed event for a pet entity while
- * the popup is open. Skips the history chart (expensive, TTL-cached separately)
- * and only re-fetches the sensor values, toggle state, and gauge.
- */
-async function _refreshPetStatsLive() {
-  const sensors = CONFIG.petStats;
-  const keys = Object.keys(sensors);
-  const results = await Promise.all(keys.map(k => haGet(sensors[k])));
-  const data = {};
-  keys.forEach((k, i) => { data[k] = results[i] ? results[i].state : "—"; });
-
-  safeText("pet-litter-today", data.litterCount);
-  safeText("pet-litter-last", getRelativeTime(data.litterLast));
-  safeText("pet-food-count",  data.foodCount);
-  safeText("pet-food-weight", data.foodWeight);
-  safeText("pet-food-desiccant", data.foodDes);
-  safeText("pet-water-vol",   data.waterVol);
-  const filterVal = data.waterFilter;
-  const filterEl = document.getElementById("pet-water-filter-wrap");
-  if (filterEl) {
-    const isKnown = filterVal !== "—" && filterVal !== "unavailable" && filterVal !== "unknown";
-    filterEl.textContent = isKnown ? `${filterVal}%` : filterVal;
-  }
-
-  // Sync toggle-clean button from input_boolean via stateCache (no REST call needed)
-  const boolEntity = CONFIG.petStats.litterCleanBoolean;
-  if (boolEntity) {
-    const cached = stateCache.get(boolEntity);
-    const isActive = cached ? cached.state === "on" : false;
-    _litterToggleActive = isActive;
-    _applyLitterToggleUI(_litterToggleActive);
-  }
-
-  // Refresh the "since last clean" gauge
-  _updateLitterGauge();
-}
-
-/**
- * closePetStats — closes the pet stats popup when the backdrop is tapped.
- */
-function closePetStats(e) {
-  if (e && e.target !== document.getElementById("pet-overlay")) return;
-  haptic("light");
-  document.getElementById("pet-overlay").classList.remove("open");
-}
-
-/**
- * litterAction — fires the litter box counter reset automation.
- */
-async function litterAction() {
-  haptic("medium");
-  const entity = CONFIG.petStats.litterResetAuto;
-  if (!entity) return;
-  try {
-    await haService("automation", "trigger", { entity_id: entity });
-    setTimeout(_updateLitterGauge, 800);
-  } catch(err) {
-    console.warn("litterAction failed:", err);
-  }
-}
-
-// Tracks toggle clean button state
-let _litterToggleActive = false;
-
-// Litter history cache — avoids a slow REST fetch on every popup open.
-// Data is reused for up to 5 minutes; a fresh fetch runs on the next open
-// after that, or whenever the cached entity changes.
-const _LITTER_HISTORY_TTL = 5 * 60 * 1000; // 5 minutes in ms
-let _litterHistoryCache    = null;  // last successful result from fetchLitterHistory()
-let _litterHistoryFetchedAt = 0;   // Date.now() timestamp of last fetch
-
-/**
- * litterToggleAction — toggles the litterCleanBoolean entity in CONFIG.petStats directly so
- * the state change fires a WS state_changed event visible to all devices.
- * The icon is updated optimistically and confirmed on the next WS event.
- */
-async function litterToggleAction() {
-  haptic("medium");
-  const entity = CONFIG.petStats.litterCleanBoolean;
-  if (!entity) return;
-  // Optimistic update — flip local state immediately for instant feedback
-  _litterToggleActive = !_litterToggleActive;
-  _applyLitterToggleUI(_litterToggleActive);
-  try {
-    await haService("input_boolean", "toggle", { entity_id: entity });
-  } catch(err) {
-    // Roll back optimistic update on failure
-    _litterToggleActive = !_litterToggleActive;
-    _applyLitterToggleUI(_litterToggleActive);
-    console.warn("litterToggleAction failed:", err);
-  }
-}
-
-/** Apply toggle-clean icon and label from a boolean state value. */
-function _applyLitterToggleUI(active) {
-  const iconCheck = document.getElementById("litter-icon-check");
-  const iconClean = document.getElementById("litter-icon-clean");
-  const label     = document.getElementById("litter-toggle-label");
-  if (iconCheck && iconClean) {
-    iconCheck.style.display = active ? "none" : "";
-    iconClean.style.display = active ? ""     : "none";
-  }
-  if (label) {
-    label.textContent = active ? "Cleaning…" : "Toggle Clean";
-  }
-}
-
-
-/**
- * _updateLitterGauge — fetches the litterCounter entity in CONFIG.petStats and updates
- * the number showing uses since last clean.
- */
-async function _updateLitterGauge() {
-  const res = await haGet(CONFIG.petStats.litterCounter);
-  const val = res ? parseInt(res.state, 10) : 0;
-  const numEl = document.getElementById("litter-gauge-num");
-  if (!numEl) return;
-  numEl.textContent = isNaN(val) ? "—" : val;
-}
-
-/**
- * fetchLitterHistory — queries the HA history API for the litter-box sensor
- * over the past 5 days and returns an array of { date, value } objects,
- * one per day (oldest → newest). Uses the daily max, matching the HA
- * apexcharts-card config (group_by: func: max, duration: 1d).
- */
-async function fetchLitterHistory() {
-  const entity = CONFIG.petStats.litterCount;
-  if (!entity || !HA_TOKEN) return null;
-
-  // Build a start timestamp 5 full days ago at midnight local time
-  const now   = new Date();
-  const start = new Date(now);
-  start.setDate(start.getDate() - 4);
-  start.setHours(0, 0, 0, 0);
-
-  try {
-    const r = await fetch(
-      `${BASE}/api/history/period/${start.toISOString()}?filter_entity_id=${entity}&end_time=${now.toISOString()}&minimal_response`,
-      { headers: { Authorization: `Bearer ${HA_TOKEN}` } }
-    );
-    if (!r.ok) return null;
-    const raw = await r.json();  // [ [ {state, last_changed, ...}, ... ] ]
-    if (!raw || !raw[0]) return null;
-
-    // Group states by calendar day and take the max value per day
-    const byDay = {};
-    for (const entry of raw[0]) {
-      const val = parseFloat(entry.state);
-      if (isNaN(val)) continue;
-      const day = entry.last_changed.slice(0, 10); // "YYYY-MM-DD"
-      byDay[day] = Math.max(byDay[day] ?? 0, val);
-    }
-
-    // Build the last 5 calendar days in order (fill missing days with 0)
-    // Use epoch arithmetic (ms offset) so we never mutate a shared Date object.
-    const MONTH_ABBR = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    const nowMs = now.getTime();
-    const days  = [];
-    for (let i = 4; i >= 0; i--) {
-      const d     = new Date(nowMs - i * 86_400_000);
-      const key   = d.toISOString().slice(0, 10);
-      const label = `${d.getDate()} ${MONTH_ABBR[d.getMonth()]}`;
-      days.push({ date: key, label, value: byDay[key] ?? 0 });
-    }
-    return days;
-  } catch { return null; }
-}
-
-/**
- * renderLitterChart — populates the 5-bar litter chart in the pet stats popup.
- * Bar colour thresholds are configured in config.js under
- * CONFIG.petStats.litterChart (okMax, warnMax, colors).
- */
-function renderLitterChart(days) {
-  if (!days) return;
-  const maxVal = Math.max(...days.map(d => d.value), 1); // avoid /0
-  const BAR_MAX_PX = 56; // matches .litter-bar-wrap height
-
-  // Read thresholds from config, with safe fallbacks
-  const lc      = (CONFIG.petStats && CONFIG.petStats.litterChart) || {};
-  const okMax   = lc.okMax   ?? 5;
-  const warnMax = lc.warnMax ?? 10;
-  const clr     = lc.colors  || {};
-  const C_OK    = clr.ok   || "#22a722";
-  const C_WARN  = clr.warn || "#f59e0b";
-  const C_HIGH  = clr.high || "#ef4444";
-
-  days.forEach((day, i) => {
-    const barEl  = document.getElementById(`lbc-b${i}`);
-    const valEl  = document.getElementById(`lbc-v${i}`);
-    const lblEl  = document.getElementById(`lbc-l${i}`);
-    if (!barEl || !valEl || !lblEl) return;
-
-    const heightPx = day.value === 0 ? 3 : Math.max(4, Math.round((day.value / maxVal) * BAR_MAX_PX));
-    const color    = day.value <= okMax   ? C_OK
-                   : day.value <= warnMax ? C_WARN
-                   :                        C_HIGH;
-
-    barEl.style.height     = heightPx + "px";
-    barEl.style.background = color;
-    valEl.textContent      = day.value > 0 ? day.value : "";
-    lblEl.textContent      = day.label;
-  });
-}
-
 // Cached references for elements measured on every resize — queried once at
 // init time (see DOMContentLoaded below) so resize handlers never call querySelector.
 let _elBottomArea  = null;
@@ -14083,18 +13552,7 @@ function init() {
     setTimeout(() => openSolarFS(), 300);
   }
 
-  // Apply petName from CONFIG to the button label and popup title
-  const petName = CONFIG.petName || "Pet";
-  const petBtnEl = document.getElementById("pet-btn");
-  if (petBtnEl) {
-    if (CONFIG.showPetButton === false) {
-      petBtnEl.style.display = "none";
-    } else {
-      petBtnEl.setAttribute("title", `${petName}'s Stats`);
-    }
-  }
-
-  // Hide other top-right buttons based on config flags
+  // Hide top-right buttons based on config flags
   [
     { id: "np-fs-open-btn",      flag: "showNowPlayingButton"  },
     { id: "daily-open-btn",      flag: "showDailyButton"       },
@@ -14111,9 +13569,6 @@ function init() {
       if (el) el.style.display = "none";
     }
   });
-  const petTitleEl = document.querySelector("#pet-overlay .popup-title");
-  if (petTitleEl) petTitleEl.textContent = `${petName}'s Status`;
-
   // Open the WebSocket — this triggers the auth handshake, get_states bulk
   // load, and state_changed subscription automatically.
   _wsConnect();
@@ -16384,7 +15839,6 @@ document.addEventListener('keydown', e => {
   if (document.getElementById("photoframe-overlay")?.classList.contains("open"))  closePhotoFrame();
   if (document.getElementById("clock-overlay")?.classList.contains("open"))       closeClock();
   if (document.getElementById("media-browser-overlay")?.classList.contains("open")) closeMediaBrowser();
-  if (document.getElementById("pet-overlay")?.classList.contains("open"))         closePetStats();
   if (document.getElementById("security-overlay")?.classList.contains("open"))    closeSecurity();
   if (document.getElementById("thermostat-overlay")?.classList.contains("open"))  closeThermostat();
   if (document.getElementById("weather-fs-overlay")?.classList.contains("open"))  closeWeatherFS();
@@ -18956,7 +18410,6 @@ const SETTINGS_DEFAULTS = {
   showClockButton:true,
   showWeatherFSButton: true,
   showSolarFSButton:   true,
-  showPetButton:       true,
   showSecurityButton:  true,
   sensorPanels:        {},     // keyed by floor label → true/false
   dashFont:            'Montserrat',
@@ -19057,7 +18510,6 @@ function applyAllSettings() {
     "clock-open-btn": "showClockButton",
     "weather-fs-open-btn": "showWeatherFSButton",
     "solar-fs-open-btn":   "showSolarFSButton",
-    "pet-btn":             "showPetButton",
     "security-btn":        "showSecurityButton",
   };
   Object.entries(btnMap).forEach(([id, key]) => {
@@ -19364,7 +18816,6 @@ function openSettings() {
   syncChk("st-clock-mode", _settings.showClockButton);
   syncChk("st-weather-fs", _settings.showWeatherFSButton);
   syncChk("st-solar-fs",   _settings.showSolarFSButton);
-  syncChk("st-pet",        _settings.showPetButton);
   syncChk("st-security",   _settings.showSecurityButton);
 
   // Sync exit gesture radio
@@ -21010,10 +20461,6 @@ _applyDailyI18n();
     <div class="settings-item settings-sub">
       <span class="settings-label">Solar</span>
       <label class="settings-toggle"><input type="checkbox" id="st-solar-fs" onchange="applySetting('showSolarFSButton', this.checked)"><span class="settings-knob"></span></label>
-    </div>
-    <div class="settings-item">
-      <span class="settings-label">Pet Stats</span>
-      <label class="settings-toggle"><input type="checkbox" id="st-pet" onchange="applySetting('showPetButton', this.checked)"><span class="settings-knob"></span></label>
     </div>
     <div class="settings-item">
       <span class="settings-label">Security</span>

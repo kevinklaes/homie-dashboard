@@ -77,9 +77,9 @@ http://YOUR_HA_IP:8123/local/homie-dashboard.html
 
 ### Entities and other screens
 
-| Pet Stats | Alarm Status | Lights |
-|--------|--------|--------|
-| <img src="https://github.com/user-attachments/assets/c3d8fb36-c271-43e3-aaae-064a454a47d1" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/0ec20e9d-604d-42d6-af8c-a3e9a942bc81" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/89d52cd2-bf4a-4153-8976-c82599caa683" width="320" height="200"/> |
+| Alarm Status | Lights |
+|--------|--------|
+| <img src="https://github.com/user-attachments/assets/0ec20e9d-604d-42d6-af8c-a3e9a942bc81" width="320" height="200"/> | <img src="https://github.com/user-attachments/assets/89d52cd2-bf4a-4153-8976-c82599caa683" width="320" height="200"/> |
 
 | Scenes | AirCon | Blinds |
 |--------|--------|--------|

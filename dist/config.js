@@ -351,42 +351,6 @@ const CONFIG = {
   },
 
 
-  /* ── PET STATS ───────────────────────────────────────────────────────────
-   * Entities for the pet stats popup (top-right button).
-   *  petName           — name shown on the button and popup title
-   *  litterCount/Last  — visits today / last use timestamp
-   *  foodCount/Weight  — portions dispensed / total grams today
-   *  foodDes           — feeder desiccant days remaining
-   *  waterVol/Filter   — purified water today (ml) / filter life (%)
-   * ──────────────────────────────────────────────────────────────────── */
-  petName: "YOUR_PET_NAME",
-  petStats: {
-    litterCount:        "YOUR_LITTER_COUNT_ENTITY",
-    litterLast:         "YOUR_LITTER_LAST_ENTITY",
-    litterCounter:      "YOUR_LITTER_COUNTER_ENTITY",
-    litterResetAuto:    "YOUR_LITTER_RESET_AUTO_ENTITY",
-    litterCleanBoolean: "YOUR_LITTER_CLEAN_BOOLEAN_ENTITY",
-    foodCount:          "YOUR_FOOD_COUNT_ENTITY",
-    foodWeight:         "YOUR_FOOD_WEIGHT_ENTITY",
-    foodDes:            "YOUR_FOOD_DES_ENTITY",
-    waterVol:           "YOUR_WATER_VOL_ENTITY",
-    waterFilter:        "YOUR_WATER_FILTER_ENTITY",
-
-  /* ── LITTER CHART COLOUR THRESHOLDS ──────────────────────────────────────────
-   * Bar colours in the "Last 5 Days" litter chart.
-   * ≤ okMax visits/day → green; ≤ warnMax → orange; above → red.
-        * ──────────────────────────────────────────────────────────────────── */
-    litterChart: {
-      okMax:   5,   // ≤ this many visits/day → green
-      warnMax: 10,  // ≤ this many visits/day → orange  (anything above → red)
-      colors: {
-        ok:   "#22a722",
-        warn: "#f59e0b",
-        high: "#ef4444",
-      },
-    },
-  },
-
   /* ── HABIT & MOOD TRACKER ────────────────────────────────────────────────
    * HISTORY SYNC — input_text helpers that persist history in HA.
    * Must match configuration.yaml:
