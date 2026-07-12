@@ -208,6 +208,9 @@ Remember to clear the cache/hard refresh so the new file changes apply in the br
 <details>
 <summary>View version history</summary>
 
+New in v4.1.0
+- Option to add predefined backgrounds in photos/background
+
 New in v4.0.0
 - Card based overview screen
 - Siren and garage/gate in security
