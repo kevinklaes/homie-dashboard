@@ -10747,7 +10747,8 @@ async function toggleControl(i) {
     service = isOn ? "turn_off" : "turn_on";
   }
   if (el) el.classList.toggle("on", !isOn);
-  await haService(domain, service, c.entity);
+  const ok = await haService(domain, service, c.entity);
+  if (!ok && el) el.classList.toggle("on", isOn);
 }
 
 /**
@@ -16266,9 +16267,13 @@ async function thermSetMode(mode) {
   }
   _renderThermRoom(_thermActive);
 
-  try {
-    await haService("climate", "set_hvac_mode", { entity_id: ent.entity, hvac_mode: mode });
-  } catch {}
+  const ok = await haService("climate", "set_hvac_mode", { entity_id: ent.entity, hvac_mode: mode });
+  if (!ok && cached) {
+    // Command never applied — revert the optimistic cache write so the dial
+    // doesn't keep showing a mode HA never actually set.
+    stateCache.set(ent.entity, cached);
+    _renderThermRoom(_thermActive);
+  }
   // Re-render again after HA confirms, in case real state differs
   setTimeout(() => _renderThermRoom(_thermActive), 1500);
 }
@@ -17249,19 +17254,19 @@ async function _ov3PurTogglePower(idx) {
   const slide = document.getElementById(`ov3-pur-slide-${idx}`);
   const isOn  = slide ? slide.classList.contains("is-on") : false;
   if (isOn) {
-    try {
-      await haService("fan", "turn_off", { entity_id: ent.entity });
-      const prev = _purifierCardState.get(ent.entity) || {};
+    const prev = _purifierCardState.get(ent.entity) || {};
+    const ok = await haService("fan", "turn_off", { entity_id: ent.entity });
+    if (ok) {
       _purifierCardState.set(ent.entity, { ...prev, isOn: false });
       _ov3PurRefreshSlide(idx, false, prev.pct ?? 0);
-    } catch(e) { console.warn("[ov3-pur] turn_off failed", e); }
+    }
   } else {
     const lastPct = _purifierCardState.get(ent.entity)?.pct ?? 50;
-    try {
-      await haService("fan", "turn_on", { entity_id: ent.entity, percentage: lastPct });
+    const ok = await haService("fan", "turn_on", { entity_id: ent.entity, percentage: lastPct });
+    if (ok) {
       _purifierCardState.set(ent.entity, { isOn: true, pct: lastPct });
       _ov3PurRefreshSlide(idx, true, lastPct);
-    } catch(e) { console.warn("[ov3-pur] turn_on failed", e); }
+    }
   }
   _ov3PurRefreshCard();
 }
@@ -17499,13 +17504,15 @@ async function _ov3AcTogglePower(idx) {
 
   if (isOn) {
     stateCache.set(ent.entity, { ...cached, state: "off", attributes: { ...(cached.attributes || {}), hvac_mode: "off" } });
-    await haService("climate", "set_hvac_mode", { entity_id: ent.entity, hvac_mode: "off" });
+    const ok = await haService("climate", "set_hvac_mode", { entity_id: ent.entity, hvac_mode: "off" });
+    if (!ok && cached) stateCache.set(ent.entity, cached);
   } else {
     const mem      = _acCardState.get(ent.entity);
     const lastMode = (mem?.mode && mem.mode !== "off") ? mem.mode
       : (cached?.attributes?.hvac_mode && cached.attributes.hvac_mode !== "off" ? cached.attributes.hvac_mode : "cool");
     stateCache.set(ent.entity, { ...cached, state: lastMode, attributes: { ...(cached?.attributes || {}), hvac_mode: lastMode } });
-    await haService("climate", "set_hvac_mode", { entity_id: ent.entity, hvac_mode: lastMode });
+    const ok = await haService("climate", "set_hvac_mode", { entity_id: ent.entity, hvac_mode: lastMode });
+    if (!ok && cached) stateCache.set(ent.entity, cached);
   }
   _ov3AcRefreshSlide(idx);
 }
@@ -17516,10 +17523,17 @@ async function _ov3AcSetMode(idx, mode) {
   const ent    = _ov3AcEntities[idx];
   if (!ent) return;
   const cached = haGetCached(ent.entity);
+  const prevAcState = _acCardState.get(ent.entity);
   stateCache.set(ent.entity, { ...cached, state: mode, attributes: { ...(cached?.attributes || {}), hvac_mode: mode } });
-  _acCardState.set(ent.entity, { ...(_acCardState.get(ent.entity) || {}), isOn: true, mode });
+  _acCardState.set(ent.entity, { ...(prevAcState || {}), isOn: true, mode });
   _ov3AcRefreshSlide(idx);
-  await haService("climate", "set_hvac_mode", { entity_id: ent.entity, hvac_mode: mode });
+  const ok = await haService("climate", "set_hvac_mode", { entity_id: ent.entity, hvac_mode: mode });
+  if (!ok) {
+    if (cached) stateCache.set(ent.entity, cached);
+    if (prevAcState) _acCardState.set(ent.entity, prevAcState);
+    else _acCardState.delete(ent.entity);
+    _ov3AcRefreshSlide(idx);
+  }
 }
 
 /* Set fan speed for a specific slide */
@@ -18102,16 +18116,21 @@ function _refreshOv3Aqi() {
 }
 
 /* ─── OV3 GARDEN CARD — soil moisture per plant ──────────────────────────── */
-function toggleEntity(entityId, btn) {
+async function toggleEntity(entityId, btn) {
   const isOn = btn.classList.contains("on");
   const domain = entityId.split(".")[0];
-  haService(domain, isOn ? "turn_off" : "turn_on", entityId);
+  const prevCached = haGetCached(entityId);
   btn.classList.toggle("on", !isOn);
   // Optimistically update the cache so the 2s refresh doesn't snap back
-  const cached = haGetCached(entityId);
-  if (cached) {
-    const updated = { ...cached, state: isOn ? "off" : "on" };
+  if (prevCached) {
+    const updated = { ...prevCached, state: isOn ? "off" : "on" };
     stateCache.set(entityId, updated);
+  }
+  const ok = await haService(domain, isOn ? "turn_off" : "turn_on", entityId);
+  if (!ok) {
+    // Revert — the command never actually applied.
+    btn.classList.toggle("on", isOn);
+    if (prevCached) stateCache.set(entityId, prevCached);
   }
 }
 let _ov3IrrSubs = null; // cached irrigation sub-entities for one-time build
