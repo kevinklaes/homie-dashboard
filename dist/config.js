@@ -567,11 +567,18 @@ const CONFIG = {
    *   label  — display name for the plant
    *   entity — HA sensor entity_id for the soil moisture reading
    *   unit   — unit of measurement (default "%")
+   *   min    — (optional) this plant's dry threshold %. Falls back to
+   *            thresholds.dryBelow below if not set.
+   *   max    — (optional) this plant's overwatered threshold %. Falls back
+   *            to thresholds.wetAbove below if not set.
    *
-   * Moisture thresholds (used for colour coding):
-   *   dryBelow  — below this % → dry (amber warning)
-   *   wetAbove  — above this % → overwatered (blue warning)
-   *   (between the two → healthy, green)
+   * Colour coding (uses each plant's own min/max):
+   *   below min or above max → red (too dry / overwatered)
+   *   within [min, max], bottom 20% of the range → yellow (getting dry)
+   *   within [min, max], remaining 80% of the range → green (healthy)
+   *
+   * thresholds.dryBelow/wetAbove are the fallback min/max used for any
+   * plant above that doesn't specify its own min/max.
    * ──────────────────────────────────────────────────────────────────────── */
   garden: {
     soilMoisture: [
@@ -583,13 +590,14 @@ const CONFIG = {
       { label: "Plant 6", entity: "YOUR_SOIL_MOISTURE_6_ENTITY", unit: "%" },
       { label: "Plant 7", entity: "YOUR_SOIL_MOISTURE_7_ENTITY", unit: "%" },
       { label: "Plant 8", entity: "YOUR_SOIL_MOISTURE_8_ENTITY", unit: "%" },
-      // Add more plants below — copy and paste a line above:
-      // { label: "Plant x", entity: "YOUR_SOIL_MOISTURE_X_ENTITY", unit: "%" },
+      // Add more plants below — copy and paste a line above. Add min/max
+      // for a plant-specific range, or omit them to use the fallback below:
+      // { label: "Plant x", entity: "YOUR_SOIL_MOISTURE_X_ENTITY", unit: "%", min: 15, max: 35 },
     ],
 
     thresholds: {
-      dryBelow: 30,   // % — below this → dry (show amber)
-      wetAbove: 80,   // % — above this → overwatered (show blue)
+      dryBelow: 30,   // % — fallback min for plants without their own min
+      wetAbove: 80,   // % — fallback max for plants without their own max
     },
   },
 

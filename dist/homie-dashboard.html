@@ -5489,9 +5489,9 @@
     color: rgba(255,255,255,0.85);
     letter-spacing: 0.02em;
   }
-  .ov3-garden-stat-value.moisture-dry  { color: #f0a040; }
-  .ov3-garden-stat-value.moisture-wet  { color: #60a5fa; }
-  .ov3-garden-stat-value.moisture-good { color: #4cef7a; }
+  .ov3-garden-stat-value.moisture-critical { color: #f04040; }
+  .ov3-garden-stat-value.moisture-warning  { color: #f0d040; }
+  .ov3-garden-stat-value.moisture-good     { color: #4cef7a; }
 
   /* Dot indicators — only rendered when more than 8 plants are configured */
   .ov3-garden-dots {
@@ -18090,7 +18090,7 @@ function _ov3GardenScrollTo(idx) {
 
 function _refreshOv3Garden() {
   const gardenCfg = (CONFIG.garden && CONFIG.garden.soilMoisture) ? CONFIG.garden.soilMoisture : [];
-  const thresholds = CONFIG.garden && CONFIG.garden.thresholds
+  const fallback = CONFIG.garden && CONFIG.garden.thresholds
     ? CONFIG.garden.thresholds
     : { dryBelow: 30, wetAbove: 80 };
 
@@ -18111,10 +18111,17 @@ function _refreshOv3Garden() {
     el.textContent = isNaN(val) ? "—" : Math.round(val) + unit;
     if (isNaN(val)) {
       el.className = "ov3-garden-stat-value";
-    } else if (val < thresholds.dryBelow) {
-      el.className = "ov3-garden-stat-value moisture-dry";
-    } else if (val > thresholds.wetAbove) {
-      el.className = "ov3-garden-stat-value moisture-wet";
+      return;
+    }
+    // Per-plant min/max, falling back to the global thresholds (dryBelow/wetAbove)
+    // for any plant that doesn't specify its own.
+    const min = (typeof plant.min === "number") ? plant.min : fallback.dryBelow;
+    const max = (typeof plant.max === "number") ? plant.max : fallback.wetAbove;
+    const yellowCutoff = min + (max - min) * 0.2;
+    if (val < min || val > max) {
+      el.className = "ov3-garden-stat-value moisture-critical";
+    } else if (val < yellowCutoff) {
+      el.className = "ov3-garden-stat-value moisture-warning";
     } else {
       el.className = "ov3-garden-stat-value moisture-good";
     }
