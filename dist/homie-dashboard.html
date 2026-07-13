@@ -12752,16 +12752,23 @@ async function toggleSubEntity(e, i, j) {
   } else {
     service = isOn ? "turn_off" : "turn_on";
   }
-  el.classList.toggle("on", !isOn);
-  // Update mushroom card pct label if applicable
+  // Snapshot the pre-toggle DOM state so a failed command can restore it
+  // exactly, rather than guessing the binary 0%/100% the forward path uses.
   const pctEl = document.getElementById(`pct-${i}-${j}`);
-  if (pctEl) pctEl.textContent = isOn ? fmtOff() : "100%";
   const fill = document.getElementById(`fill-${i}-${j}`);
   const sl = document.getElementById(`bslider-${i}-${j}`);
+  const swStatusEl = document.getElementById(`swstatus-${i}-${j}`);
+  const prevPctText = pctEl ? pctEl.textContent : null;
+  const prevFillWidth = fill ? fill.style.width : null;
+  const prevSlValue = sl ? sl.value : null;
+  const prevSwStatusText = swStatusEl ? swStatusEl.textContent : null;
+
+  el.classList.toggle("on", !isOn);
+  // Update mushroom card pct label if applicable
+  if (pctEl) pctEl.textContent = isOn ? fmtOff() : "100%";
   if (fill) fill.style.width = isOn ? "0%" : "100%";
   if (sl) sl.value = isOn ? 0 : 100;
   // Update switch card status text if applicable
-  const swStatusEl = document.getElementById(`swstatus-${i}-${j}`);
   if (swStatusEl) swStatusEl.textContent = isOn ? fmtOff() : fmtOn();
   // Close colour panels when turning off
   if (isOn) {
@@ -12782,13 +12789,14 @@ async function toggleSubEntity(e, i, j) {
   }
   const ok = await haService(domain, service, s.entity);
   if (!ok) {
-    // Revert the optimistic UI back to the pre-toggle state — the command
-    // never actually applied, so leaving the toggle flipped would lie to the user.
+    // Revert the optimistic UI back to the exact pre-toggle state — the
+    // command never actually applied, so leaving the toggle flipped would
+    // lie to the user.
     el.classList.toggle("on", isOn);
-    if (pctEl) pctEl.textContent = isOn ? "100%" : fmtOff();
-    if (fill) fill.style.width = isOn ? "100%" : "0%";
-    if (sl) sl.value = isOn ? 100 : 0;
-    if (swStatusEl) swStatusEl.textContent = isOn ? fmtOn() : fmtOff();
+    if (pctEl) pctEl.textContent = prevPctText;
+    if (fill) fill.style.width = prevFillWidth;
+    if (sl) sl.value = prevSlValue;
+    if (swStatusEl) swStatusEl.textContent = prevSwStatusText;
   }
 }
 
