@@ -5147,9 +5147,10 @@
     z-index: 95;
   }
 
-  /* Echo timer and Waze bubble bars centred over the right panel */
+  /* Echo timer, Waze, and LiveTrack bubble bars centred over the right panel */
   body.ov2-active #timer-bubble-bar,
-  body.ov2-active #waze-bubble-bar {
+  body.ov2-active #waze-bubble-bar,
+  body.ov2-active #livetrack-bubble-bar {
     left: calc(220px + (100% - 220px) / 2);
     transform: translateX(-50%);
   }
@@ -6840,7 +6841,8 @@
   body.ov3-active .music-player-bar,
   body.ov3-active .notification-bar,
   body.ov3-active #timer-bubble-bar,
-  body.ov3-active #waze-bubble-bar {
+  body.ov3-active #waze-bubble-bar,
+  body.ov3-active #livetrack-bubble-bar {
     opacity: 0;
     pointer-events: none;
   }
@@ -7845,6 +7847,7 @@
 <div id="notification-bar" class="notification-bar"></div>
 <div id="timer-bubble-bar" class="timer-bubble-bar"></div>
 <div id="waze-bubble-bar" class="timer-bubble-bar"></div>
+<div id="livetrack-bubble-bar" class="timer-bubble-bar"></div>
 <div id="connection-lost-bar" class="connection-lost-bar">
   <div class="connection-lost-dot"></div>
   <span>Connection lost — retrying…</span>
@@ -11036,6 +11039,73 @@ function refreshWazeTravelTime() {
   bar.classList.add("visible");
 }
 
+/* ─── GARMIN LIVETRACK BUBBLE (ha-0zb) ─────────────────────────────────────
+ * refreshLiveTrack — reads CONFIG.liveTrack entries and renders a bubble for
+ * each person whose activeEntity is currently "on", same tier/style as the
+ * Echo timer and Waze bubbles. Tapping a bubble opens that person's
+ * LiveTrack URL in a new tab.
+ * ─────────────────────────────────────────────────────────────────────── */
+let _liveTrackActive = [];
+
+function _getActiveLiveTrack() {
+  const entries = (typeof CONFIG !== "undefined" && CONFIG.liveTrack) ? CONFIG.liveTrack : [];
+  const INACTIVE = ["unavailable", "unknown", "none", ""];
+  return entries.map(cfg => {
+    const activeState = haGetCached(cfg.activeEntity);
+    if (!activeState || activeState.state !== "on") return null;
+    const urlState = cfg.urlEntity ? haGetCached(cfg.urlEntity) : null;
+    const elapsedState = cfg.elapsedEntity ? haGetCached(cfg.elapsedEntity) : null;
+    const hrState = cfg.heartRateEntity ? haGetCached(cfg.heartRateEntity) : null;
+    return {
+      label: cfg.label ?? "Activity",
+      url: urlState && !INACTIVE.includes(urlState.state) ? urlState.state : null,
+      elapsed: elapsedState && !INACTIVE.includes(elapsedState.state) ? elapsedState.state : null,
+      hr: hrState && !INACTIVE.includes(hrState.state) ? hrState.state : null,
+    };
+  }).filter(Boolean);
+}
+
+function refreshLiveTrack() {
+  const bar = document.getElementById("livetrack-bubble-bar");
+  if (!bar) return;
+
+  const active = _getActiveLiveTrack();
+  _liveTrackActive = active;
+  if (!active.length) {
+    bar.classList.remove("visible");
+    bar.innerHTML = "";
+    return;
+  }
+
+  // Position: stack below notification/echo-timer/waze bubble bars if visible
+  const notifBar = document.getElementById("notification-bar");
+  const timerBar = document.getElementById("timer-bubble-bar");
+  const wazeBar = document.getElementById("waze-bubble-bar");
+  let offset = 8;
+  if (notifBar && notifBar.classList.contains("visible")) offset += (notifBar.offsetHeight || 36) + 6;
+  if (timerBar && timerBar.classList.contains("visible")) offset += (timerBar.offsetHeight || 28) + 6;
+  if (wazeBar && wazeBar.classList.contains("visible")) offset += (wazeBar.offsetHeight || 28) + 6;
+  bar.style.top = `calc(var(--top-bar-h, 115px) + ${offset}px)`;
+
+  const runIcon = `<svg class="timer-bubble-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M4 17l3-3 3 1 4-5"/><path d="M13 8l3 3-2 5"/></svg>`;
+  bar.innerHTML = active.map((t, i) => {
+    const parts = [];
+    if (t.elapsed != null) parts.push(`${Math.round(parseFloat(t.elapsed))}m`);
+    if (t.hr != null) parts.push(`${t.hr} bpm`);
+    const stats = parts.length ? ` · ${escapeHtml(parts.join(" · "))}` : "";
+    const sep = i < active.length - 1 ? '<span class="timer-bubble-sep">·</span>' : "";
+    return `<div class="timer-bubble-item" onclick="openLiveTrack(${i})">${runIcon}<span class="timer-bubble-label">${escapeHtml(t.label)}${stats}</span></div>${sep}`;
+  }).join("");
+  bar.classList.add("visible");
+}
+
+function openLiveTrack(idx) {
+  const t = _liveTrackActive[idx];
+  if (!t || !t.url) return;
+  haptic("light");
+  window.open(t.url, "_blank");
+}
+
 async function dismissNotification(entity) {
   haptic("light");
   const domain = entity.split(".")[0];
@@ -13489,6 +13559,7 @@ function refreshAllUI() {
   refreshNotifications(); // always refresh — notification bar sits outside popup stack
   refreshEchoTimers();     // always refresh — timer bubble sits outside popup stack
   refreshWazeTravelTime(); // always refresh — waze bubble sits outside popup stack
+  refreshLiveTrack();      // always refresh — livetrack bubble sits outside popup stack
   _refreshOv3GreetingBubbles();
   const popupOpen = isPopupOpen();
   if (!popupOpen) {
