@@ -559,6 +559,25 @@ const CONFIG = {
     },
   ],
 
+  /* ── GARMIN LIVETRACK (ha-0zb) ────────────────────────────────────────────
+   * Shows a bubble (same tier/style as Echo timers and Waze travel time)
+   * only while that person's LiveTrack activity is active. Tap the bubble
+   * to open their live map in a new tab.
+   *
+   * label           — text shown in the bubble (e.g. "Person 1")
+   * activeEntity    — input_boolean gating visibility ("on" = show)
+   * urlEntity       — sensor holding the LiveTrack deep-link URL
+   * elapsedEntity   — (optional) sensor with elapsed minutes
+   * heartRateEntity — (optional) sensor with current heart rate (bpm)
+   *
+   * These entities are typically produced by parsing Garmin LiveTrack share
+   * emails (noreply@garmin.com) into HA helpers/sensors -- add one entry per
+   * person you want a bubble for, or leave the array empty to disable.
+   * ──────────────────────────────────────────────────────────────────────── */
+  liveTrack: [
+    // { label: "Person 1", activeEntity: "YOUR_LIVETRACK_1_ACTIVE_ENTITY", urlEntity: "YOUR_LIVETRACK_1_URL_ENTITY", elapsedEntity: "YOUR_LIVETRACK_1_ELAPSED_ENTITY", heartRateEntity: "YOUR_LIVETRACK_1_HEARTRATE_ENTITY" },
+  ],
+
   /* ── GARDEN ──────────────────────────────────────────────────────────────
    * Soil moisture sensors for your plants.
    * Add as many entries as you like — one per plant.
