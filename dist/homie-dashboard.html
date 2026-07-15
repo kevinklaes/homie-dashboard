@@ -17991,6 +17991,17 @@ function _renderOv3DailyForecast() {
   }).join("");
 }
 
+// Fixed AQI bands — bg and color always defined regardless of CONFIG.aqi.bands.
+// Shared by the weather card's AQI stat and the standalone OV3 AQI card.
+const OV3_AQI_BANDS = [
+  { max:  50,      label: "Good",                      color: "#4cef9a", bg: "linear-gradient(135deg, #1a5c3a 0%, #0f3d26 100%)" },
+  { max: 100,      label: "Moderate",                  color: "#f0c040", bg: "linear-gradient(135deg, #5c4a00 0%, #3d3000 100%)" },
+  { max: 150,      label: "Unhealthy for Sensitive",   color: "#f09050", bg: "linear-gradient(135deg, #5c2e00 0%, #3d1e00 100%)" },
+  { max: 200,      label: "Unhealthy",                 color: "#f05050", bg: "linear-gradient(135deg, #5c1010 0%, #3d0808 100%)" },
+  { max: 300,      label: "Very Unhealthy",            color: "#c060d0", bg: "linear-gradient(135deg, #3d0f5c 0%, #280033 100%)" },
+  { max: Infinity, label: "Hazardous",                 color: "#ff4060", bg: "linear-gradient(135deg, #5c0018 0%, #3d0010 100%)" },
+];
+
 function _refreshOv3Weather() {
   if (!CONFIG.weather || !CONFIG.weather.entity) return;
   const d = haGetCached(CONFIG.weather.entity);
