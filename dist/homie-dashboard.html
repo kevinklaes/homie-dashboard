@@ -8091,6 +8091,13 @@
             </span>
             <span class="ov3-wx-stat-value" id="ov3-wx-cloud">—</span>
           </div>
+          <div class="ov3-wx-stat-row">
+            <span class="ov3-wx-stat-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="8" r="1.4"/><circle cx="13" cy="5" r="1.8"/><circle cx="18" cy="10" r="1.4"/><circle cx="9" cy="14" r="2"/><circle cx="16" cy="17" r="1.6"/></svg>
+              Air Quality
+            </span>
+            <span class="ov3-wx-stat-value" id="ov3-wx-aqi">—</span>
+          </div>
         </div>
         <!-- Swipeable forecast area: panel 1 = 5-day, panel 2 = hourly chart -->
         <div class="ov3-wx-scroll" id="ov3-wx-scroll">
@@ -18054,6 +18061,17 @@ function _refreshOv3Weather() {
   _s("ov3-wx-uv",       uv);
   _s("ov3-wx-cloud",    cloud);
 
+  // AQI — reuses CONFIG.aqi and the same banding scheme as the standalone AQI card
+  const aqiEl = document.getElementById("ov3-wx-aqi");
+  if (aqiEl) {
+    const aqiCfg = CONFIG.aqi || {};
+    const aqiD   = aqiCfg.entity ? haGetCached(aqiCfg.entity) : null;
+    const aqiVal = aqiD ? parseFloat(aqiD.state) : NaN;
+    const band   = isNaN(aqiVal) ? null : OV3_AQI_BANDS.find(b => aqiVal <= b.max) || OV3_AQI_BANDS[OV3_AQI_BANDS.length - 1];
+    aqiEl.textContent = isNaN(aqiVal) ? "—" : `${Math.round(aqiVal)} ${band.label}`;
+    aqiEl.style.color = band ? band.color : "";
+  }
+
   // Sunrise / Sunset
   (function() {
     const sunCfg = CONFIG.sun || {};
@@ -18168,16 +18186,6 @@ function _refreshOv3Aqi() {
   const numEl   = document.getElementById("ov3-aqi-number");
   const badgeEl = document.getElementById("ov3-aqi-badge");
   if (!numEl) return;
-
-  // Fixed bands — bg and color always defined regardless of CONFIG.aqi.bands
-  const OV3_AQI_BANDS = [
-    { max:  50,      label: "Good",                      color: "#4cef9a", bg: "linear-gradient(135deg, #1a5c3a 0%, #0f3d26 100%)" },
-    { max: 100,      label: "Moderate",                  color: "#f0c040", bg: "linear-gradient(135deg, #5c4a00 0%, #3d3000 100%)" },
-    { max: 150,      label: "Unhealthy for Sensitive",   color: "#f09050", bg: "linear-gradient(135deg, #5c2e00 0%, #3d1e00 100%)" },
-    { max: 200,      label: "Unhealthy",                 color: "#f05050", bg: "linear-gradient(135deg, #5c1010 0%, #3d0808 100%)" },
-    { max: 300,      label: "Very Unhealthy",            color: "#c060d0", bg: "linear-gradient(135deg, #3d0f5c 0%, #280033 100%)" },
-    { max: Infinity, label: "Hazardous",                 color: "#ff4060", bg: "linear-gradient(135deg, #5c0018 0%, #3d0010 100%)" },
-  ];
 
   const band = isNaN(aqi) ? null : OV3_AQI_BANDS.find(b => aqi <= b.max) || OV3_AQI_BANDS[OV3_AQI_BANDS.length - 1];
 
