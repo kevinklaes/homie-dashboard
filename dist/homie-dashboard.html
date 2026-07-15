@@ -6833,6 +6833,104 @@
     flex-shrink: 0;
   }
 
+  /* ── OV3 Stocks card (col 2, row 4) ──────────────────────────────────────
+   * Hidden unless CONFIG.stocks is configured (body.ov3-has-stocks set by
+   * _refreshOv3Stocks). When active, the calendar card shrinks from rows
+   * 3–4 to row 3 and this card takes row 4. */
+  .ov3-stocks-card {
+    grid-column: 2;
+    grid-row: 4;
+    display: none;
+    border-radius: 14px;
+    background: linear-gradient(145deg, rgba(16,34,52,0.92) 0%, rgba(10,22,38,0.88) 100%);
+    border: 1px solid rgba(96,165,250,0.18);
+    padding: 0.6rem 1rem 0.5rem;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    position: relative;
+  }
+  body.ov3-has-stocks .ov3-stocks-card { display: flex; }
+  body.ov3-has-stocks .ov3-events-card { grid-row: 3; }
+  .ov3-stocks-badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(96,165,250,0.85);
+    flex-shrink: 0;
+  }
+  .ov3-stocks-launch-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 26px;
+    height: 26px;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 2;
+  }
+  .ov3-stocks-launch-btn:active { opacity: 0.6; }
+  .ov3-stocks-idx-row {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    align-items: center;
+  }
+  .ov3-stocks-idx-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+  .ov3-stocks-idx-item + .ov3-stocks-idx-item {
+    border-left: 1px solid rgba(255,255,255,0.12);
+  }
+  .ov3-stocks-idx-label {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+  .ov3-stocks-idx-value {
+    font-size: 1rem;
+    font-weight: 300;
+    color: #fff;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .ov3-stocks-idx-chg { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; }
+  .stocks-chg-up   { color: #4caf8a; }
+  .stocks-chg-down { color: #e05a5a; }
+  .stocks-chg-flat { color: rgba(255,255,255,0.5); }
+  .ov3-stocks-ticker-row {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-shrink: 0;
+    padding-top: 4px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .ov3-stocks-ticker-row::-webkit-scrollbar { display: none; }
+  .ov3-stocks-tkr {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    flex-shrink: 0;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+  .ov3-stocks-tkr-sym { color: rgba(255,255,255,0.8); font-weight: 600; }
+  .ov3-stocks-tkr-chg { font-weight: 600; }
+
   /* Body class for ov3 — hide all screen-1 fixed chrome; ov3 is self-contained */
   body.ov3-active .top-bar,
   body.ov3-active .top-center,
@@ -7743,6 +7841,234 @@
   }
   .sfs-node-active { animation: sfs-node-pulse 2s ease-in-out infinite; }
 
+  /* ═══ STOCKS FULLSCREEN OVERLAY (hd-96o) ═══
+   * Same overlay mechanics as #solar-fs-overlay: fixed, fades in via .open,
+   * closed by swipe-down / Escape / the exit gesture. */
+  #stocks-fs-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 600;
+    background: #04101e;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: inherit;
+  }
+  #stocks-fs-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .stfs-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse at 15% 20%, rgba(96,165,250,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 80%, rgba(76,175,138,0.08) 0%, transparent 50%),
+      linear-gradient(160deg, #04101e 0%, #071b30 50%, #04101e 100%);
+  }
+  .stfs-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(96,165,250,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(96,165,250,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .stfs-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 3rem 2rem 2rem;
+    gap: 1rem;
+  }
+  /* ── Market indices header row ── */
+  .stfs-idx-row {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 700px;
+    justify-content: center;
+  }
+  .stfs-idx-card {
+    flex: 1;
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(96,165,250,0.15);
+    border-radius: 8px;
+    padding: 0.7rem 0.6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    min-width: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .stfs-idx-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(96,165,250,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .stfs-idx-label {
+    font-size: 8px;
+    letter-spacing: 0.28em;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
+  }
+  .stfs-idx-value {
+    font-size: 1.2rem;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    color: #fff;
+    line-height: 1;
+  }
+  .stfs-idx-chg { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; }
+  /* ── Ticker switcher pills ── */
+  .stfs-ticker-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 700px;
+  }
+  .stfs-ticker-tab {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 999px;
+    color: rgba(255,255,255,0.65);
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    padding: 6px 14px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .stfs-ticker-tab.active {
+    color: #fff;
+    border-color: rgba(96,165,250,0.7);
+    background: rgba(96,165,250,0.15);
+  }
+  .stfs-ticker-tab:active { opacity: 0.6; }
+  /* ── Selected ticker hero ── */
+  .stfs-hero {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    max-width: 700px;
+  }
+  .stfs-hero-name {
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+  }
+  .stfs-hero-price {
+    font-size: 2.2rem;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    color: #fff;
+    line-height: 1;
+  }
+  .stfs-hero-chg { font-size: 14px; font-weight: 600; letter-spacing: 0.03em; }
+  /* ── Day chart ── */
+  .stfs-chart-row {
+    width: 100%;
+    max-width: 700px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(96,165,250,0.12);
+    border-radius: 8px;
+    padding: 0.8rem 1rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .stfs-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .stfs-chart-title {
+    font-size: 8px;
+    letter-spacing: 0.28em;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
+  }
+  .stfs-chart-area {
+    position: relative;
+    width: 100%;
+    height: 150px;
+  }
+  .stfs-chart-area svg { display: block; overflow: visible; }
+  .stfs-chart-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+  }
+  .stfs-chart-xaxis {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2px;
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    color: #ffffff;
+  }
+  /* ── Per-ticker detail stats row ── */
+  .stfs-stats-row {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 700px;
+    justify-content: center;
+  }
+  .stfs-stat-card {
+    flex: 1;
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(96,165,250,0.12);
+    border-radius: 8px;
+    padding: 0.7rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .stfs-stat-value {
+    font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    color: #fff;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .stfs-stat-label {
+    font-size: 8px;
+    letter-spacing: 0.24em;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.3;
+  }
+
 </style>
 </head>
 <body>
@@ -8397,6 +8723,25 @@
         </div>
         <div class="ov3-events-list" id="ov3-events-list">
           <div class="ov3-events-empty">Loading…</div>
+        </div>
+      </div>
+
+      <!-- Stocks card (col 2, row 4) — shown only when CONFIG.stocks is configured -->
+      <div class="ov3-stocks-card" id="ov3-stocks-card">
+        <button class="ov3-stocks-launch-btn" onclick="openStocksFS()" title="Open Stocks Dashboard" aria-label="Open Stocks Dashboard">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9"/>
+            <polyline points="9 21 3 21 3 15"/>
+            <line x1="21" y1="3" x2="14" y2="10"/>
+            <line x1="3" y1="21" x2="10" y2="14"/>
+          </svg>
+        </button>
+        <div class="ov3-stocks-badge">Markets</div>
+        <div class="ov3-stocks-idx-row" id="ov3-stocks-idx-row">
+          <!-- populated by _refreshOv3Stocks() -->
+        </div>
+        <div class="ov3-stocks-ticker-row" id="ov3-stocks-ticker-row">
+          <!-- populated by _refreshOv3Stocks() -->
         </div>
       </div>
 
@@ -9992,6 +10337,339 @@ function _sfsDraw(data) {
       labels.push(disp);
     }
     xax.innerHTML = labels.map(l => `<span>${l}</span>`).join('');
+  }
+}
+
+/* ─── STOCKS (hd-96o) ──────────────────────────────────────────────────────
+ * Market-index header + ticker card on OV3 and the full-screen day-chart
+ * view. Quotes are yahoofinance sensors read via haGetCached (state = price,
+ * attributes = day high/low, volume, previous close…); the day chart comes
+ * from HA's recorder history of the same sensor — no third-party API is
+ * called from the browser.
+ * ────────────────────────────────────────────────────────────────────────── */
+
+function _stocksCfg() {
+  const cfg = CONFIG.stocks || {};
+  return {
+    indices: Array.isArray(cfg.indices) ? cfg.indices : [],
+    tickers: Array.isArray(cfg.tickers) ? cfg.tickers : [],
+  };
+}
+
+/**
+ * _stockQuote — normalised quote for one yahoofinance sensor.
+ * Returns null when the entity has no cached state yet; chg/chgPct fall back
+ * to a previous-close computation when the attributes are missing.
+ */
+function _stockQuote(entity) {
+  const d = entity ? haGetCached(entity) : null;
+  if (!d || d.state === "unavailable" || d.state === "unknown") return null;
+  const price = parseFloat(d.state);
+  if (isNaN(price)) return null;
+  const a = d.attributes || {};
+  let chg    = typeof a.regularMarketChange === "number" ? a.regularMarketChange : null;
+  let chgPct = typeof a.regularMarketChangePercent === "number" ? a.regularMarketChangePercent : null;
+  const prevClose = typeof a.regularMarketPreviousClose === "number" ? a.regularMarketPreviousClose : null;
+  if (chg === null && prevClose) chg = price - prevClose;
+  if (chgPct === null && prevClose) chgPct = ((price - prevClose) / prevClose) * 100;
+  return { price, chg, chgPct, prevClose, attrs: a };
+}
+
+function _stocksChgClass(v) {
+  if (v === null || isNaN(v) || Math.abs(v) < 0.005) return "stocks-chg-flat";
+  return v > 0 ? "stocks-chg-up" : "stocks-chg-down";
+}
+
+function _fmtStockPrice(v) {
+  if (v === null || isNaN(v)) return "—";
+  return v >= 1000
+    ? v.toLocaleString("en-US", { maximumFractionDigits: 0 })
+    : v.toFixed(2);
+}
+
+function _fmtStockPct(v) {
+  if (v === null || isNaN(v)) return "";
+  return `${v > 0 ? "+" : ""}${v.toFixed(2)}%`;
+}
+
+function _fmtStockVolume(v) {
+  if (v === null || isNaN(v)) return "—";
+  if (v >= 1e9) return (v / 1e9).toFixed(2) + "B";
+  if (v >= 1e6) return (v / 1e6).toFixed(1) + "M";
+  if (v >= 1e3) return (v / 1e3).toFixed(1) + "K";
+  return String(Math.round(v));
+}
+
+/* ── OV3 card ── */
+function _refreshOv3Stocks() {
+  const { indices, tickers } = _stocksCfg();
+  const configured = indices.length > 0 || tickers.length > 0;
+  document.body.classList.toggle("ov3-has-stocks", configured);
+  if (!configured) return;
+
+  const idxRow = document.getElementById("ov3-stocks-idx-row");
+  if (idxRow) {
+    idxRow.innerHTML = indices.map(idx => {
+      const q = _stockQuote(idx.entity);
+      return `<div class="ov3-stocks-idx-item">
+        <div class="ov3-stocks-idx-label">${escapeHtml(idx.label || "")}</div>
+        <div class="ov3-stocks-idx-value">${_fmtStockPrice(q ? q.price : null)}</div>
+        <div class="ov3-stocks-idx-chg ${_stocksChgClass(q ? q.chgPct : null)}">${q ? _fmtStockPct(q.chgPct) || "—" : "—"}</div>
+      </div>`;
+    }).join("");
+  }
+
+  const tkrRow = document.getElementById("ov3-stocks-ticker-row");
+  if (tkrRow) {
+    tkrRow.style.display = tickers.length ? "" : "none";
+    tkrRow.innerHTML = tickers.map(t => {
+      const q = _stockQuote(t.entity);
+      const sym = t.symbol || t.label || "";
+      return `<span class="ov3-stocks-tkr">
+        <span class="ov3-stocks-tkr-sym">${escapeHtml(sym)}</span>
+        <span>${_fmtStockPrice(q ? q.price : null)}</span>
+        <span class="ov3-stocks-tkr-chg ${_stocksChgClass(q ? q.chgPct : null)}">${q ? _fmtStockPct(q.chgPct) || "—" : "—"}</span>
+      </span>`;
+    }).join("");
+  }
+}
+
+/* ── Fullscreen overlay ── */
+let _stfsOpen = false;
+let _stfsInterval = null;
+let _stfsSelected = 0;              // index into the switchable list (tickers, or indices as fallback)
+const _stfsChartCache = {};         // entity → { points, fetchedAt }
+
+// The FS view switches between configured tickers; if none are configured
+// (indices only), the indices themselves become switchable so the chart
+// area still has something to show.
+function _stfsList() {
+  const { indices, tickers } = _stocksCfg();
+  return tickers.length ? tickers : indices;
+}
+
+function openStocksFS() {
+  haptic("light");
+  _closeLauncher && _closeLauncher();
+  _stfsOpen = true;
+  if (_stfsSelected >= _stfsList().length) _stfsSelected = 0;
+  document.getElementById("stocks-fs-overlay").classList.add("open");
+  _stfsBuildTabs();
+  _stfsRefresh();
+  _stfsInterval = setInterval(_stfsRefresh, 30_000);
+  window._showSwipeDownHint?.();
+}
+
+function closeStocksFS() {
+  haptic("light");
+  _stfsOpen = false;
+  document.getElementById("stocks-fs-overlay").classList.remove("open");
+  clearInterval(_stfsInterval);
+  _stfsInterval = null;
+}
+
+function _stfsSelect(i) {
+  haptic("light");
+  _stfsSelected = i;
+  document.querySelectorAll(".stfs-ticker-tab").forEach((el, n) => el.classList.toggle("active", n === i));
+  _stfsRefresh();
+}
+
+function _stfsBuildTabs() {
+  const tabs = document.getElementById("stfs-ticker-tabs");
+  if (!tabs) return;
+  const list = _stfsList();
+  tabs.style.display = list.length > 1 ? "" : "none";
+  tabs.innerHTML = list.map((t, i) =>
+    `<button class="stfs-ticker-tab${i === _stfsSelected ? " active" : ""}" onclick="_stfsSelect(${i})">${escapeHtml(t.symbol || t.label || "")}</button>`
+  ).join("");
+}
+
+function _stfsRefresh() {
+  const { indices } = _stocksCfg();
+  const list = _stfsList();
+
+  // Market indices header row
+  const idxRow = document.getElementById("stfs-idx-row");
+  if (idxRow) {
+    idxRow.style.display = indices.length ? "" : "none";
+    idxRow.innerHTML = indices.map(idx => {
+      const q = _stockQuote(idx.entity);
+      return `<div class="stfs-idx-card">
+        <div class="stfs-idx-label">${escapeHtml(idx.label || "")}</div>
+        <div class="stfs-idx-value">${_fmtStockPrice(q ? q.price : null)}</div>
+        <div class="stfs-idx-chg ${_stocksChgClass(q ? q.chgPct : null)}">${q ? _fmtStockPct(q.chgPct) || "—" : "—"}</div>
+      </div>`;
+    }).join("");
+  }
+
+  // Selected ticker detail
+  const sel = list[_stfsSelected];
+  const q = sel ? _stockQuote(sel.entity) : null;
+  const a = q ? q.attrs : {};
+
+  document.getElementById("stfs-hero-name").textContent = sel ? (sel.label || sel.symbol || "—") : "—";
+  document.getElementById("stfs-hero-price").textContent = _fmtStockPrice(q ? q.price : null);
+  const chgEl = document.getElementById("stfs-hero-chg");
+  if (chgEl) {
+    const chgTxt = q && q.chg !== null && !isNaN(q.chg)
+      ? `${q.chg > 0 ? "+" : ""}${q.chg >= 1000 || q.chg <= -1000 ? Math.round(q.chg).toLocaleString("en-US") : q.chg.toFixed(2)} (${_fmtStockPct(q.chgPct)})`
+      : "";
+    chgEl.textContent = chgTxt;
+    chgEl.className = `stfs-hero-chg ${_stocksChgClass(q ? q.chgPct : null)}`;
+  }
+
+  const stateEl = document.getElementById("stfs-market-state");
+  if (stateEl) {
+    const ms = a.marketState;
+    stateEl.textContent = ms === "REGULAR" ? "MARKET OPEN"
+      : ms === "PRE" ? "PRE-MARKET"
+      : (ms === "POST" || ms === "POSTPOST") ? "AFTER HOURS"
+      : ms ? "MARKET CLOSED" : "";
+  }
+
+  const _num = v => (typeof v === "number" && !isNaN(v)) ? v : null;
+  document.getElementById("stfs-stat-prevclose").textContent = _fmtStockPrice(_num(a.regularMarketPreviousClose));
+  document.getElementById("stfs-stat-high").textContent      = _fmtStockPrice(_num(a.regularMarketDayHigh));
+  document.getElementById("stfs-stat-low").textContent       = _fmtStockPrice(_num(a.regularMarketDayLow));
+  document.getElementById("stfs-stat-volume").textContent    = _fmtStockVolume(_num(a.regularMarketVolume));
+  const w52lo = _num(a.fiftyTwoWeekLow), w52hi = _num(a.fiftyTwoWeekHigh);
+  document.getElementById("stfs-stat-52w").textContent =
+    (w52lo !== null && w52hi !== null) ? `${_fmtStockPrice(w52lo)}–${_fmtStockPrice(w52hi)}` : "—";
+
+  if (sel) _stfsRefreshChart(sel.entity, q ? q.prevClose : null);
+}
+
+/**
+ * _stfsRefreshChart — fetch today's price history for the selected sensor
+ * from HA's recorder (same /api/history endpoint the solar chart uses) and
+ * redraw. Cached per entity for 5 minutes so tab-switching stays instant.
+ */
+async function _stfsRefreshChart(entity, prevClose) {
+  const now = Date.now();
+  const cached = _stfsChartCache[entity];
+  if (cached && now - cached.fetchedAt < 300_000) {
+    _stfsDrawChart(cached.points, prevClose);
+    return;
+  }
+  if (!HA_TOKEN) return;
+
+  const loading = document.getElementById("stfs-chart-loading");
+  if (loading) { loading.style.display = "flex"; loading.textContent = "Loading…"; }
+
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  let points = [];
+  try {
+    const r = await fetch(
+      `${BASE}/api/history/period/${start.toISOString()}?filter_entity_id=${entity}&end_time=${new Date().toISOString()}&minimal_response`,
+      { headers: { Authorization: `Bearer ${HA_TOKEN}` } }
+    );
+    if (r.ok) {
+      const raw = await r.json();
+      for (const entry of (raw && raw[0]) || []) {
+        const v = parseFloat(entry.state);
+        if (isNaN(v)) continue;
+        points.push({ t: new Date(entry.last_changed).getTime(), v });
+      }
+    }
+  } catch { /* drawn as "no data" below */ }
+
+  // Only cache real data — a failed fetch should retry on the next refresh
+  if (points.length) {
+    _stfsChartCache[entity] = { points, fetchedAt: now };
+  }
+  _stfsDrawChart(points, prevClose);
+}
+
+function _stfsDrawChart(points, prevClose) {
+  const container = document.getElementById("stfs-chart-area");
+  const xax = document.getElementById("stfs-chart-xaxis");
+  const loading = document.getElementById("stfs-chart-loading");
+  if (!container) return;
+
+  const existingSvg = container.querySelector("svg");
+  if (existingSvg) existingSvg.remove();
+
+  if (!points || points.length < 2) {
+    if (loading) {
+      loading.style.display = "flex";
+      loading.textContent = "No intraday history yet";
+    }
+    if (xax) xax.innerHTML = "";
+    return;
+  }
+  if (loading) loading.style.display = "none";
+
+  const W = container.clientWidth || 660;
+  const H = 150;
+  const PAD_L = 44, PAD_R = 8, PAD_T = 8, PAD_B = 4;
+  const chartW = W - PAD_L - PAD_R;
+  const chartH = H - PAD_T - PAD_B;
+
+  const tMin = points[0].t;
+  const tMax = points[points.length - 1].t;
+  const tSpan = Math.max(tMax - tMin, 60_000);
+
+  let vMin = Math.min(...points.map(p => p.v));
+  let vMax = Math.max(...points.map(p => p.v));
+  if (prevClose !== null && !isNaN(prevClose)) {
+    vMin = Math.min(vMin, prevClose);
+    vMax = Math.max(vMax, prevClose);
+  }
+  const vPad = Math.max((vMax - vMin) * 0.08, vMax * 0.0005, 0.01);
+  vMin -= vPad; vMax += vPad;
+  const vSpan = vMax - vMin;
+
+  const x = t => PAD_L + ((t - tMin) / tSpan) * chartW;
+  const y = v => PAD_T + chartH - ((v - vMin) / vSpan) * chartH;
+
+  const last = points[points.length - 1].v;
+  const up = prevClose !== null && !isNaN(prevClose) ? last >= prevClose : last >= points[0].v;
+  const color = up ? "#4caf8a" : "#e05a5a";
+  const rgb = up ? "76,175,138" : "224,90,90";
+
+  let html = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">`;
+
+  // Horizontal grid + y labels (4 steps)
+  const Y_STEPS = 4;
+  for (let i = 0; i <= Y_STEPS; i++) {
+    const gy = PAD_T + (chartH / Y_STEPS) * i;
+    const val = vMax - (vSpan / Y_STEPS) * i;
+    html += `<line x1="${PAD_L}" y1="${gy}" x2="${W - PAD_R}" y2="${gy}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`;
+    html += `<text x="${PAD_L - 5}" y="${gy + 3}" text-anchor="end" font-size="8" fill="#ffffff" font-family="inherit" opacity="0.85">${_fmtStockPrice(val)}</text>`;
+  }
+
+  // Previous-close reference line
+  if (prevClose !== null && !isNaN(prevClose) && prevClose > vMin && prevClose < vMax) {
+    const py = y(prevClose);
+    html += `<line x1="${PAD_L}" y1="${py.toFixed(1)}" x2="${W - PAD_R}" y2="${py.toFixed(1)}" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-dasharray="3,4"/>`;
+  }
+
+  // Area fill under the line
+  const lineCoords = points.map(p => `${x(p.t).toFixed(1)},${y(p.v).toFixed(1)}`);
+  html += `<polygon points="${PAD_L},${PAD_T + chartH} ${lineCoords.join(" ")} ${x(tMax).toFixed(1)},${PAD_T + chartH}" fill="rgba(${rgb},0.12)"/>`;
+  // Price line
+  html += `<polyline points="${lineCoords.join(" ")}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>`;
+  // Last-price dot
+  html += `<circle cx="${x(tMax).toFixed(1)}" cy="${y(last).toFixed(1)}" r="3" fill="${color}"/>`;
+
+  html += "</svg>";
+  container.insertAdjacentHTML("afterbegin", html);
+
+  // X axis: 5 evenly spaced local times across the data range
+  if (xax) {
+    const fmtT = t => {
+      const d = new Date(t);
+      let h = d.getHours();
+      const m = d.getMinutes();
+      const ap = h >= 12 ? "PM" : "AM";
+      h = h % 12 || 12;
+      return `${h}:${String(m).padStart(2, "0")} ${ap}`;
+    };
+    const labels = [];
+    for (let i = 0; i <= 4; i++) labels.push(fmtT(tMin + (tSpan / 4) * i));
+    xax.innerHTML = labels.map(l => `<span>${l}</span>`).join("");
   }
 }
 
@@ -16105,6 +16783,7 @@ document.addEventListener('keydown', e => {
   if (document.getElementById("thermostat-overlay")?.classList.contains("open"))  closeThermostat();
   if (document.getElementById("weather-fs-overlay")?.classList.contains("open"))  closeWeatherFS();
   if (document.getElementById("solar-fs-overlay")?.classList.contains("open"))    closeSolarFS();
+  if (document.getElementById("stocks-fs-overlay")?.classList.contains("open"))   closeStocksFS();
 });
 
 /* ─── END THEME PICKER ─────────────────────────────────────────────────── */
@@ -16691,6 +17370,7 @@ const OV3_SWIPE_EXCLUDE_SELECTOR = ".popup-overlay.open, #daily-overlay, #thermo
     { id: "clock-overlay",       close: () => closeClock()        },
     { id: "weather-fs-overlay",  close: () => closeWeatherFS()    },
     { id: "solar-fs-overlay",    close: () => closeSolarFS()      },
+    { id: "stocks-fs-overlay",   close: () => closeStocksFS()     },
   ];
 
   // ── Hint arrow ──────────────────────────────────────────────────────────
@@ -18568,6 +19248,7 @@ function _refreshOv3() {
   _refreshOv3PurifierCard();
   _refreshOv3FloorsCard();
   _refreshOv3MusicCard();
+  _refreshOv3Stocks();
   if (typeof _updateOv3EnergyCard === "function") _updateOv3EnergyCard();
   // Keep ov3 stat cards in sync with live HA state
   if (typeof window._refreshNotifCount === "function") window._refreshNotifCount();
@@ -21253,6 +21934,69 @@ _applyDailyI18n();
   </div>
 </div>
 
+<!-- ─── STOCKS FULLSCREEN OVERLAY (hd-96o) ─── -->
+<div id="stocks-fs-overlay">
+  <div class="stfs-bg"></div>
+  <div class="stfs-grid"></div>
+
+  <div class="stfs-content">
+
+    <!-- Market indices header: Dow / S&P 500 / Nasdaq -->
+    <div class="stfs-idx-row" id="stfs-idx-row">
+      <!-- populated by _stfsRefresh() -->
+    </div>
+
+    <!-- Ticker switcher pills -->
+    <div class="stfs-ticker-tabs" id="stfs-ticker-tabs">
+      <!-- populated by openStocksFS() -->
+    </div>
+
+    <!-- Selected ticker: name, price, change -->
+    <div class="stfs-hero">
+      <span class="stfs-hero-name" id="stfs-hero-name">—</span>
+      <span class="stfs-hero-price" id="stfs-hero-price">—</span>
+      <span class="stfs-hero-chg" id="stfs-hero-chg"></span>
+    </div>
+
+    <!-- Day chart -->
+    <div class="stfs-chart-row">
+      <div class="stfs-chart-header">
+        <span class="stfs-chart-title">TODAY</span>
+        <span class="stfs-chart-title" id="stfs-market-state"></span>
+      </div>
+      <div class="stfs-chart-area" id="stfs-chart-area">
+        <div id="stfs-chart-loading" class="stfs-chart-loading">Loading…</div>
+      </div>
+      <div id="stfs-chart-xaxis" class="stfs-chart-xaxis"></div>
+    </div>
+
+    <!-- Per-ticker detail stats -->
+    <div class="stfs-stats-row">
+      <div class="stfs-stat-card">
+        <div class="stfs-stat-value" id="stfs-stat-prevclose">—</div>
+        <div class="stfs-stat-label">Prev Close</div>
+      </div>
+      <div class="stfs-stat-card">
+        <div class="stfs-stat-value" id="stfs-stat-high">—</div>
+        <div class="stfs-stat-label">Day High</div>
+      </div>
+      <div class="stfs-stat-card">
+        <div class="stfs-stat-value" id="stfs-stat-low">—</div>
+        <div class="stfs-stat-label">Day Low</div>
+      </div>
+      <div class="stfs-stat-card">
+        <div class="stfs-stat-value" id="stfs-stat-volume">—</div>
+        <div class="stfs-stat-label">Volume</div>
+      </div>
+      <div class="stfs-stat-card">
+        <div class="stfs-stat-value" id="stfs-stat-52w">—</div>
+        <div class="stfs-stat-label">52W Range</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <!-- ── Mood History Overlay ── -->
 <div class="history-overlay" id="mood-history-overlay">
   <div class="history-backdrop" onclick="closeMoodHistory()"></div>
@@ -21384,6 +22128,7 @@ _applyDailyI18n();
       { id: "cameras-overlay",     fn: "closeCameras"      },
       { id: "weather-fs-overlay",  fn: "closeWeatherFS"    },
       { id: "solar-fs-overlay",    fn: "closeSolarFS"      },
+      { id: "stocks-fs-overlay",   fn: "closeStocksFS"     },
     ];
     others.forEach(({ id, fn }) => {
       if (document.getElementById(id)?.classList.contains("open") && typeof window[fn] === "function") {

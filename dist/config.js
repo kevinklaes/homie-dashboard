@@ -620,5 +620,52 @@ const CONFIG = {
     },
   },
 
+  /* ── STOCKS ──────────────────────────────────────────────────────────────
+   * Market-index header + stock ticker card on Overview-3, with a
+   * full-screen day-chart view (tap the card's expand button).
+   *
+   * Quotes come from Home Assistant like every other data source — the
+   * dashboard never calls a stock API directly. Install the "Yahoo Finance"
+   * custom integration (github.com/iprak/yahoofinance) via HACS, then list
+   * your symbols in configuration.yaml:
+   *
+   *   yahoofinance:
+   *     scan_interval:
+   *       minutes: 5        # 5-min samples give the day chart its resolution
+   *     symbols:
+   *       - "^DJI"          # Dow Jones → sensor.yahoofinance_^dji
+   *       - "^GSPC"         # S&P 500   → sensor.yahoofinance_^gspc
+   *       - "^IXIC"         # Nasdaq    → sensor.yahoofinance_^ixic
+   *       - AAPL            #           → sensor.yahoofinance_aapl
+   *
+   * Each sensor's state is the current price; day high/low, volume,
+   * previous close etc. are read from its attributes. The full-screen day
+   * chart is drawn from HA's recorder history of the same sensor, so no
+   * extra entities are needed. Verify the exact entity IDs at
+   * HA → Developer Tools → States (index entities keep the ^ in their ID).
+   *
+   * indices — the three market-index sensors shown in the header row.
+   * tickers — the stocks you follow. Each entry:
+   *   label  — display name shown in the full-screen view (e.g. "Apple")
+   *   symbol — short code shown on the card and ticker pills (e.g. "AAPL")
+   *   entity — the yahoofinance sensor for that symbol
+   *
+   * Delete the whole stocks section (or set both arrays to []) to hide the
+   * card — the calendar card expands to fill the space.
+   * ─────────────────────────────────────────────────────────────────────── */
+  stocks: {
+    indices: [
+      { label: "DOW",     entity: "YOUR_DOW_JONES_ENTITY" },   // e.g. "sensor.yahoofinance_^dji"
+      { label: "S&P 500", entity: "YOUR_SP500_ENTITY"     },   // e.g. "sensor.yahoofinance_^gspc"
+      { label: "NASDAQ",  entity: "YOUR_NASDAQ_ENTITY"    },   // e.g. "sensor.yahoofinance_^ixic"
+    ],
+    tickers: [
+      { label: "Apple",     symbol: "AAPL", entity: "YOUR_STOCK_1_ENTITY" },  // e.g. "sensor.yahoofinance_aapl"
+      { label: "Microsoft", symbol: "MSFT", entity: "YOUR_STOCK_2_ENTITY" },
+      // Add more tickers below — copy and paste a line above:
+      // { label: "NVIDIA", symbol: "NVDA", entity: "sensor.yahoofinance_nvda" },
+    ],
+  },
+
 };
 
