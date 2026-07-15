@@ -10403,12 +10403,12 @@ function _stkFmtVolume(v) {
   return String(Math.round(v));
 }
 
-const STK_INDEX_KEYS = [["dow", "Dow"], ["sp500", "S&P 500"], ["nasdaq", "Nasdaq"]];
+const STK_INDEX_KEYS = ["dow", "sp500", "nasdaq"];
 
 /* ─── OV3 STOCKS CARD — compact market header ─── */
 function _refreshOv3StocksCard() {
   const idxCfg = (CONFIG.stocks && CONFIG.stocks.indices) || {};
-  STK_INDEX_KEYS.forEach(([key]) => {
+  STK_INDEX_KEYS.forEach(key => {
     const q = idxCfg[key] ? _stkReadQuote(idxCfg[key]) : null;
     const valEl = document.getElementById(`ov3-stk-idx-${key}-val`);
     const chgEl = document.getElementById(`ov3-stk-idx-${key}-chg`);
@@ -10469,7 +10469,7 @@ function _stkSelectTicker(idx) {
 
 function _stkRefreshFS() {
   const idxCfg = (CONFIG.stocks && CONFIG.stocks.indices) || {};
-  STK_INDEX_KEYS.forEach(([key]) => {
+  STK_INDEX_KEYS.forEach(key => {
     const q = idxCfg[key] ? _stkReadQuote(idxCfg[key]) : null;
     const valEl = document.getElementById(`stkfs-idx-${key}-val`);
     const chgEl = document.getElementById(`stkfs-idx-${key}-chg`);
