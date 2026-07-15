@@ -5461,7 +5461,7 @@
     overflow: hidden;
     position: relative;
   }
-  /* Swipeable plant-stats scroll container (paginated, 8 plants per page) */
+  /* Swipeable plant-stats scroll container (paginated, 6 plants per page) */
   .ov3-garden-scroll {
     display: flex;
     overflow-x: scroll;
@@ -5516,7 +5516,7 @@
   .ov3-garden-stat-value.moisture-warning  { color: #f0d040; }
   .ov3-garden-stat-value.moisture-good     { color: #4cef7a; }
 
-  /* Dot indicators — only rendered when more than 8 plants are configured */
+  /* Dot indicators — only rendered when more than 6 plants are configured */
   .ov3-garden-dots {
     display: flex;
     justify-content: center;
@@ -18228,8 +18228,8 @@ function _buildOv3GardenIrrigation() {
     </button>`).join('');
 }
 
-const OV3_GARDEN_PLANTS_PER_PAGE = 8;   // 2 rows x 4 items, matching the original fixed layout
-const OV3_GARDEN_PLANTS_PER_ROW  = 4;
+const OV3_GARDEN_PLANTS_PER_PAGE = 6;   // 2 rows x 3 items -- more room per name to avoid wrapping/crowding
+const OV3_GARDEN_PLANTS_PER_ROW  = 3;
 
 function _buildOv3GardenCard() {
   const scroll = document.getElementById("ov3-garden-scroll");
@@ -18240,7 +18240,7 @@ function _buildOv3GardenCard() {
     ? CONFIG.garden.soilMoisture
     : [];
 
-  // Split plants into pages of 8 (2 rows of 4)
+  // Split plants into pages of 6 (2 rows of 3)
   const pages = [];
   for (let i = 0; i < plants.length; i += OV3_GARDEN_PLANTS_PER_PAGE) {
     pages.push(plants.slice(i, i + OV3_GARDEN_PLANTS_PER_PAGE));
