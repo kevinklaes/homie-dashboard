@@ -620,5 +620,50 @@ const CONFIG = {
     },
   },
 
+  /* ── STOCKS (hd-96o) ────────────────────────────────────────────────────
+   * Quotes come from Home Assistant via the "Yahoo Finance" HACS integration
+   * (iprak/yahoofinance) -- same pattern as every other live source on this
+   * dashboard (weather, AQI, garden, LiveTrack): HA does the external API
+   * call, the browser only ever talks to HA. No API key lives in this file.
+   *
+   * One-time setup in Home Assistant:
+   *   1. HACS → Integrations → search "Yahoo Finance" → install, then restart.
+   *   2. Settings → Devices & Services → Add Integration → Yahoo Finance.
+   *   3. Add one symbol per equity you want tracked (e.g. AAPL, MSFT) and one
+   *      per market index using its caret ticker (^DJI, ^GSPC, ^IXIC). Set a
+   *      scan_interval per symbol (60s is a reasonable default for a
+   *      free-tier quote feed -- don't go much lower).
+   *   4. Each symbol creates sensor.yahoofinance_<symbol> (lowercased, e.g.
+   *      sensor.yahoofinance_aapl, sensor.yahoofinance_^dji) with:
+   *        state      = regularMarketPrice
+   *        attributes = regularMarketChange, regularMarketChangePercent,
+   *                     regularMarketDayHigh, regularMarketDayLow,
+   *                     regularMarketPreviousClose, regularMarketVolume,
+   *                     fiftyTwoWeekHigh, fiftyTwoWeekLow, marketState,
+   *                     shortName
+   *
+   * indices — the three major US index sensors shown in the always-visible
+   * market header (Dow, S&P 500, Nasdaq). Leave any entry blank to hide it.
+   *
+   * tickers — one entry per followed equity, shown in the full-screen stocks
+   * view with a day chart and switchable via tap. Each entry:
+   *   label  — display name (e.g. company name or your own nickname)
+   *   entity — HA sensor entity_id for this ticker's quote
+   * ──────────────────────────────────────────────────────────────────────── */
+  stocks: {
+    indices: {
+      dow:    "YOUR_STOCKS_DOW_ENTITY",     // e.g. sensor.yahoofinance_^dji
+      sp500:  "YOUR_STOCKS_SP500_ENTITY",   // e.g. sensor.yahoofinance_^gspc
+      nasdaq: "YOUR_STOCKS_NASDAQ_ENTITY",  // e.g. sensor.yahoofinance_^ixic
+    },
+
+    tickers: [
+      { label: "Ticker 1", entity: "YOUR_STOCKS_TICKER_1_ENTITY" },
+      { label: "Ticker 2", entity: "YOUR_STOCKS_TICKER_2_ENTITY" },
+      // Add more tickers below — copy and paste a line above:
+      // { label: "Apple", entity: "sensor.yahoofinance_aapl" },
+    ],
+  },
+
 };
 

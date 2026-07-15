@@ -6717,10 +6717,10 @@
     padding-right: 10px;
   }
 
-  /* ── OV3 Calendar card (col 2, rows 3–4) ─────────────────────────────────── */
+  /* ── OV3 Calendar card (col 2, row 3) ────────────────────────────────────── */
   .ov3-events-card {
     grid-column: 2;
-    grid-row: 3 / 5;
+    grid-row: 3;
     border-radius: 20px;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.09);
@@ -6832,6 +6832,83 @@
     margin-top: 4px;
     flex-shrink: 0;
   }
+
+  /* ── OV3 Stocks card (col 2, row 4) — market header, tap to open full-screen (hd-96o) ── */
+  .ov3-stocks-card {
+    grid-column: 2;
+    grid-row: 4;
+    border-radius: 14px;
+    background: linear-gradient(145deg, rgba(20,28,58,0.92) 0%, rgba(10,16,36,0.88) 100%);
+    border: 1px solid rgba(90,130,230,0.18);
+    padding: 0.6rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .ov3-stocks-badge {
+    position: absolute;
+    top: 8px;
+    left: 1rem;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+  .ov3-stocks-launch-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 26px;
+    height: 26px;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 2;
+  }
+  .ov3-stocks-launch-btn:active { opacity: 0.6; }
+  .ov3-stocks-indices-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 14px;
+  }
+  .ov3-stocks-index-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex: 1;
+    padding: 2px 0;
+  }
+  .ov3-stocks-index-item + .ov3-stocks-index-item {
+    border-left: 1px solid rgba(255,255,255,0.12);
+  }
+  .ov3-stocks-index-label {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+  .ov3-stocks-index-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    letter-spacing: 0.01em;
+  }
+  .ov3-stocks-index-chg {
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.5);
+  }
+  .ov3-stocks-index-chg.up   { color: #4cef7a; }
+  .ov3-stocks-index-chg.down { color: #f04040; }
 
   /* Body class for ov3 — hide all screen-1 fixed chrome; ov3 is self-contained */
   body.ov3-active .top-bar,
@@ -7743,6 +7820,265 @@
   }
   .sfs-node-active { animation: sfs-node-pulse 2s ease-in-out infinite; }
 
+  /* ─── STOCKS FULLSCREEN OVERLAY (hd-96o) ───────────────────────────────── */
+  #stocks-fs-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 600;
+    background: #05070f;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: inherit;
+  }
+  #stocks-fs-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .stkfs-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse at 15% 15%, rgba(80,120,230,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 85%, rgba(76,239,122,0.08) 0%, transparent 50%),
+      linear-gradient(160deg, #05070f 0%, #0a0f20 50%, #05070f 100%);
+  }
+  .stkfs-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(90,130,230,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(90,130,230,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .stkfs-close {
+    position: absolute;
+    top: 1.4rem;
+    left: 1.4rem;
+    z-index: 20;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .stkfs-close:active { opacity: 0.6; }
+  .stkfs-title {
+    position: absolute;
+    top: 1.8rem;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+  .stkfs-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    overflow-y: auto;
+    padding: 4.5rem 2rem 2rem;
+    gap: 1.2rem;
+  }
+
+  /* Market index header — Dow / S&P / Nasdaq */
+  .stkfs-indices-row {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 700px;
+    justify-content: center;
+  }
+  .stkfs-index-card {
+    flex: 1;
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(90,130,230,0.15);
+    border-radius: 8px;
+    padding: 0.7rem 0.6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    min-width: 0;
+  }
+  .stkfs-index-name {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+  .stkfs-index-val {
+    font-size: 1rem;
+    font-weight: 300;
+    color: #fff;
+  }
+  .stkfs-index-chgv {
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.5);
+  }
+  .stkfs-index-chgv.up   { color: #4cef7a; }
+  .stkfs-index-chgv.down { color: #f04040; }
+
+  /* Ticker switcher pills */
+  .stkfs-pills-row {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 700px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .stkfs-pills-row::-webkit-scrollbar { display: none; }
+  .stkfs-pill {
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .stkfs-pill.active {
+    background: rgba(90,130,230,0.25);
+    border-color: rgba(90,130,230,0.5);
+    color: #fff;
+  }
+  .stkfs-pill-empty {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    padding: 0.4rem 0;
+  }
+
+  /* Selected ticker price header */
+  .stkfs-price-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .stkfs-price-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+  }
+  .stkfs-price-value {
+    font-size: 2.2rem;
+    font-weight: 300;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+  .stkfs-price-chg {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.5);
+  }
+  .stkfs-price-chg.up   { color: #4cef7a; }
+  .stkfs-price-chg.down { color: #f04040; }
+
+  /* Day chart */
+  .stkfs-chart-row {
+    width: 100%;
+    max-width: 700px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(90,130,230,0.1);
+    border-radius: 8px;
+    padding: 0.8rem 1rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .stkfs-chart-title {
+    font-size: 8px;
+    letter-spacing: 0.28em;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+  }
+  .stkfs-chart-area {
+    position: relative;
+    width: 100%;
+    height: 110px;
+  }
+  .stkfs-chart-area svg { display: block; overflow: visible; }
+  .stkfs-chart-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+  }
+  .stkfs-chart-xaxis {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2px;
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* Per-ticker detail stats */
+  .stkfs-stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    width: 100%;
+    max-width: 700px;
+    justify-content: center;
+  }
+  .stkfs-stat-card {
+    flex: 1 1 100px;
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(90,130,230,0.12);
+    border-radius: 8px;
+    padding: 0.6rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    min-width: 90px;
+  }
+  .stkfs-stat-val {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #fff;
+  }
+  .stkfs-stat-lbl {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+  }
+
 </style>
 </head>
 <body>
@@ -8383,7 +8719,7 @@
 
       </div><!-- /.ov3-col3 -->
 
-      <!-- Calendar card (col 2, rows 3–4) -->
+      <!-- Calendar card (col 2, row 3) -->
       <div class="ov3-events-card" id="ov3-events-card">
         <div class="ov3-events-header">
           <button class="ov3-events-open-btn" onclick="openDailyView()" title="Open My Day" style="margin-left:auto">
@@ -8397,6 +8733,36 @@
         </div>
         <div class="ov3-events-list" id="ov3-events-list">
           <div class="ov3-events-empty">Loading…</div>
+        </div>
+      </div>
+
+      <!-- Stocks card (col 2, row 4) -->
+      <div class="ov3-stocks-card" id="ov3-stocks-card">
+        <div class="ov3-stocks-badge">MARKETS</div>
+        <button class="ov3-stocks-launch-btn" onclick="openStocksFS()" title="Open Stocks Dashboard" aria-label="Open Stocks Dashboard">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9"/>
+            <polyline points="9 21 3 21 3 15"/>
+            <line x1="21" y1="3" x2="14" y2="10"/>
+            <line x1="3" y1="21" x2="10" y2="14"/>
+          </svg>
+        </button>
+        <div class="ov3-stocks-indices-row">
+          <div class="ov3-stocks-index-item">
+            <div class="ov3-stocks-index-label">Dow</div>
+            <div class="ov3-stocks-index-value" id="ov3-stk-idx-dow-val">—</div>
+            <div class="ov3-stocks-index-chg" id="ov3-stk-idx-dow-chg">—</div>
+          </div>
+          <div class="ov3-stocks-index-item">
+            <div class="ov3-stocks-index-label">S&amp;P 500</div>
+            <div class="ov3-stocks-index-value" id="ov3-stk-idx-sp500-val">—</div>
+            <div class="ov3-stocks-index-chg" id="ov3-stk-idx-sp500-chg">—</div>
+          </div>
+          <div class="ov3-stocks-index-item">
+            <div class="ov3-stocks-index-label">Nasdaq</div>
+            <div class="ov3-stocks-index-value" id="ov3-stk-idx-nasdaq-val">—</div>
+            <div class="ov3-stocks-index-chg" id="ov3-stk-idx-nasdaq-chg">—</div>
+          </div>
         </div>
       </div>
 
@@ -9985,6 +10351,273 @@ function _sfsDraw(data) {
   if (loading2) loading2.style.display = 'none';
 
   // X axis labels: every 4 hours, 12AM through 12AM (7 labels: 0,4,8,12,16,20,24)
+  if (xax) {
+    const labels = [];
+    for (let h = 0; h <= 24; h += 4) {
+      const disp = h === 0 || h === 24 ? '12 AM' : h === 12 ? '12 PM' : h < 12 ? `${h} AM` : `${h - 12} PM`;
+      labels.push(disp);
+    }
+    xax.innerHTML = labels.map(l => `<span>${l}</span>`).join('');
+  }
+}
+
+/* ─── STOCKS (hd-96o) ───────────────────────────────────────────────────────
+ * Quotes via HA's yahoofinance HACS sensors (see CONFIG.stocks in config.js
+ * for setup instructions). state = regularMarketPrice; attributes carry
+ * change/day-hi-lo/prevClose/volume/52-week range.
+ * ────────────────────────────────────────────────────────────────────────── */
+function _stkReadQuote(entity) {
+  const d = entity ? haGetCached(entity) : null;
+  if (!d || d.state == null || d.state === "unavailable" || d.state === "unknown") return null;
+  const price = parseFloat(d.state);
+  if (isNaN(price)) return null;
+  const a = d.attributes || {};
+  const num = k => (a[k] != null && a[k] !== "" ? parseFloat(a[k]) : null);
+  return {
+    price,
+    change:       num("regularMarketChange"),
+    changePct:    num("regularMarketChangePercent"),
+    dayHigh:      num("regularMarketDayHigh"),
+    dayLow:       num("regularMarketDayLow"),
+    prevClose:    num("regularMarketPreviousClose"),
+    volume:       num("regularMarketVolume"),
+    fiftyTwoHigh: num("fiftyTwoWeekHigh"),
+    fiftyTwoLow:  num("fiftyTwoWeekLow"),
+    name:         a.shortName || null,
+  };
+}
+
+function _stkFmtPrice(v) { return v != null && !isNaN(v) ? v.toFixed(2) : "—"; }
+
+function _stkFmtChg(chg, pct) {
+  if (chg == null || pct == null || isNaN(chg) || isNaN(pct)) return "—";
+  const sign = chg >= 0 ? "+" : "";
+  return `${sign}${chg.toFixed(2)} (${sign}${pct.toFixed(2)}%)`;
+}
+
+function _stkFmtVolume(v) {
+  if (v == null || isNaN(v)) return "—";
+  if (v >= 1e9) return (v / 1e9).toFixed(2) + "B";
+  if (v >= 1e6) return (v / 1e6).toFixed(2) + "M";
+  if (v >= 1e3) return (v / 1e3).toFixed(1) + "K";
+  return String(Math.round(v));
+}
+
+const STK_INDEX_KEYS = [["dow", "Dow"], ["sp500", "S&P 500"], ["nasdaq", "Nasdaq"]];
+
+/* ─── OV3 STOCKS CARD — compact market header ─── */
+function _refreshOv3StocksCard() {
+  const idxCfg = (CONFIG.stocks && CONFIG.stocks.indices) || {};
+  STK_INDEX_KEYS.forEach(([key]) => {
+    const q = idxCfg[key] ? _stkReadQuote(idxCfg[key]) : null;
+    const valEl = document.getElementById(`ov3-stk-idx-${key}-val`);
+    const chgEl = document.getElementById(`ov3-stk-idx-${key}-chg`);
+    if (valEl) valEl.textContent = q ? _stkFmtPrice(q.price) : "—";
+    if (chgEl) {
+      chgEl.textContent = q && q.changePct != null ? `${q.changePct >= 0 ? "+" : ""}${q.changePct.toFixed(2)}%` : "—";
+      chgEl.classList.toggle("up",   !!q && q.changePct > 0);
+      chgEl.classList.toggle("down", !!q && q.changePct < 0);
+    }
+  });
+}
+
+/* ─── STOCKS FULLSCREEN ─── */
+let _stkFsOpen     = false;
+let _stkFsInterval = null;
+let _stkActiveIdx  = 0;
+
+function openStocksFS() {
+  haptic("light");
+  _closeLauncher && _closeLauncher();
+  _stkFsOpen = true;
+  document.getElementById("stocks-fs-overlay").classList.add("open");
+  _stkBuildPills();
+  _stkRefreshFS();
+  _stkFsInterval = setInterval(_stkRefreshFS, 5000);
+  window._showSwipeDownHint?.();
+}
+
+function closeStocksFS() {
+  haptic("light");
+  _stkFsOpen = false;
+  document.getElementById("stocks-fs-overlay").classList.remove("open");
+  clearInterval(_stkFsInterval);
+  _stkFsInterval = null;
+}
+
+function _stkBuildPills() {
+  const tickers = (CONFIG.stocks && Array.isArray(CONFIG.stocks.tickers)) ? CONFIG.stocks.tickers : [];
+  const row = document.getElementById("stkfs-pills-row");
+  if (!row) return;
+  if (!tickers.length) {
+    row.innerHTML = '<div class="stkfs-pill-empty">No tickers configured</div>';
+    return;
+  }
+  if (_stkActiveIdx >= tickers.length) _stkActiveIdx = 0;
+  row.innerHTML = tickers.map((t, i) =>
+    `<button class="stkfs-pill${i === _stkActiveIdx ? " active" : ""}" onclick="_stkSelectTicker(${i})">${escapeHtml(t.label || t.entity)}</button>`
+  ).join('');
+}
+
+function _stkSelectTicker(idx) {
+  haptic("light");
+  _stkActiveIdx = idx;
+  document.querySelectorAll("#stkfs-pills-row .stkfs-pill").forEach((el, i) => el.classList.toggle("active", i === idx));
+  _stkFsChartCache = null; // force a refetch for the newly selected ticker
+  _stkRefreshFS();
+}
+
+function _stkRefreshFS() {
+  const idxCfg = (CONFIG.stocks && CONFIG.stocks.indices) || {};
+  STK_INDEX_KEYS.forEach(([key]) => {
+    const q = idxCfg[key] ? _stkReadQuote(idxCfg[key]) : null;
+    const valEl = document.getElementById(`stkfs-idx-${key}-val`);
+    const chgEl = document.getElementById(`stkfs-idx-${key}-chg`);
+    if (valEl) valEl.textContent = q ? _stkFmtPrice(q.price) : "—";
+    if (chgEl) {
+      chgEl.textContent = q ? _stkFmtChg(q.change, q.changePct) : "—";
+      chgEl.classList.toggle("up",   !!q && q.changePct > 0);
+      chgEl.classList.toggle("down", !!q && q.changePct < 0);
+    }
+  });
+
+  const tickers = (CONFIG.stocks && Array.isArray(CONFIG.stocks.tickers)) ? CONFIG.stocks.tickers : [];
+  const ticker  = tickers[_stkActiveIdx];
+  const priceLabelEl = document.getElementById("stkfs-price-label");
+  const priceValEl   = document.getElementById("stkfs-price-value");
+  const priceChgEl   = document.getElementById("stkfs-price-chg");
+  const statsRow     = document.getElementById("stkfs-stats-row");
+
+  if (!ticker) {
+    if (priceLabelEl) priceLabelEl.textContent = "—";
+    if (priceValEl)   priceValEl.textContent = "—";
+    if (priceChgEl)   priceChgEl.textContent = "—";
+    if (statsRow)      statsRow.innerHTML = "";
+    return;
+  }
+
+  const q = _stkReadQuote(ticker.entity);
+  if (priceLabelEl) priceLabelEl.textContent = ticker.label || (q && q.name) || ticker.entity;
+  if (priceValEl)   priceValEl.textContent = q ? "$" + _stkFmtPrice(q.price) : "—";
+  if (priceChgEl) {
+    priceChgEl.textContent = q ? _stkFmtChg(q.change, q.changePct) : "—";
+    priceChgEl.classList.toggle("up",   !!q && q.changePct > 0);
+    priceChgEl.classList.toggle("down", !!q && q.changePct < 0);
+  }
+
+  if (statsRow) {
+    const stats = q ? [
+      ["Day High",   q.dayHigh      != null ? "$" + _stkFmtPrice(q.dayHigh)      : "—"],
+      ["Day Low",    q.dayLow       != null ? "$" + _stkFmtPrice(q.dayLow)       : "—"],
+      ["Prev Close", q.prevClose    != null ? "$" + _stkFmtPrice(q.prevClose)    : "—"],
+      ["Volume",     q.volume       != null ? _stkFmtVolume(q.volume)            : "—"],
+      ["52W High",   q.fiftyTwoHigh != null ? "$" + _stkFmtPrice(q.fiftyTwoHigh) : "—"],
+      ["52W Low",    q.fiftyTwoLow  != null ? "$" + _stkFmtPrice(q.fiftyTwoLow)  : "—"],
+    ] : [];
+    statsRow.innerHTML = stats.map(([lbl, val]) =>
+      `<div class="stkfs-stat-card"><div class="stkfs-stat-val">${escapeHtml(val)}</div><div class="stkfs-stat-lbl">${escapeHtml(lbl)}</div></div>`
+    ).join('');
+  }
+
+  _stkRefreshChart(ticker);
+}
+
+/* ─── STOCKS DAY CHART — hand-rolled inline SVG (same approach as the solar
+ * hourly chart above), a continuous price line rather than bars since price
+ * is not a cumulative/bucketable quantity. ─── */
+let _stkFsChartCache     = null; // { entity, points: [{t: Date, v: number}] }
+let _stkFsChartLastFetch = 0;
+
+async function _stkRefreshChart(ticker) {
+  const now = Date.now();
+  if (_stkFsChartCache && _stkFsChartCache.entity === ticker.entity && now - _stkFsChartLastFetch < 300_000) {
+    _stkDrawChart(_stkFsChartCache.points);
+    return;
+  }
+  if (!HA_TOKEN) return;
+
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date();
+
+  const loading = document.getElementById('stkfs-chart-loading');
+  if (loading) loading.style.display = 'flex';
+
+  let points = null;
+  try {
+    const r = await fetch(
+      `${BASE}/api/history/period/${start.toISOString()}?filter_entity_id=${ticker.entity}&end_time=${end.toISOString()}&minimal_response`,
+      { headers: { Authorization: `Bearer ${HA_TOKEN}` } }
+    );
+    if (r.ok) {
+      const raw = await r.json();
+      if (raw && raw[0]) {
+        points = raw[0]
+          .map(entry => ({ t: new Date(entry.last_changed), v: parseFloat(entry.state) }))
+          .filter(p => !isNaN(p.v));
+      }
+    }
+  } catch { points = null; }
+
+  if (loading) loading.style.display = 'none';
+  if (!points || !points.length) return;
+
+  _stkFsChartCache = { entity: ticker.entity, points };
+  _stkFsChartLastFetch = now;
+  _stkDrawChart(points);
+}
+
+function _stkDrawChart(points) {
+  const container = document.querySelector('.stkfs-chart-area');
+  const xax = document.getElementById('stkfs-chart-xaxis');
+  if (!container || !points.length) return;
+
+  const W = container.clientWidth || 660;
+  const H = 110;
+  const PAD_L = 38, PAD_R = 6, PAD_T = 10, PAD_B = 4;
+  const chartW = W - PAD_L - PAD_R;
+  const chartH = H - PAD_T - PAD_B;
+
+  const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
+  const dayMs = 24 * 60 * 60 * 1000;
+
+  const vals = points.map(p => p.v);
+  const minV = Math.min(...vals);
+  const maxV = Math.max(...vals);
+  const pad  = (maxV - minV) * 0.08 || Math.max(minV * 0.01, 0.5);
+  const yMin = minV - pad;
+  const yMax = maxV + pad;
+
+  const xFor = t => PAD_L + ((t.getTime() - dayStart.getTime()) / dayMs) * chartW;
+  const yFor = v => PAD_T + chartH - ((v - yMin) / (yMax - yMin)) * chartH;
+
+  const isUp = vals[vals.length - 1] >= vals[0];
+  const lineColor = isUp ? '#4cef7a' : '#f04040';
+
+  let html = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">`;
+
+  const Y_STEPS = 4;
+  for (let i = 0; i <= Y_STEPS; i++) {
+    const y   = PAD_T + (chartH / Y_STEPS) * i;
+    const val = yMax - ((yMax - yMin) / Y_STEPS) * i;
+    html += `<line x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`;
+    html += `<text x="${PAD_L - 4}" y="${y + 3}" text-anchor="end" font-size="7" fill="#ffffff" font-family="inherit" opacity="0.6">${val.toFixed(2)}</text>`;
+  }
+
+  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${xFor(p.t).toFixed(1)},${yFor(p.v).toFixed(1)}`).join(' ');
+  html += `<path d="${pathD}" fill="none" stroke="${lineColor}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+  const lastX = xFor(points[points.length - 1].t).toFixed(1);
+  const firstX = xFor(points[0].t).toFixed(1);
+  html += `<path d="${pathD} L${lastX},${PAD_T + chartH} L${firstX},${PAD_T + chartH} Z" fill="${lineColor}" opacity="0.08"/>`;
+
+  html += '</svg>';
+  const loading2 = container.querySelector('.stkfs-chart-loading');
+  const existingSvg = container.querySelector('svg');
+  if (existingSvg) existingSvg.remove();
+  container.insertAdjacentHTML('afterbegin', html);
+  if (loading2) loading2.style.display = 'none';
+
   if (xax) {
     const labels = [];
     for (let h = 0; h <= 24; h += 4) {
@@ -16105,6 +16738,7 @@ document.addEventListener('keydown', e => {
   if (document.getElementById("thermostat-overlay")?.classList.contains("open"))  closeThermostat();
   if (document.getElementById("weather-fs-overlay")?.classList.contains("open"))  closeWeatherFS();
   if (document.getElementById("solar-fs-overlay")?.classList.contains("open"))    closeSolarFS();
+  if (document.getElementById("stocks-fs-overlay")?.classList.contains("open"))   closeStocksFS();
 });
 
 /* ─── END THEME PICKER ─────────────────────────────────────────────────── */
@@ -16691,6 +17325,7 @@ const OV3_SWIPE_EXCLUDE_SELECTOR = ".popup-overlay.open, #daily-overlay, #thermo
     { id: "clock-overlay",       close: () => closeClock()        },
     { id: "weather-fs-overlay",  close: () => closeWeatherFS()    },
     { id: "solar-fs-overlay",    close: () => closeSolarFS()      },
+    { id: "stocks-fs-overlay",   close: () => closeStocksFS()     },
   ];
 
   // ── Hint arrow ──────────────────────────────────────────────────────────
@@ -18569,6 +19204,7 @@ function _refreshOv3() {
   _refreshOv3FloorsCard();
   _refreshOv3MusicCard();
   if (typeof _updateOv3EnergyCard === "function") _updateOv3EnergyCard();
+  if (typeof _refreshOv3StocksCard === "function") _refreshOv3StocksCard();
   // Keep ov3 stat cards in sync with live HA state
   if (typeof window._refreshNotifCount === "function") window._refreshNotifCount();
   if (CONFIG.alarm && CONFIG.alarm.entity) {
@@ -21253,6 +21889,63 @@ _applyDailyI18n();
   </div>
 </div>
 
+<!-- ── STOCKS FULLSCREEN OVERLAY (hd-96o) ── -->
+<div id="stocks-fs-overlay">
+  <div class="stkfs-bg"></div>
+  <div class="stkfs-grid"></div>
+
+  <button class="stkfs-close" onclick="closeStocksFS()" title="Back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <div class="stkfs-title">MARKETS</div>
+
+  <div class="stkfs-content">
+
+    <!-- Market index header -->
+    <div class="stkfs-indices-row">
+      <div class="stkfs-index-card">
+        <div class="stkfs-index-name">Dow</div>
+        <div class="stkfs-index-val" id="stkfs-idx-dow-val">—</div>
+        <div class="stkfs-index-chgv" id="stkfs-idx-dow-chg">—</div>
+      </div>
+      <div class="stkfs-index-card">
+        <div class="stkfs-index-name">S&amp;P 500</div>
+        <div class="stkfs-index-val" id="stkfs-idx-sp500-val">—</div>
+        <div class="stkfs-index-chgv" id="stkfs-idx-sp500-chg">—</div>
+      </div>
+      <div class="stkfs-index-card">
+        <div class="stkfs-index-name">Nasdaq</div>
+        <div class="stkfs-index-val" id="stkfs-idx-nasdaq-val">—</div>
+        <div class="stkfs-index-chgv" id="stkfs-idx-nasdaq-chg">—</div>
+      </div>
+    </div>
+
+    <!-- Ticker switcher -->
+    <div class="stkfs-pills-row" id="stkfs-pills-row"></div>
+
+    <!-- Selected ticker price -->
+    <div class="stkfs-price-row">
+      <div class="stkfs-price-label" id="stkfs-price-label">—</div>
+      <div class="stkfs-price-value" id="stkfs-price-value">—</div>
+      <div class="stkfs-price-chg" id="stkfs-price-chg">—</div>
+    </div>
+
+    <!-- Day chart -->
+    <div class="stkfs-chart-row">
+      <div class="stkfs-chart-title">TODAY</div>
+      <div class="stkfs-chart-area">
+        <svg id="stkfs-chart-svg" width="100%" height="100%" preserveAspectRatio="none"></svg>
+        <div id="stkfs-chart-loading" class="stkfs-chart-loading">Loading…</div>
+      </div>
+      <div id="stkfs-chart-xaxis" class="stkfs-chart-xaxis"></div>
+    </div>
+
+    <!-- Per-ticker stats -->
+    <div class="stkfs-stats-row" id="stkfs-stats-row"></div>
+
+  </div>
+</div>
+
 <!-- ── Mood History Overlay ── -->
 <div class="history-overlay" id="mood-history-overlay">
   <div class="history-backdrop" onclick="closeMoodHistory()"></div>
@@ -21384,6 +22077,7 @@ _applyDailyI18n();
       { id: "cameras-overlay",     fn: "closeCameras"      },
       { id: "weather-fs-overlay",  fn: "closeWeatherFS"    },
       { id: "solar-fs-overlay",    fn: "closeSolarFS"      },
+      { id: "stocks-fs-overlay",   fn: "closeStocksFS"     },
     ];
     others.forEach(({ id, fn }) => {
       if (document.getElementById(id)?.classList.contains("open") && typeof window[fn] === "function") {
