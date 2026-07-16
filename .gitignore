@@ -1,0 +1,7 @@
+# ── Gas Town beads local state (credentials, locks, audit log — never tracked) ──
+.beads/
+
+# ── OS / editor ────────────────────────────────────────────────────────────────
+.DS_Store
+.vscode/
+.idea/
