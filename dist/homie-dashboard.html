@@ -6647,6 +6647,63 @@
   .ov3-sec-btn--disarm.active svg { stroke: #f28a92; }
   /* Disarmed state badge — red */
   .ov3-security-card .alarm-badge--disarmed { background: rgba(220,50,50,0.15); color: #f28a92; border-color: rgba(220,50,50,0.4); }
+  /* Access panel (no alarm) */
+  .ov3-access-card.garage-open { border-color: rgba(230,57,70,0.55); }
+  .ov3-access-card.lock-open   { border-color: rgba(255,170,60,0.45); }
+  .ov3-access-card.all-secure  { border-color: rgba(50,210,130,0.3); }
+  .access-badge--open     { background: rgba(230,57,70,0.18); color: #ff8a92; border-color: rgba(230,57,70,0.45); }
+  .access-badge--unlocked { background: rgba(255,170,60,0.15); color: #ffc870; border-color: rgba(255,170,60,0.4); }
+  .access-badge--secure   { background: rgba(50,210,130,0.12); color: #6ee7a8; border-color: rgba(50,210,130,0.35); }
+  .ov3-access-status {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 2px 0 4px;
+  }
+  .ov3-access-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+  .ov3-access-value { color: rgba(255,255,255,0.88); font-size: 10px; letter-spacing: 0.08em; }
+  .ov3-access-value.warn { color: #ff9a9f; }
+  .ov3-access-value.ok   { color: #6ee7a8; }
+  .ov3-access-btns { grid-template-columns: 1fr 1fr !important; margin-top: 2px; }
+  #ov3-unlock-btn.active { background: rgba(255,170,60,0.12); border-color: rgba(255,170,60,0.45); color: #ffc870; }
+  #ov3-unlock-btn.active svg { stroke: #ffc870; }
+  #ov3-lock-btn.active { background: rgba(50,210,130,0.12); border-color: rgba(50,210,130,0.4); color: #6ee7a8; }
+  #ov3-lock-btn.active svg { stroke: #6ee7a8; }
+  .topbar-security-btn.garage-open svg { stroke: #ff6b73; }
+  .topbar-security-btn.lock-open svg   { stroke: #ffc870; }
+  #security-overlay.access-mode #security-alarm-panel { display: none; }
+  #security-overlay:not(.access-mode) #security-access-panel { display: none; }
+  .access-overlay-status {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 8px 0 14px;
+  }
+  .access-overlay-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+  .access-overlay-row span:last-child { color: rgba(255,255,255,0.92); }
+  .access-overlay-row span:last-child.warn { color: #ff9a9f; }
+  .access-overlay-row span:last-child.ok   { color: #6ee7a8; }
   /* Arm Away button — green */
   #ov3-alarm-btn-away { color: rgba(50,210,130,0.8); border-color: rgba(50,210,130,0.3); }
   #ov3-alarm-btn-away svg { stroke: rgba(50,210,130,0.8); }
@@ -8633,64 +8690,8 @@
       <!-- Col 3 wrapper — flex column, spans all rows -->
       <div class="ov3-col3">
 
-        <!-- Alarm / Security card (1st) -->
-        <div class="ov3-security-card" id="ov3-security-card">
-          <span id="ov3-alarm-badge" class="alarm-badge alarm-badge--disarmed">DISARMED</span>
-
-          <div class="ov3-sec-scroll" id="ov3-sec-scroll">
-
-            <!-- Page 1: arm modes + siren -->
-            <div class="ov3-sec-panel">
-              <div class="ov3-sec-btns" style="margin-top:5px">
-                <button class="ov3-sec-btn" id="ov3-alarm-btn-home" onclick="alarmAction('arm_home');_ov3SecFeedback('Sending…','')">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
-                  <span>Arm Home</span>
-                </button>
-                <button class="ov3-sec-btn" id="ov3-alarm-btn-away" onclick="alarmAction('arm_away');_ov3SecFeedback('Sending…','')">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.25C17.25 23.15 21 18.25 21 13V7L12 2z"/><circle cx="12" cy="11" r="2"/></svg>
-                  <span>Arm Away</span>
-                </button>
-                <button class="ov3-sec-btn ov3-sec-btn--disarm" id="ov3-alarm-btn-disarm" onclick="alarmAction('disarm');_ov3SecFeedback('Sending…','')">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><line x1="12" y1="15" x2="12" y2="17"/></svg>
-                  <span>Disarm</span>
-                </button>
-              </div>
-              <!-- Siren controls -->
-              <div class="ov3-sec-btns" style="grid-template-columns:1fr 1fr;margin-top:5px">
-                <button class="ov3-sec-btn alarm-mode-btn--siren-on" onclick="securityAction('siren','turn_on')">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                  <span>Siren On</span>
-                </button>
-                <button class="ov3-sec-btn alarm-mode-btn--siren-off" onclick="securityAction('siren','turn_off')">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-                  <span>Siren Off</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Page 2: garage / gate -->
-            <div class="ov3-sec-panel">
-              <div class="alarm-action-section-label" style="margin-top:0">GARAGE / GATE</div>
-              <div class="ov3-sec-btns" style="grid-template-columns:1fr 1fr;margin-top:0">
-                <button class="ov3-sec-btn alarm-mode-btn--garage-open" onclick="securityAction('cover','open_cover')">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="13" width="20" height="8" rx="1"/><polyline points="12 3 12 13"/><polyline points="8 7 12 3 16 7"/></svg>
-                  <span>Open</span>
-                </button>
-                <button class="ov3-sec-btn alarm-mode-btn--garage-close" onclick="securityAction('cover','close_cover')">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="8" rx="1"/><polyline points="12 21 12 11"/><polyline points="8 17 12 21 16 17"/></svg>
-                  <span>Close</span>
-                </button>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="ov3-sec-dots" id="ov3-sec-dots">
-            <div class="ov3-sec-dot active" id="ov3-sec-dot-0" onclick="_ov3SecScrollTo(0)"></div>
-            <div class="ov3-sec-dot" id="ov3-sec-dot-1" onclick="_ov3SecScrollTo(1)"></div>
-            <div id="ov3-sec-feedback" class="ov3-sec-feedback"></div>
-          </div>
-        </div>
+        <!-- Access / Security card (1st) — built by _buildOv3SecurityCard() -->
+        <div class="ov3-security-card" id="ov3-security-card"></div>
 
         <!-- Garden card (2nd) -->
         <div class="ov3-garden-card" id="ov3-garden-card">
@@ -8833,14 +8834,16 @@
   </div>
 </div>
 
-<!-- ─── ALARMO SECURITY OVERLAY ─── -->
+<!-- ─── SECURITY / ACCESS OVERLAY ─── -->
 <div class="popup-overlay" id="security-overlay" onclick="closeSecurityOverlay(event)">
   <div class="popup popup--security">
     <div class="popup-title popup-title--flex">
-      <span>SECURITY</span>
+      <span id="security-overlay-title">SECURITY</span>
       <span id="alarm-status-badge" class="alarm-badge alarm-badge--disarmed">DISARMED</span>
+      <span id="access-status-badge" class="alarm-badge access-badge--secure" style="display:none">ALL SECURE</span>
     </div>
 
+    <div id="security-alarm-panel">
     <!-- Arm mode buttons -->
     <div class="alarm-mode-row">
       <button class="alarm-mode-btn" id="alarm-btn-home" onclick="alarmAction('arm_home')">
@@ -8881,6 +8884,32 @@
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="8" rx="1"/><polyline points="12 21 12 11"/><polyline points="8 17 12 21 16 17"/></svg>
         <span>CLOSE</span>
       </button>
+    </div>
+
+    </div>
+
+    <div id="security-access-panel">
+      <div class="access-overlay-status">
+        <div class="access-overlay-row">
+          <span id="access-overlay-garage-label">Garage Door</span>
+          <span id="access-overlay-garage-value">—</span>
+        </div>
+        <div class="access-overlay-row">
+          <span id="access-overlay-lock-label">Front Door</span>
+          <span id="access-overlay-lock-value">—</span>
+        </div>
+      </div>
+      <div class="alarm-action-section-label">FRONT DOOR</div>
+      <div class="alarm-action-row">
+        <button class="alarm-mode-btn" id="access-lock-btn" onclick="lockAction('lock')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>LOCK</span>
+        </button>
+        <button class="alarm-mode-btn alarm-mode-btn--disarm" id="access-unlock-btn" onclick="lockAction('unlock')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/><line x1="12" y1="15" x2="12" y2="17"/></svg>
+          <span>UNLOCK</span>
+        </button>
+      </div>
     </div>
 
     <div id="alarm-feedback" class="alarm-feedback"></div>
@@ -9237,8 +9266,12 @@ function _wsConnect() {
           // Fetch calendar count now that HA_TOKEN + BASE + CONFIG are confirmed live
           if (typeof window._refreshCalCount === "function") window._refreshCalCount();
           // Seed alarm badge now that the cache is fully populated
-          const _alarmInit = stateCache.get(CONFIG.alarmEntity);
-          if (_alarmInit) refreshAlarmUI(_alarmInit.state);
+          if (_useAccessPanel()) {
+            _refreshAccessUI();
+          } else {
+            const _alarmInit = stateCache.get(CONFIG.alarmEntity);
+            if (_alarmInit) refreshAlarmUI(_alarmInit.state);
+          }
         }
         break;
 
@@ -9250,8 +9283,15 @@ function _wsConnect() {
           if (newState?.entity_id) {
             stateCache.set(newState.entity_id, newState);
             _stateCacheSeenAt.set(newState.entity_id, Date.now());
-            // Keep alarm badge in sync with live WS events
-            if (newState.entity_id === CONFIG.alarmEntity) refreshAlarmUI(newState.state);
+            // Keep alarm / access badge in sync with live WS events
+            if (_useAccessPanel()) {
+              const ap = CONFIG.accessPanel;
+              if (newState.entity_id === ap.lockEntity || newState.entity_id === ap.garageEntity) {
+                _refreshAccessUI();
+              }
+            } else if (newState.entity_id === CONFIG.alarmEntity) {
+              refreshAlarmUI(newState.state);
+            }
             // Only sync AC/purifier derived state when popup is closed
             const popupOpen = document.getElementById("popup-overlay")
               ?.classList.contains("open");
@@ -13748,6 +13788,278 @@ function closePopup(e) {
   document.getElementById("popup")?.classList.remove("popup--compact", "popup--expanded", "popup--narrow", "popup--scene");
 }
 
+/* ─── ACCESS PANEL (lock + garage, no alarm) ─────────────────────────────── */
+
+function _hasAlarmConfigured() {
+  const e = CONFIG.alarmEntity;
+  return !!(e && !/^YOUR_/i.test(e) && e.includes("."));
+}
+
+function _useAccessPanel() {
+  const ap = CONFIG.accessPanel;
+  if (!ap || (!ap.lockEntity && !ap.garageEntity)) return false;
+  return !_hasAlarmConfigured();
+}
+
+function _accessGarageOpen(state, entityId) {
+  const s = String(state || "").toLowerCase();
+  const domain = entityId ? entityId.split(".")[0] : "";
+  if (domain === "cover") return ["open", "opening"].includes(s);
+  return ["on", "open", "opening"].includes(s);
+}
+
+function _accessLockUnlocked(state) {
+  return ["unlocked", "unlocking"].includes(String(state || "").toLowerCase());
+}
+
+function _accessLockLabel(state) {
+  const s = String(state || "").toLowerCase();
+  if (s === "locked") return "Locked";
+  if (s === "unlocked") return "Unlocked";
+  if (s === "locking") return "Locking…";
+  if (s === "unlocking") return "Unlocking…";
+  if (s === "jammed") return "Jammed";
+  return state ? String(state).replace(/_/g, " ") : "—";
+}
+
+function _initSecurityMode() {
+  const access = _useAccessPanel();
+  const overlay = document.getElementById("security-overlay");
+  const title = document.getElementById("security-overlay-title");
+  const secBtn = document.getElementById("security-btn");
+  if (overlay) overlay.classList.toggle("access-mode", access);
+  if (title) title.textContent = access ? "ACCESS" : "SECURITY";
+  if (secBtn) secBtn.title = access ? "Access" : "Security";
+  document.getElementById("alarm-status-badge")?.style.setProperty("display", access ? "none" : "");
+  document.getElementById("access-status-badge")?.style.setProperty("display", access ? "" : "none");
+  if (access) _refreshAccessUI();
+}
+
+function _buildOv3SecurityCard() {
+  const card = document.getElementById("ov3-security-card");
+  if (!card) return;
+
+  if (_useAccessPanel()) {
+    const ap = CONFIG.accessPanel;
+    card.className = "ov3-security-card ov3-access-card";
+    card.innerHTML = `
+      <span id="ov3-access-badge" class="alarm-badge access-badge--secure">—</span>
+      <div class="ov3-access-status">
+        <div class="ov3-access-row">
+          <span class="ov3-access-label">${escapeHtml(ap.garageLabel || "Garage")}</span>
+          <span class="ov3-access-value" id="ov3-access-garage-value">—</span>
+        </div>
+        <div class="ov3-access-row">
+          <span class="ov3-access-label">${escapeHtml(ap.lockLabel || "Lock")}</span>
+          <span class="ov3-access-value" id="ov3-access-lock-value">—</span>
+        </div>
+      </div>
+      <div class="ov3-sec-btns ov3-access-btns">
+        <button class="ov3-sec-btn" id="ov3-lock-btn" onclick="lockAction('lock')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Lock</span>
+        </button>
+        <button class="ov3-sec-btn" id="ov3-unlock-btn" onclick="lockAction('unlock')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/><line x1="12" y1="15" x2="12" y2="17"/></svg>
+          <span>Unlock</span>
+        </button>
+      </div>
+      <div id="ov3-sec-feedback" class="ov3-sec-feedback"></div>`;
+    _refreshAccessUI();
+    return;
+  }
+
+  if (!_hasAlarmConfigured()) {
+    card.style.display = "none";
+    return;
+  }
+
+  card.className = "ov3-security-card";
+  card.style.display = "";
+  card.innerHTML = `
+    <span id="ov3-alarm-badge" class="alarm-badge alarm-badge--disarmed">DISARMED</span>
+    <div class="ov3-sec-scroll" id="ov3-sec-scroll">
+      <div class="ov3-sec-panel">
+        <div class="ov3-sec-btns" style="margin-top:5px">
+          <button class="ov3-sec-btn" id="ov3-alarm-btn-home" onclick="alarmAction('arm_home');_ov3SecFeedback('Sending…','')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+            <span>Arm Home</span>
+          </button>
+          <button class="ov3-sec-btn" id="ov3-alarm-btn-away" onclick="alarmAction('arm_away');_ov3SecFeedback('Sending…','')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.25C17.25 23.15 21 18.25 21 13V7L12 2z"/><circle cx="12" cy="11" r="2"/></svg>
+            <span>Arm Away</span>
+          </button>
+          <button class="ov3-sec-btn ov3-sec-btn--disarm" id="ov3-alarm-btn-disarm" onclick="alarmAction('disarm');_ov3SecFeedback('Sending…','')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><line x1="12" y1="15" x2="12" y2="17"/></svg>
+            <span>Disarm</span>
+          </button>
+        </div>
+        <div class="ov3-sec-btns" style="grid-template-columns:1fr 1fr;margin-top:5px">
+          <button class="ov3-sec-btn alarm-mode-btn--siren-on" onclick="securityAction('siren','turn_on')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            <span>Siren On</span>
+          </button>
+          <button class="ov3-sec-btn alarm-mode-btn--siren-off" onclick="securityAction('siren','turn_off')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+            <span>Siren Off</span>
+          </button>
+        </div>
+      </div>
+      <div class="ov3-sec-panel">
+        <div class="alarm-action-section-label" style="margin-top:0">GARAGE / GATE</div>
+        <div class="ov3-sec-btns" style="grid-template-columns:1fr 1fr;margin-top:0">
+          <button class="ov3-sec-btn alarm-mode-btn--garage-open" onclick="securityAction('cover','open_cover')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="13" width="20" height="8" rx="1"/><polyline points="12 3 12 13"/><polyline points="8 7 12 3 16 7"/></svg>
+            <span>Open</span>
+          </button>
+          <button class="ov3-sec-btn alarm-mode-btn--garage-close" onclick="securityAction('cover','close_cover')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="8" rx="1"/><polyline points="12 21 12 11"/><polyline points="8 17 12 21 16 17"/></svg>
+            <span>Close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="ov3-sec-dots" id="ov3-sec-dots">
+      <div class="ov3-sec-dot active" id="ov3-sec-dot-0" onclick="_ov3SecScrollTo(0)"></div>
+      <div class="ov3-sec-dot" id="ov3-sec-dot-1" onclick="_ov3SecScrollTo(1)"></div>
+      <div id="ov3-sec-feedback" class="ov3-sec-feedback"></div>
+    </div>`;
+  _initOv3SecurityScroll();
+}
+
+function _refreshAccessUI() {
+  if (!_useAccessPanel()) return;
+  const ap = CONFIG.accessPanel;
+  const garageData = ap.garageEntity ? haGetCached(ap.garageEntity) : null;
+  const lockData   = ap.lockEntity   ? haGetCached(ap.lockEntity)   : null;
+  const garageOpen = garageData ? _accessGarageOpen(garageData.state, ap.garageEntity) : false;
+  const lockOpen   = lockData   ? _accessLockUnlocked(lockData.state) : false;
+
+  const garageText = garageData
+    ? (garageOpen ? (ap.garageOpenLabel || "Open") : (ap.garageClosedLabel || "Closed"))
+    : "—";
+  const lockText = lockData ? _accessLockLabel(lockData.state) : "—";
+
+  let badgeText = "ALL SECURE";
+  let badgeClass = "access-badge--secure";
+  if (garageOpen) {
+    badgeText = "GARAGE OPEN";
+    badgeClass = "access-badge--open";
+  } else if (lockOpen) {
+    badgeText = "UNLOCKED";
+    badgeClass = "access-badge--unlocked";
+  }
+
+  const setText = (id, text, warn) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = text;
+    el.classList.toggle("warn", !!warn);
+    el.classList.toggle("ok", !warn && text !== "—");
+  };
+
+  const ov3Badge = document.getElementById("ov3-access-badge");
+  if (ov3Badge) {
+    ov3Badge.textContent = badgeText;
+    ov3Badge.className = "alarm-badge " + badgeClass;
+  }
+  setText("ov3-access-garage-value", garageText, garageOpen);
+  setText("ov3-access-lock-value", lockText, lockOpen);
+
+  const overlayBadge = document.getElementById("access-status-badge");
+  if (overlayBadge) {
+    overlayBadge.textContent = badgeText;
+    overlayBadge.className = "alarm-badge " + badgeClass;
+  }
+  setText("access-overlay-garage-value", garageText, garageOpen);
+  setText("access-overlay-lock-value", lockText, lockOpen);
+  const gLabel = document.getElementById("access-overlay-garage-label");
+  const lLabel = document.getElementById("access-overlay-lock-label");
+  if (gLabel && ap.garageLabel) gLabel.textContent = ap.garageLabel;
+  if (lLabel && ap.lockLabel) lLabel.textContent = ap.lockLabel;
+
+  const ov3Card = document.getElementById("ov3-security-card");
+  if (ov3Card) {
+    ov3Card.classList.remove("garage-open", "lock-open", "all-secure");
+    if (garageOpen) ov3Card.classList.add("garage-open");
+    else if (lockOpen) ov3Card.classList.add("lock-open");
+    else ov3Card.classList.add("all-secure");
+  }
+
+  const secBtn = document.getElementById("security-btn");
+  if (secBtn) {
+    secBtn.classList.remove("armed-home", "armed-away", "triggered", "garage-open", "lock-open");
+    if (garageOpen) secBtn.classList.add("garage-open");
+    else if (lockOpen) secBtn.classList.add("lock-open");
+  }
+
+  const lockState = lockData?.state;
+  document.getElementById("ov3-lock-btn")?.classList.toggle("active", lockState === "locked");
+  document.getElementById("ov3-unlock-btn")?.classList.toggle("active", _accessLockUnlocked(lockState));
+  document.getElementById("access-lock-btn")?.classList.toggle("active", lockState === "locked");
+  document.getElementById("access-unlock-btn")?.classList.toggle("active", _accessLockUnlocked(lockState));
+}
+
+let _lockWsHandler  = null;
+let _lockWsTimeout  = null;
+
+function lockAction(service) {
+  const ap = CONFIG.accessPanel;
+  if (!ap?.lockEntity) {
+    setAlarmFeedback("Lock not configured", "error");
+    return;
+  }
+  haptic("medium");
+  setAlarmFeedback("Sending…", "");
+  if (!_ws || _ws.readyState !== WebSocket.OPEN) {
+    setAlarmFeedback("Not connected", "error");
+    return;
+  }
+
+  if (_lockWsHandler) {
+    _ws.removeEventListener("message", _lockWsHandler);
+    _lockWsHandler = null;
+  }
+  if (_lockWsTimeout) {
+    clearTimeout(_lockWsTimeout);
+    _lockWsTimeout = null;
+  }
+
+  const msgId = _wsNextId();
+  _ws.send(JSON.stringify({
+    id: msgId,
+    type: "call_service",
+    domain: "lock",
+    service,
+    service_data: { entity_id: ap.lockEntity },
+  }));
+
+  _lockWsHandler = (evt) => {
+    let msg;
+    try { msg = JSON.parse(evt.data); } catch { return; }
+    if (msg.id !== msgId) return;
+    clearTimeout(_lockWsTimeout);
+    _lockWsTimeout = null;
+    _ws.removeEventListener("message", _lockWsHandler);
+    _lockWsHandler = null;
+    if (msg.success) {
+      setAlarmFeedback("Done", "success", true);
+    } else {
+      setAlarmFeedback("Failed — check lock entity", "error");
+      console.error("[Access] lock WS error:", msg.error);
+    }
+  };
+
+  _lockWsTimeout = setTimeout(() => {
+    if (_lockWsHandler) {
+      _ws.removeEventListener("message", _lockWsHandler);
+      _lockWsHandler = null;
+    }
+    _lockWsTimeout = null;
+  }, 10000);
+  _ws.addEventListener("message", _lockWsHandler);
+}
+
 /* ─── ALARMO SECURITY LOGIC ─────────────────────────────────────────────────
  * The alarm entity is configured via CONFIG.alarmEntity in config.js.
  * ─────────────────────────────────────────────────────────────────────────── */
@@ -13771,6 +14083,10 @@ function alarmStateBadgeClass(state) {
 }
 
 function refreshAlarmUI(state) {
+  if (_useAccessPanel()) {
+    _refreshAccessUI();
+    return;
+  }
   const badge = document.getElementById("alarm-status-badge");
   const secBtn = document.getElementById("security-btn");
   if (badge) {
@@ -13816,6 +14132,11 @@ function refreshAlarmUI(state) {
 async function openSecurity() {
   haptic("light");
   setAlarmFeedback("", "");
+  if (_useAccessPanel()) {
+    _refreshAccessUI();
+    document.getElementById("security-overlay")?.classList.add("open");
+    return;
+  }
   const data = await haGet(CONFIG.alarmEntity);
   if (data) {
     refreshAlarmUI(data.state);
@@ -17677,7 +17998,8 @@ function _ensureOv3Built() {
   _buildOv3FloorsCard();
   _buildOv3GardenCard();
   _buildOv3GardenIrrigation();
-  _initOv3SecurityScroll();
+  _buildOv3SecurityCard();
+  _initSecurityMode();
   _refreshOv3Weather();
   _initOv3CalCard();
 }
@@ -19205,6 +19527,7 @@ function _refreshOv3() {
   _refreshOv3MusicCard();
   if (typeof _updateOv3EnergyCard === "function") _updateOv3EnergyCard();
   if (typeof _refreshOv3StocksCard === "function") _refreshOv3StocksCard();
+  _refreshAccessUI();
   // Keep ov3 stat cards in sync with live HA state
   if (typeof window._refreshNotifCount === "function") window._refreshNotifCount();
   if (CONFIG.alarm && CONFIG.alarm.entity) {
@@ -20191,6 +20514,7 @@ function resetSettings() {
 
 /* ov2 clock tick — driven by the existing 1 s setInterval (see init patch below) */
 loadSettings();
+_initSecurityMode();
 init();
 applyAllSettings();
 _ssResetIdleTimer(); // start screensaver idle countdown

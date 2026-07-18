@@ -9,7 +9,7 @@
 - Tapping the weather will open a popup with more info
 
 **Top bar - Right**
-- Security icon — Alarmo controls
+- Security icon — Alarmo controls, or Access panel (lock + garage) when no alarm is configured
 - Dashboard Mode icon — select from multiple dashboards
 - Setting Cog - Modify Dashboard settings
 

@@ -111,6 +111,20 @@ const CONFIG = {
     { label: "Garage/Gate Close", entity: "YOUR_GARAGE_GATE_CLOSE_ENTITY" },
   ],
 
+  /* ── ACCESS PANEL (no alarm system) ───────────────────────────────────────
+   * Shown on Overview 3 and the top-bar shield when ALARM_ENTITY is still
+   * YOUR_ALARM_ENTITY. Garage is status-only; lock supports lock/unlock.
+   * Remove or leave lockEntity blank to hide lock controls.
+   * ─────────────────────────────────────────────────────────────────────── */
+  accessPanel: {
+    lockEntity: "YOUR_LOCK_ENTITY",              // e.g. lock.front_door
+    lockLabel: "Front Door",
+    garageEntity: "YOUR_GARAGE_DOOR_ENTITY",     // e.g. binary_sensor.garage_door
+    garageLabel: "Garage Door",
+    garageOpenLabel: "Open",
+    garageClosedLabel: "Closed",
+  },
+
   /* ── WEATHER ─────────────────────────────────────────────────────────────
    * HA weather entity shown at the top-centre of the dashboard.
    * Change tempUnit to "°F" if you prefer Fahrenheit.
@@ -135,10 +149,22 @@ const CONFIG = {
   },
 
   /* ── AIR QUALITY INDEX ───────────────────────────────────────────────────
-   * Sensor entity for the AQI ring card in the weather screen.
-   * You can use worlds-air-quality-index from HACS.
+   * Two surfaces use different sources on purpose:
+   *
+   *   weatherWidgetEntity — regional/external AQI for the OV3 big weather
+   *     widget stat row (e.g. World's Air Quality Index / waqi.info via HACS).
+   *     Use a network station, NOT local PurpleAir / Airthings hardware.
+   *
+   *   entity + pm25/pm10/co/no2 — local sensors for the standalone OV3 AQI
+   *     card and the weather fullscreen AQI ring.
+   *
+   * World's AQI HACS: Settings → Devices & Services → Add Integration →
+   * "World's Air Quality Index" (geolocation or station ID). Point
+   * weatherWidgetEntity at that integration's AQI sensor entity_id.
         * ──────────────────────────────────────────────────────────────────── */
   aqi: {
+    weatherWidgetEntity: "YOUR_EXTERNAL_AQI_ENTITY",
+
     entity: "YOUR_AQI_ENTITY",
     pm25:   "YOUR_AQI_PM25_ENTITY",
     pm10:   "YOUR_AQI_PM10_ENTITY",
