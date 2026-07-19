@@ -17495,11 +17495,8 @@ function _ov3CloseModeLauncherOutside(e) {
  * entirely when CONFIG.powerPlugs has no entry with a `switch` entity. */
 let _ov3PowerDrawerOpen = false;
 
-/* true when at least one configured plug has a `switch` entity */
-function _ov3PowerPlugsConfigured() {
-  return Array.isArray(CONFIG.powerPlugs) && CONFIG.powerPlugs.some(p => p && p.switch);
-}
-
+/* Configured plugs — entries with a `switch` entity. Empty array means
+ * unconfigured, which hides the sidebar button entirely. */
 function _ov3ConfiguredPowerPlugs() {
   return (CONFIG.powerPlugs || []).filter(p => p && p.switch);
 }
