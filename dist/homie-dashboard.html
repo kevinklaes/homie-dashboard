@@ -5264,6 +5264,9 @@
      the open/close highlight. */
   .ov3-sb-btn.power-active .ov3-sb-dot { display: block; }
 
+  /* Same independent-dot treatment for the LiveTrack sidebar button (hd-yo4) */
+  .ov3-sb-btn.livetrack-active .ov3-sb-dot { display: block; }
+
   /* ─── OV3 POWER PLUGS DRAWER (hd-rw0) ───────────────────────────────────
    * Row layout: icon circle, label (ellipsized), live watts, toggle knob.
    * Tapping anywhere on the row toggles the plug (mirrors mush-switch-card). */
@@ -5312,6 +5315,113 @@
   .ov3-power-row.on .ov3-power-watts { color: var(--hi-75); }
   .ov3-power-row.on .popup-toggle { background: var(--accent); }
   .ov3-power-row.on .popup-toggle::after { transform: translateX(18px); }
+
+  /* ─── OV3 LIVETRACK MODAL (hd-yo4) ──────────────────────────────────────
+   * Map + stats overlay opened from the sidebar LiveTrack button. Person
+   * tabs appear only when more than one LiveTrack session is active. */
+  .popup--livetrack {
+    max-width: min(720px, 94vw);
+    width: min(720px, 94vw);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+  }
+  .ov3-lt-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .ov3-lt-tab {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.6);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ov3-lt-tab.active {
+    background: var(--accent-glow);
+    border-color: var(--ac-4);
+    color: var(--accent-hi);
+  }
+  .ov3-lt-map-wrap {
+    margin-top: 1rem;
+    border-radius: 14px;
+    overflow: hidden;
+    min-height: 55vh;
+    background: rgba(0,0,0,0.3);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .ov3-lt-iframe {
+    width: 100%;
+    height: 55vh;
+    min-height: 55vh;
+    border: none;
+    display: block;
+  }
+  .ov3-lt-map-empty {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.4);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 1rem;
+  }
+  .ov3-lt-stats {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  .ov3-lt-stat {
+    flex: 1;
+    min-width: 100px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    padding: 8px 12px;
+    text-align: center;
+  }
+  .ov3-lt-stat-label {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+  .ov3-lt-stat-value {
+    font-size: 15px;
+    color: #fff;
+    margin-top: 2px;
+  }
+  .ov3-lt-footer {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    flex-shrink: 0;
+  }
+  .ov3-lt-open-btn {
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--ac-4);
+    background: var(--accent-glow);
+    color: var(--accent-hi);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ov3-lt-open-btn:active { opacity: 0.7; }
 
   /* Right content area */
   .ov3-main {
@@ -8376,6 +8486,16 @@
       <div class="ov3-sb-divider"></div>
     </div>
 
+    <!-- LiveTrack launcher — hidden until CONFIG.liveTrack has at least one
+         entry; see _refreshOv3LiveTrackSidebar() -->
+    <div id="ov3-livetrack-group" style="display:none">
+      <button class="ov3-sb-btn" id="ov3-livetrack-btn" onclick="_ov3OpenLiveTrackModal()" title="LiveTrack">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M4 17l3-3 3 1 4-5"/><path d="M13 8l3 3-2 5"/></svg>
+        <div class="ov3-sb-dot"></div>
+      </button>
+      <div class="ov3-sb-divider"></div>
+    </div>
+
     <!-- Control buttons — populated by _buildOv3SidebarControls() -->
     <div id="ov3-sb-controls" style="display:contents"></div>
 
@@ -8884,6 +9004,23 @@
   </div>
 </div>
 
+<!-- ─── OV3 LIVETRACK MODAL (hd-yo4) ───────────────────────────────────────
+     Opened from the sidebar LiveTrack button. Shows the embedded live map
+     + activity stats for the active person(s); see _ov3OpenLiveTrackModal(). -->
+<div class="popup-overlay" id="ov3-livetrack-overlay" onclick="_ov3CloseLiveTrackModalOutside(event)">
+  <div class="popup popup--livetrack">
+    <div class="popup-title" id="ov3-lt-title">LiveTrack</div>
+    <div id="ov3-lt-tabs" class="ov3-lt-tabs"></div>
+    <div class="ov3-lt-map-wrap">
+      <iframe id="ov3-lt-iframe" class="ov3-lt-iframe" sandbox="allow-scripts allow-same-origin allow-popups" style="display:none"></iframe>
+      <div id="ov3-lt-map-empty" class="ov3-lt-map-empty">Map unavailable — no LiveTrack URL yet</div>
+    </div>
+    <div class="ov3-lt-stats" id="ov3-lt-stats"></div>
+    <div class="ov3-lt-footer">
+      <button class="ov3-lt-open-btn" onclick="_ov3LiveTrackOpenBrowser()">Open in browser</button>
+    </div>
+  </div>
+</div>
 
 
 
@@ -11705,21 +11842,32 @@ function _getActiveLiveTrack() {
     const urlState = cfg.urlEntity ? haGetCached(cfg.urlEntity) : null;
     const elapsedState = cfg.elapsedEntity ? haGetCached(cfg.elapsedEntity) : null;
     const hrState = cfg.heartRateEntity ? haGetCached(cfg.heartRateEntity) : null;
+    // Optional position sensor (hd-yo4) — carries lat/lon/distance_km/heart_rate
+    // attrs for the LiveTrack modal's stats row when the REST HR/elapsed
+    // sensors above are stale or unconfigured.
+    const posState = cfg.positionEntity ? haGetCached(cfg.positionEntity) : null;
+    const posAttrs = posState?.attributes || {};
     return {
       label: cfg.label ?? "Activity",
       url: urlState && !INACTIVE.includes(urlState.state) ? urlState.state : null,
       elapsed: elapsedState && !INACTIVE.includes(elapsedState.state) ? elapsedState.state : null,
-      hr: hrState && !INACTIVE.includes(hrState.state) ? hrState.state : null,
+      hr: hrState && !INACTIVE.includes(hrState.state) ? hrState.state : (posAttrs.heart_rate ?? null),
+      lat: posAttrs.lat ?? posAttrs.latitude ?? null,
+      lon: posAttrs.lon ?? posAttrs.longitude ?? null,
+      distanceKm: posAttrs.distance_km ?? null,
+      activityType: (posState && !INACTIVE.includes(posState.state)) ? posState.state : (posAttrs.activity_type ?? null),
     };
   }).filter(Boolean);
 }
 
 function refreshLiveTrack() {
+  const active = _getActiveLiveTrack();
+  _liveTrackActive = active;
+  _refreshOv3LiveTrackSidebar();
+
   const bar = document.getElementById("livetrack-bubble-bar");
   if (!bar) return;
 
-  const active = _getActiveLiveTrack();
-  _liveTrackActive = active;
   if (!active.length) {
     bar.classList.remove("visible");
     bar.innerHTML = "";
@@ -11753,6 +11901,122 @@ function openLiveTrack(idx) {
   if (!t || !t.url) return;
   haptic("light");
   window.open(t.url, "_blank");
+}
+
+/* ─── OV3 SIDEBAR LIVETRACK (hd-yo4) ────────────────────────────────────────
+ * OV3 hides the bubble bar (body.ov3-active CSS), so the sidebar button +
+ * modal below is the LiveTrack surface for that overview. Sync the dot from
+ * _getActiveLiveTrack(); the modal itself reuses the same data. */
+let _ov3LiveTrackModalOpen = false;
+let _ov3LiveTrackActivePerson = 0; // index into the active list shown in the modal
+
+/* Hide the sidebar group entirely when unconfigured; light the dot when any
+ * configured person is active. Called from _ensureOv3Built() (initial paint),
+ * _refreshOv3() and refreshLiveTrack() (every poll cycle). */
+function _refreshOv3LiveTrackSidebar() {
+  const group = document.getElementById("ov3-livetrack-group");
+  if (!group) return;
+
+  const entries = (typeof CONFIG !== "undefined" && CONFIG.liveTrack) ? CONFIG.liveTrack : [];
+  if (!entries.length) {
+    group.style.display = "none";
+    return;
+  }
+  group.style.display = "contents";
+
+  const active = _getActiveLiveTrack();
+  const btn = document.getElementById("ov3-livetrack-btn");
+  if (btn) {
+    btn.classList.toggle("livetrack-active", active.length > 0);
+    btn.title = active.length === 1 ? `LiveTrack · ${active[0].label}`
+              : active.length > 1  ? `LiveTrack · ${active.length} active`
+              : "LiveTrack";
+  }
+
+  // Keep an already-open modal live without requiring a close/reopen
+  if (_ov3LiveTrackModalOpen) _refreshOv3LiveTrackModal();
+}
+
+function _ov3OpenLiveTrackModal() {
+  const active = _getActiveLiveTrack();
+  if (!active.length) return; // no-op — nobody active
+  haptic("light");
+  _ov3LiveTrackActivePerson = 0;
+  _ov3LiveTrackModalOpen = true;
+  document.getElementById("ov3-livetrack-overlay")?.classList.add("open");
+  _refreshOv3LiveTrackModal();
+}
+
+function _ov3CloseLiveTrackModal() {
+  _ov3LiveTrackModalOpen = false;
+  document.getElementById("ov3-livetrack-overlay")?.classList.remove("open");
+}
+
+function _ov3CloseLiveTrackModalOutside(e) {
+  if (e && e.target !== document.getElementById("ov3-livetrack-overlay")) return;
+  _ov3CloseLiveTrackModal();
+}
+
+function _ov3SelectLiveTrackPerson(idx) {
+  haptic("light");
+  _ov3LiveTrackActivePerson = idx;
+  _refreshOv3LiveTrackModal();
+}
+
+function _ov3LiveTrackOpenBrowser() {
+  const active = _getActiveLiveTrack();
+  const t = active[_ov3LiveTrackActivePerson];
+  if (!t || !t.url) return;
+  haptic("light");
+  window.open(t.url, "_blank");
+}
+
+/* Rebuild tabs, iframe src, and stats row from the current active list.
+ * Closes the modal automatically if the active session ends while open. */
+function _refreshOv3LiveTrackModal() {
+  if (!_ov3LiveTrackModalOpen) return;
+  const active = _getActiveLiveTrack();
+  if (!active.length) { _ov3CloseLiveTrackModal(); return; }
+  if (_ov3LiveTrackActivePerson >= active.length) _ov3LiveTrackActivePerson = 0;
+
+  const tabsEl = document.getElementById("ov3-lt-tabs");
+  if (tabsEl) {
+    tabsEl.style.display = active.length > 1 ? "flex" : "none";
+    tabsEl.innerHTML = active.map((t, i) =>
+      `<button class="ov3-lt-tab${i === _ov3LiveTrackActivePerson ? " active" : ""}" onclick="_ov3SelectLiveTrackPerson(${i})">${escapeHtml(t.label)}</button>`
+    ).join("");
+  }
+
+  const t = active[_ov3LiveTrackActivePerson];
+  const titleEl = document.getElementById("ov3-lt-title");
+  if (titleEl) titleEl.textContent = `LiveTrack · ${t.label}`;
+
+  const iframe = document.getElementById("ov3-lt-iframe");
+  const empty = document.getElementById("ov3-lt-map-empty");
+  if (iframe) {
+    if (t.url) {
+      if (iframe.dataset.src !== t.url) { iframe.src = t.url; iframe.dataset.src = t.url; }
+      iframe.style.display = "block";
+      if (empty) empty.style.display = "none";
+    } else {
+      iframe.style.display = "none";
+      iframe.removeAttribute("src");
+      delete iframe.dataset.src;
+      if (empty) empty.style.display = "flex";
+    }
+  }
+
+  const statsEl = document.getElementById("ov3-lt-stats");
+  if (statsEl) {
+    const stats = [];
+    if (t.elapsed != null) stats.push({ label: "Elapsed", value: `${Math.round(parseFloat(t.elapsed))}m` });
+    if (t.hr != null) stats.push({ label: "Heart Rate", value: `${escapeHtml(String(t.hr))} bpm` });
+    if (t.distanceKm != null) stats.push({ label: "Distance", value: `${parseFloat(t.distanceKm).toFixed(2)} km` });
+    if (t.activityType) stats.push({ label: "Activity", value: escapeHtml(String(t.activityType)) });
+    statsEl.innerHTML = stats.length
+      ? stats.map(s => `<div class="ov3-lt-stat"><div class="ov3-lt-stat-label">${s.label}</div><div class="ov3-lt-stat-value">${s.value}</div></div>`).join("")
+      : `<div class="ov3-lt-stat"><div class="ov3-lt-stat-value" style="color:rgba(255,255,255,0.4)">No stats available</div></div>`;
+  }
 }
 
 async function dismissNotification(entity) {
@@ -17157,6 +17421,7 @@ document.addEventListener('keydown', e => {
   if (document.getElementById("weather-fs-overlay")?.classList.contains("open"))  closeWeatherFS();
   if (document.getElementById("solar-fs-overlay")?.classList.contains("open"))    closeSolarFS();
   if (document.getElementById("stocks-fs-overlay")?.classList.contains("open"))   closeStocksFS();
+  if (document.getElementById("ov3-livetrack-overlay")?.classList.contains("open")) _ov3CloseLiveTrackModal();
 });
 
 /* ─── END THEME PICKER ─────────────────────────────────────────────────── */
@@ -18200,6 +18465,7 @@ function _ensureOv3Built() {
 
   _buildOv3SidebarControls();
   _buildOv3PowerDrawer();
+  _refreshOv3LiveTrackSidebar();
   _buildOv3AcCard();
   _buildOv3PurifierCard();
   _buildOv3IndoorCard();
@@ -19669,6 +19935,7 @@ function _refreshOv3() {
   _refreshOv3Greeting();
   _refreshOv3SidebarControls();
   _refreshOv3PowerDrawer();
+  _refreshOv3LiveTrackSidebar();
   _refreshOv3AcCard();
   _refreshOv3PurifierCard();
   _refreshOv3IndoorCard();

@@ -601,23 +601,30 @@ const CONFIG = {
     },
   ],
 
-  /* ── GARMIN LIVETRACK (ha-0zb) ────────────────────────────────────────────
+  /* ── GARMIN LIVETRACK (ha-0zb, hd-yo4) ────────────────────────────────────
    * Shows a bubble (same tier/style as Echo timers and Waze travel time)
    * only while that person's LiveTrack activity is active. Tap the bubble
-   * to open their live map in a new tab.
+   * to open their live map in a new tab. On Overview 3 (where the bubble
+   * bar is hidden) the same data drives a sidebar button + map/stats modal
+   * instead — see _refreshOv3LiveTrackSidebar() / _ov3OpenLiveTrackModal().
    *
    * label           — text shown in the bubble (e.g. "Person 1")
    * activeEntity    — input_boolean gating visibility ("on" = show)
    * urlEntity       — sensor holding the LiveTrack deep-link URL
    * elapsedEntity   — (optional) sensor with elapsed minutes
    * heartRateEntity — (optional) sensor with current heart rate (bpm)
+   * positionEntity  — (optional) sensor whose attributes carry live
+   *                   lat/lon/distance_km/heart_rate for the OV3 modal's
+   *                   stats row -- useful as a fallback while elapsedEntity/
+   *                   heartRateEntity are unavailable (e.g. Kevin's private
+   *                   config uses sensor.garmin_livetrack_{kevin,alexa}_position)
    *
    * These entities are typically produced by parsing Garmin LiveTrack share
    * emails (noreply@garmin.com) into HA helpers/sensors -- add one entry per
    * person you want a bubble for, or leave the array empty to disable.
    * ──────────────────────────────────────────────────────────────────────── */
   liveTrack: [
-    // { label: "Person 1", activeEntity: "YOUR_LIVETRACK_1_ACTIVE_ENTITY", urlEntity: "YOUR_LIVETRACK_1_URL_ENTITY", elapsedEntity: "YOUR_LIVETRACK_1_ELAPSED_ENTITY", heartRateEntity: "YOUR_LIVETRACK_1_HEARTRATE_ENTITY" },
+    // { label: "Person 1", activeEntity: "YOUR_LIVETRACK_1_ACTIVE_ENTITY", urlEntity: "YOUR_LIVETRACK_1_URL_ENTITY", elapsedEntity: "YOUR_LIVETRACK_1_ELAPSED_ENTITY", heartRateEntity: "YOUR_LIVETRACK_1_HEARTRATE_ENTITY", positionEntity: "YOUR_LIVETRACK_1_POSITION_ENTITY" },
   ],
 
   /* ── GARDEN ──────────────────────────────────────────────────────────────
