@@ -9254,7 +9254,8 @@ function _wsConnect() {
             // Keep alarm / access badge in sync with live WS events
             if (_useAccessPanel()) {
               const ap = CONFIG.accessPanel;
-              if (newState.entity_id === ap.lockEntity || newState.entity_id === ap.garageEntity) {
+              if (newState.entity_id === ap.lockEntity || newState.entity_id === ap.garageEntity ||
+                  newState.entity_id === ap.floEntity || newState.entity_id === ap.floModeEntity) {
                 _refreshAccessUI();
               }
             } else if (newState.entity_id === CONFIG.alarmEntity) {
@@ -13779,6 +13780,11 @@ function _useAccessPanel() {
   return !_hasAlarmConfigured();
 }
 
+function _hasFloConfigured() {
+  const e = CONFIG.accessPanel?.floEntity;
+  return !!(e && !/^YOUR_/i.test(e) && e.includes("."));
+}
+
 function _accessGarageOpen(state, entityId) {
   const s = String(state || "").toLowerCase();
   const domain = entityId ? entityId.split(".")[0] : "";
@@ -13820,7 +13826,8 @@ function _buildOv3SecurityCard() {
   if (_useAccessPanel()) {
     const ap = CONFIG.accessPanel;
     card.className = "ov3-security-card ov3-access-card";
-    card.innerHTML = `
+
+    const lockPanelHtml = `
       <div class="ov3-access-status">
         <div class="ov3-access-row">
           <span class="ov3-access-label">${escapeHtml(ap.garageLabel || "Garage")}</span>
@@ -13840,8 +13847,48 @@ function _buildOv3SecurityCard() {
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/><line x1="12" y1="15" x2="12" y2="17"/></svg>
           <span>Unlock</span>
         </button>
+      </div>`;
+
+    if (!_hasFloConfigured()) {
+      card.innerHTML = `${lockPanelHtml}
+      <div id="ov3-sec-feedback" class="ov3-sec-feedback"></div>`;
+      _refreshAccessUI();
+      return;
+    }
+
+    const floPanelHtml = `
+      <div class="ov3-access-status">
+        <div class="ov3-access-row">
+          <span class="ov3-access-label">${escapeHtml(ap.floLabel || "Main Water")}</span>
+          <span class="ov3-access-value" id="ov3-access-flo-value">—</span>
+        </div>
+        ${ap.floModeEntity ? `<div class="ov3-access-row">
+          <span class="ov3-access-label">Mode</span>
+          <span class="ov3-access-value" id="ov3-access-flo-mode-value">—</span>
+        </div>` : ""}
+      </div>
+      <div class="ov3-sec-btns ov3-access-btns">
+        <button class="ov3-sec-btn" id="ov3-flo-open-btn" onclick="floAction('open')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+          <span>${escapeHtml(ap.floOpenLabel || "Open")}</span>
+        </button>
+        <button class="ov3-sec-btn ov3-sec-btn--disarm" id="ov3-flo-close-btn" onclick="floAction('close')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/><line x1="4" y1="4" x2="20" y2="20"/></svg>
+          <span>${escapeHtml(ap.floClosedLabel || "Shut Off")}</span>
+        </button>
+      </div>`;
+
+    card.innerHTML = `
+      <div class="ov3-sec-scroll" id="ov3-sec-scroll">
+        <div class="ov3-sec-panel">${lockPanelHtml}</div>
+        <div class="ov3-sec-panel">${floPanelHtml}</div>
+      </div>
+      <div class="ov3-sec-dots" id="ov3-sec-dots">
+        <div class="ov3-sec-dot active" id="ov3-sec-dot-0" onclick="_ov3SecScrollTo(0)"></div>
+        <div class="ov3-sec-dot" id="ov3-sec-dot-1" onclick="_ov3SecScrollTo(1)"></div>
       </div>
       <div id="ov3-sec-feedback" class="ov3-sec-feedback"></div>`;
+    _initOv3SecurityScroll();
     _refreshAccessUI();
     return;
   }
@@ -13970,6 +14017,23 @@ function _refreshAccessUI() {
   document.getElementById("ov3-unlock-btn")?.classList.toggle("active", _accessLockUnlocked(lockState));
   document.getElementById("access-lock-btn")?.classList.toggle("active", lockState === "locked");
   document.getElementById("access-unlock-btn")?.classList.toggle("active", _accessLockUnlocked(lockState));
+
+  if (_hasFloConfigured()) {
+    const floData = haGetCached(ap.floEntity);
+    const floOpen = floData ? String(floData.state).toLowerCase() === "on" : false;
+    const floText = floData
+      ? (floOpen ? (ap.floOpenLabel || "Open") : (ap.floClosedLabel || "Shut Off"))
+      : "—";
+    setText("ov3-access-flo-value", floText, floData ? !floOpen : false);
+    document.getElementById("ov3-flo-open-btn")?.classList.toggle("active", floOpen);
+    document.getElementById("ov3-flo-close-btn")?.classList.toggle("active", !!floData && !floOpen);
+
+    if (ap.floModeEntity) {
+      const modeData = haGetCached(ap.floModeEntity);
+      const modeEl = document.getElementById("ov3-access-flo-mode-value");
+      if (modeEl) modeEl.textContent = modeData ? String(modeData.state).replace(/_/g, " ") : "—";
+    }
+  }
 }
 
 let _lockWsHandler  = null;
@@ -14030,6 +14094,67 @@ function lockAction(service) {
     _lockWsTimeout = null;
   }, 10000);
   _ws.addEventListener("message", _lockWsHandler);
+}
+
+let _floWsHandler = null;
+let _floWsTimeout = null;
+
+function floAction(action) {
+  const ap = CONFIG.accessPanel;
+  if (!ap?.floEntity) {
+    _ov3SecFeedback("Water shutoff not configured", "error");
+    return;
+  }
+  haptic("medium");
+  _ov3SecFeedback("Sending…", "");
+  if (!_ws || _ws.readyState !== WebSocket.OPEN) {
+    _ov3SecFeedback("Not connected", "error");
+    return;
+  }
+
+  if (_floWsHandler) {
+    _ws.removeEventListener("message", _floWsHandler);
+    _floWsHandler = null;
+  }
+  if (_floWsTimeout) {
+    clearTimeout(_floWsTimeout);
+    _floWsTimeout = null;
+  }
+
+  const service = action === "open" ? "turn_on" : "turn_off";
+  const msgId = _wsNextId();
+  _ws.send(JSON.stringify({
+    id: msgId,
+    type: "call_service",
+    domain: "switch",
+    service,
+    service_data: { entity_id: ap.floEntity },
+  }));
+
+  _floWsHandler = (evt) => {
+    let msg;
+    try { msg = JSON.parse(evt.data); } catch { return; }
+    if (msg.id !== msgId) return;
+    clearTimeout(_floWsTimeout);
+    _floWsTimeout = null;
+    _ws.removeEventListener("message", _floWsHandler);
+    _floWsHandler = null;
+    if (msg.success) {
+      _ov3SecFeedback("Done", "success", true);
+    } else {
+      _ov3SecFeedback("Failed — check water shutoff entity", "error");
+      console.error("[Access] flo WS error:", msg.error);
+    }
+  };
+
+  _floWsTimeout = setTimeout(() => {
+    if (_floWsHandler) {
+      _ws.removeEventListener("message", _floWsHandler);
+      _floWsHandler = null;
+    }
+    _floWsTimeout = null;
+  }, 10000);
+  _ws.addEventListener("message", _floWsHandler);
 }
 
 /* ─── ALARMO SECURITY LOGIC ─────────────────────────────────────────────────

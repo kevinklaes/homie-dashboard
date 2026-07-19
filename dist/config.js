@@ -115,6 +115,11 @@ const CONFIG = {
    * Shown on Overview 3 and the top-bar shield when ALARM_ENTITY is still
    * YOUR_ALARM_ENTITY. Garage is status-only; lock supports lock/unlock.
    * Remove or leave lockEntity blank to hide lock controls.
+   *
+   * Optional 2nd swipe page — main water shutoff (e.g. Moen Flo). Leave
+   * floEntity blank/YOUR_* to hide page 2 entirely (single-pane layout).
+   * floEntity must be a "switch" entity: on = water flowing, off = shut off.
+   * floModeEntity is an optional extra status row (e.g. system mode sensor).
    * ─────────────────────────────────────────────────────────────────────── */
   accessPanel: {
     lockEntity: "YOUR_LOCK_ENTITY",              // e.g. lock.front_door
@@ -123,6 +128,11 @@ const CONFIG = {
     garageLabel: "Garage Door",
     garageOpenLabel: "Open",
     garageClosedLabel: "Closed",
+    floEntity: "YOUR_WATER_SHUTOFF_SWITCH_ENTITY", // e.g. switch.main_water_shutoff_valve
+    floLabel: "Main Water",
+    floOpenLabel: "Open",
+    floClosedLabel: "Shut Off",
+    floModeEntity: "",                            // optional, e.g. sensor.water_system_mode
   },
 
   /* ── WEATHER ─────────────────────────────────────────────────────────────
