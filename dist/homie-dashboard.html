@@ -5365,69 +5365,58 @@
   }
   .ov3-wx-launch-btn:active { opacity: 0.6; }
 
-  /* ── OV3 AQI card (col 1, row 3) ─────────────────────────────────────── */
-  .ov3-aqi-card {
+  /* ── OV3 Indoor environment card (col 1, row 4) — all floors at once (hd-lap) ── */
+  .ov3-indoor-card {
     grid-column: 1;
     grid-row: 4;
     border-radius: 14px;
+    background: rgba(255,255,255,0.06);
     padding: 0.6rem 1rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 6px;
     overflow: hidden;
     position: relative;
   }
-  .ov3-aqi-center {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-    justify-content: center;
-  }
-  .ov3-aqi-number {
-    font-size: 1.6rem;
-    font-weight: 300;
-    color: #fff;
-    letter-spacing: -0.02em;
-    line-height: 1;
-  }
-  .ov3-aqi-badge {
-    position: absolute;
-    top: 8px;
-    left: 1rem;
+  .ov3-indoor-badge {
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-  }
-  .ov3-aqi-pm-row {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
-  .ov3-aqi-pm-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    flex: 1;
-    padding: 2px 0;
-  }
-  .ov3-aqi-pm-item + .ov3-aqi-pm-item {
-    border-left: 1px solid rgba(255,255,255,0.15);
-  }
-  .ov3-aqi-pm-label {
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
     color: rgba(255,255,255,0.45);
+    flex-shrink: 0;
   }
-  .ov3-aqi-pm-value {
+  .ov3-indoor-table {
+    display: grid;
+    grid-auto-rows: 1fr;
+    row-gap: 4px;
+    column-gap: 6px;
+    align-items: center;
+    flex: 1;
+    min-height: 0;
+  }
+  .ov3-indoor-col-label {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+  }
+  .ov3-indoor-floor-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ov3-indoor-stat-value {
     font-size: 12px;
     font-weight: 600;
     color: rgba(255,255,255,0.85);
     letter-spacing: 0.02em;
+    text-align: center;
   }
   /* ── OV3 Energy card (col 1, row 5) ─────────────────────────────────────── */
   .ov3-energy-card {
@@ -5474,8 +5463,7 @@
     letter-spacing: -0.02em;
     line-height: 1;
   }
-  .ov3-energy-unit,
-  .ov3-aqi-unit {
+  .ov3-energy-unit {
     font-size: 8px;
     letter-spacing: 0.18em;
     color: rgba(255,255,255,0.85);
@@ -5668,104 +5656,6 @@
   .ov3-garden-irr-btn.on .ov3-garden-irr-track { background: var(--accent); }
   .ov3-garden-irr-btn.on .ov3-garden-irr-track::after { transform: translateX(16px); }
   .ov3-garden-irr-btn.on .ov3-garden-irr-label { color: rgba(255,255,255,0.85); }
-
-  /* ── OV3 Floors card (col 3, row 2) ─────────────────────────────────────── */
-  .ov3-floors-card {
-    grid-column: 2;
-    grid-row: 2;
-    flex-shrink: 0;
-    border-radius: 14px;
-    background: linear-gradient(145deg, rgba(80,50,120,0.55) 0%, rgba(50,30,90,0.50) 100%);
-    border: 1px solid rgba(160,100,255,0.2);
-    padding: 0.6rem 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    overflow: hidden;
-    position: relative;
-  }
-  .ov3-floors-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-  }
-  .ov3-floors-active-name {
-    font-size: 9px;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: #fff;
-    font-weight: 500;
-  }
-  /* Swipeable floors scroll container */
-  .ov3-floors-scroll {
-    display: flex;
-    overflow-x: scroll;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    flex: 1;
-    min-height: 0;
-  }
-  .ov3-floors-scroll::-webkit-scrollbar { display: none; }
-  .ov3-floors-panel {
-    min-width: 100%;
-    width: 100%;
-    flex-shrink: 0;
-    scroll-snap-align: start;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 4px;
-    position: relative;
-  }
-
-  .ov3-floors-stat-row {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
-  .ov3-floors-stat-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    flex: 1;
-    padding: 2px 0;
-  }
-  .ov3-floors-stat-item + .ov3-floors-stat-item {
-    border-left: 1px solid rgba(255,255,255,0.12);
-  }
-  .ov3-floors-stat-label {
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
-  }
-  .ov3-floors-stat-value {
-    font-size: 12px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.85);
-    letter-spacing: 0.02em;
-  }
-  /* Dot indicators */
-  .ov3-floors-dots {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    flex-shrink: 0;
-  }
-  .ov3-floors-dot {
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.25);
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-  }
-  .ov3-floors-dot.active {
-    background: var(--accent);
-    transform: scale(1.3);
-  }
 
   /* ── OV3 Music card (cols 2-3, rows 3-4) ────────────────────────────────── */
   .ov3-music-card {
@@ -6852,7 +6742,8 @@
   /* ── OV3 Calendar card (col 2, row 3) ────────────────────────────────────── */
   .ov3-events-card {
     grid-column: 2;
-    grid-row: 3;
+    /* Spans rows 2-3 — reclaims the row freed by the removed floors card (hd-lap) */
+    grid-row: 2 / 4;
     border-radius: 20px;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.09);
@@ -8628,30 +8519,11 @@
         </div>
       </div>
 
-      <!-- AQI card (col 1, row 3) -->
-      <div class="ov3-aqi-card" id="ov3-aqi-card">
-        <div class="ov3-aqi-badge" id="ov3-aqi-badge">—</div>
-        <div class="ov3-aqi-center">
-          <div class="ov3-aqi-number" id="ov3-aqi-number">—</div>
-          <div class="ov3-aqi-unit">AQI</div>
-        </div>
-        <div class="ov3-aqi-pm-row">
-          <div class="ov3-aqi-pm-item">
-            <div class="ov3-aqi-pm-label">PM2.5</div>
-            <div class="ov3-aqi-pm-value" id="ov3-pm25">—</div>
-          </div>
-          <div class="ov3-aqi-pm-item">
-            <div class="ov3-aqi-pm-label">PM10</div>
-            <div class="ov3-aqi-pm-value" id="ov3-pm10">—</div>
-          </div>
-          <div class="ov3-aqi-pm-item">
-            <div class="ov3-aqi-pm-label">CO</div>
-            <div class="ov3-aqi-pm-value" id="ov3-co">—</div>
-          </div>
-          <div class="ov3-aqi-pm-item">
-            <div class="ov3-aqi-pm-label">NO2</div>
-            <div class="ov3-aqi-pm-value" id="ov3-no2">—</div>
-          </div>
+      <!-- Indoor environment card (col 1, row 4) — all floors at once (hd-lap) -->
+      <div class="ov3-indoor-card" id="ov3-indoor-card">
+        <div class="ov3-indoor-badge">INDOOR</div>
+        <div class="ov3-indoor-table" id="ov3-indoor-table">
+          <!-- populated by _buildOv3IndoorCard() -->
         </div>
       </div>
 
@@ -8781,17 +8653,6 @@
           <span id="ov3-greeting-date"></span>
         </div>
         <div class="ov3-greeting-bubbles" id="ov3-greeting-bubbles"></div>
-      </div>
-
-      <!-- Floors card (col 2, row 2) -->
-      <div class="ov3-floors-card" id="ov3-floors-card">
-        <div class="ov3-floors-header">
-          <div class="ov3-floors-active-name" id="ov3-floors-active-name"></div>
-        </div>
-        <div class="ov3-floors-scroll" id="ov3-floors-scroll">
-          <!-- populated by _buildOv3FloorsCard() -->
-        </div>
-        <div class="ov3-floors-dots" id="ov3-floors-dots"></div>
       </div>
 
       <!-- Col 3 wrapper — flex column, spans all rows -->
@@ -17770,7 +17631,7 @@ function switchOverview(idx) {
 
 /* Elements where a horizontal drag should NOT switch overview screens —
  * shared by both the touch and mouse-drag handlers below. */
-const OV3_SWIPE_EXCLUDE_SELECTOR = ".popup-overlay.open, #daily-overlay, #thermostat-overlay, #photoframe-overlay, #nowplaying-fs-overlay, .sensor-row, .ov2-sensor-strip, .ov3-wx-hourly, .ov3-wx-scroll, .ov3-floors-scroll, .ov3-garden-scroll, .ov3-sec-scroll, .mush-ac-card, #ov3-ac-viewport, #ov3-ac-card, #ov3-pur-viewport, #ov3-pur-card";
+const OV3_SWIPE_EXCLUDE_SELECTOR = ".popup-overlay.open, #daily-overlay, #thermostat-overlay, #photoframe-overlay, #nowplaying-fs-overlay, .sensor-row, .ov2-sensor-strip, .ov3-wx-hourly, .ov3-wx-scroll, .ov3-garden-scroll, .ov3-sec-scroll, .mush-ac-card, #ov3-ac-viewport, #ov3-ac-card, #ov3-pur-viewport, #ov3-pur-card";
 
 /* ─────────────────────────────────────────────────────────────────────────────
  * Swipe gesture — swipe left anywhere on the screen to go to screen 2,
@@ -18216,7 +18077,7 @@ function _ensureOv3Built() {
   _buildOv3PowerDrawer();
   _buildOv3AcCard();
   _buildOv3PurifierCard();
-  _buildOv3FloorsCard();
+  _buildOv3IndoorCard();
   _buildOv3GardenCard();
   _buildOv3GardenIrrigation();
   _buildOv3SecurityCard();
@@ -19177,7 +19038,7 @@ function _renderOv3DailyForecast() {
 }
 
 // Fixed AQI bands — bg and color always defined regardless of CONFIG.aqi.bands.
-// Shared by the weather card's AQI stat and the standalone OV3 AQI card.
+// Used by the OV3 weather card's small AQI stat (ov3-wx-aqi) in _refreshOv3Weather.
 const OV3_AQI_BANDS = [
   { max:  50,      label: "Good",                      color: "#4cef9a", bg: "linear-gradient(135deg, #1a5c3a 0%, #0f3d26 100%)" },
   { max: 100,      label: "Moderate",                  color: "#f0c040", bg: "linear-gradient(135deg, #5c4a00 0%, #3d3000 100%)" },
@@ -19239,7 +19100,7 @@ function _refreshOv3Weather() {
   _s("ov3-wx-uv",       uv);
   _s("ov3-wx-cloud",    cloud);
 
-  // AQI — reuses CONFIG.aqi and the same banding scheme as the standalone AQI card
+  // AQI — reuses CONFIG.aqi and the OV3_AQI_BANDS banding scheme
   const aqiEl = document.getElementById("ov3-wx-aqi");
   if (aqiEl) {
     const aqiCfg = CONFIG.aqi || {};
@@ -19353,42 +19214,6 @@ function _applyOv3WeatherBg(condition) {
   }
 
   card.style.background = bg;
-}
-
-function _refreshOv3Aqi() {
-  const aqiCfg = CONFIG.aqi || {};
-  const aqiD   = aqiCfg.entity ? haGetCached(aqiCfg.entity) : null;
-  const aqi    = aqiD ? parseFloat(aqiD.state) : NaN;
-
-  const cardEl  = document.getElementById("ov3-aqi-card");
-  const numEl   = document.getElementById("ov3-aqi-number");
-  const badgeEl = document.getElementById("ov3-aqi-badge");
-  if (!numEl) return;
-
-  const band = isNaN(aqi) ? null : OV3_AQI_BANDS.find(b => aqi <= b.max) || OV3_AQI_BANDS[OV3_AQI_BANDS.length - 1];
-
-  numEl.textContent = isNaN(aqi) ? "—" : Math.round(aqi);
-
-  if (badgeEl) {
-    badgeEl.textContent  = band ? band.label : "—";
-    badgeEl.style.color  = band ? band.color : "rgba(255,255,255,0.5)";
-  }
-
-  if (cardEl) {
-    cardEl.style.setProperty("background", band ? band.bg : "rgba(255,255,255,0.06)", "important");
-  }
-
-  // PM stats
-  const _s = (id, d, decimals, unit) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.textContent = (d && d.state != null && d.state !== "unavailable")
-      ? parseFloat(d.state).toFixed(decimals) + unit : "—";
-  };
-  _s("ov3-pm25", haGetCached(aqiCfg.pm25), 1, " µg/m³");
-  _s("ov3-pm10", haGetCached(aqiCfg.pm10), 1, " µg/m³");
-  _s("ov3-co",   haGetCached(aqiCfg.co),   1, " ppm");
-  _s("ov3-no2",  haGetCached(aqiCfg.no2),  1, " µg/m³");
 }
 
 /* ─── OV3 GARDEN CARD — soil moisture per plant ──────────────────────────── */
@@ -19631,67 +19456,47 @@ function _fetchOv3HourlyChart(unit) {
   }));
 }
 
-/* ─── OV3 FLOORS CARD ──────────────────────────────────────────────────────
- * Builds a swipeable card showing temp | humidity | pm2.5 per floor.
+/* ─── OV3 INDOOR CARD ──────────────────────────────────────────────────────
+ * Builds a compact table showing every indoor floor at once (no swiping).
  * Floors are derived from CONFIG.floorSensors (same source as the sensor row).
- * Only floors that have at least one of temp / humidity / pm25 sensor types
- * are shown; Solar and other special panels are skipped.
+ * Only floors that have at least one supported sensor type are shown; Solar
+ * and other special panels are skipped.
  * ═══════════════════════════════════════════════════════════════════════════ */
-function _buildOv3FloorsCard() {
-  const scroll = document.getElementById("ov3-floors-scroll");
-  const dotsEl = document.getElementById("ov3-floors-dots");
-  if (!scroll || !dotsEl) return;
+// Candidate sensor types shown in the OV3 indoor card, in display order.
+// A column only appears if at least one indoor floor defines that type.
+const OV3_INDOOR_TYPES  = ["temp", "humidity", "pm25", "aqi", "radon"];
+const OV3_INDOOR_LABELS = { temp: "Temp", humidity: "Humid", pm25: "PM2.5", aqi: "AQI", radon: "Radon" };
 
-  const SENSOR_TYPES = ["temp", "humidity", "pm25"];
-  const floors = (Array.isArray(CONFIG.floorSensors) ? CONFIG.floorSensors : [])
-    .filter(f => f.label !== "Solar" && (f.sensors || []).some(s => SENSOR_TYPES.includes(s.type)));
-
-  if (!floors.length) {
-    document.getElementById("ov3-floors-card").style.display = "none";
-    return;
-  }
-
-  scroll.innerHTML = floors.map((floor, fi) => {
-    const items = ["temp", "humidity", "pm25"].map(type => {
-      const sensor = (floor.sensors || []).find(s => s.type === type);
-      const labels = { temp: "Temp", humidity: "Humid", pm25: "PM2.5" };
-      return `<div class="ov3-floors-stat-item">
-        <div class="ov3-floors-stat-label">${labels[type]}</div>
-        <div class="ov3-floors-stat-value" id="ov3-fl-${fi}-${type}">${sensor ? "—" : "n/a"}</div>
-      </div>`;
-    }).join('');
-
-    return `<div class="ov3-floors-panel">
-      <div class="ov3-floors-stat-row">${items}</div>
-    </div>`;
-  }).join('');
-
-  dotsEl.innerHTML = floors.map((_, fi) =>
-    `<div class="ov3-floors-dot${fi === 0 ? " active" : ""}" id="ov3-fl-dot-${fi}" onclick="_ov3FloorsScrollTo(${fi})"></div>`
-  ).join('');
-
-  // Scroll spy — update dot and active name as user swipes
-  scroll.addEventListener("scroll", () => {
-    const w = scroll.offsetWidth;
-    if (!w) return;
-    const idx = Math.round(scroll.scrollLeft / w);
-    floors.forEach((_, fi) => {
-      const d = document.getElementById(`ov3-fl-dot-${fi}`);
-      if (d) d.classList.toggle("active", fi === idx);
-    });
-    const nameEl = document.getElementById("ov3-floors-active-name");
-    if (nameEl && floors[idx]) nameEl.textContent = floors[idx].label;
-  }, { passive: true });
-
-  // Initialise the active name to the first floor
-  const nameEl = document.getElementById("ov3-floors-active-name");
-  if (nameEl && floors[0]) nameEl.textContent = floors[0].label;
+function _ov3IndoorFloors() {
+  return (Array.isArray(CONFIG.floorSensors) ? CONFIG.floorSensors : [])
+    .filter(f => f.label !== "Solar" && (f.sensors || []).some(s => OV3_INDOOR_TYPES.includes(s.type)));
 }
 
-function _ov3FloorsScrollTo(idx) {
-  const scroll = document.getElementById("ov3-floors-scroll");
-  if (!scroll) return;
-  scroll.scrollTo({ left: idx * scroll.offsetWidth, behavior: "smooth" });
+function _buildOv3IndoorCard() {
+  const cardEl  = document.getElementById("ov3-indoor-card");
+  const tableEl = document.getElementById("ov3-indoor-table");
+  if (!cardEl || !tableEl) return;
+
+  const floors = _ov3IndoorFloors();
+  if (!floors.length) {
+    cardEl.style.display = "none";
+    return;
+  }
+  cardEl.style.display = "";
+
+  // Column set = union of sensor types actually present across indoor floors
+  const cols = OV3_INDOOR_TYPES.filter(type => floors.some(f => (f.sensors || []).some(s => s.type === type)));
+  tableEl.style.gridTemplateColumns = `1.3fr repeat(${cols.length}, 1fr)`;
+
+  let html = `<div class="ov3-indoor-col-label"></div>` +
+    cols.map(type => `<div class="ov3-indoor-col-label">${OV3_INDOOR_LABELS[type]}</div>`).join('');
+
+  floors.forEach((floor, fi) => {
+    html += `<div class="ov3-indoor-floor-label">${escapeHtml(floor.label || "Floor " + (fi + 1))}</div>`;
+    html += cols.map(type => `<div class="ov3-indoor-stat-value" id="ov3-ind-${fi}-${type}">—</div>`).join('');
+  });
+
+  tableEl.innerHTML = html;
 }
 
 /* ─── OV3 SECURITY CARD — swipeable scroll (page 1: arm + siren, page 2: garage/gate) ─── */
@@ -19714,22 +19519,19 @@ function _ov3SecScrollTo(idx) {
   scroll.scrollTo({ left: idx * scroll.offsetWidth, behavior: "smooth" });
 }
 
-function _refreshOv3FloorsCard() {
-  const SENSOR_TYPES = ["temp", "humidity", "pm25"];
-  const UNITS = { temp: "°", humidity: "%", pm25: "" };
-  const floors = (Array.isArray(CONFIG.floorSensors) ? CONFIG.floorSensors : [])
-    .filter(f => f.label !== "Solar" && (f.sensors || []).some(s => SENSOR_TYPES.includes(s.type)));
+function _refreshOv3IndoorCard() {
+  const floors = _ov3IndoorFloors();
 
   floors.forEach((floor, fi) => {
-    SENSOR_TYPES.forEach(type => {
-      const el = document.getElementById(`ov3-fl-${fi}-${type}`);
+    OV3_INDOOR_TYPES.forEach(type => {
+      const el = document.getElementById(`ov3-ind-${fi}-${type}`);
       if (!el) return;
       const sensor = (floor.sensors || []).find(s => s.type === type);
       if (!sensor) return;
       const d = haGetCached(sensor.entity);
       if (!d) { el.textContent = "—"; return; }
       const v = parseFloat(d.state);
-      const val = isNaN(v) ? "—" : (sensor.decimal ? v.toFixed(1) : Math.round(v)) + UNITS[type];
+      const val = isNaN(v) ? "—" : (sensor.decimal ? v.toFixed(1) : Math.round(v)) + (sensor.unit ? " " + sensor.unit : "");
       el.textContent = val;
     });
   });
@@ -19738,14 +19540,13 @@ function _refreshOv3FloorsCard() {
 function _refreshOv3() {
   if (!_ov3Built) return;
   _refreshOv3Weather();
-  _refreshOv3Aqi();
   _refreshOv3Garden();
   _refreshOv3Greeting();
   _refreshOv3SidebarControls();
   _refreshOv3PowerDrawer();
   _refreshOv3AcCard();
   _refreshOv3PurifierCard();
-  _refreshOv3FloorsCard();
+  _refreshOv3IndoorCard();
   _refreshOv3MusicCard();
   if (typeof _updateOv3EnergyCard === "function") _updateOv3EnergyCard();
   if (typeof _refreshOv3StocksCard === "function") _refreshOv3StocksCard();

@@ -155,8 +155,9 @@ const CONFIG = {
    *     widget stat row (e.g. World's Air Quality Index / waqi.info via HACS).
    *     Use a network station, NOT local PurpleAir / Airthings hardware.
    *
-   *   entity + pm25/pm10/co/no2 — local sensors for the standalone OV3 AQI
-   *     card and the weather fullscreen AQI ring.
+   *   entity + pm25/pm10/co/no2 — local sensors for the weather fullscreen
+   *     AQI ring. Per-floor indoor air quality (PM2.5, etc.) is configured
+   *     separately below in floorSensors.
    *
    * World's AQI HACS: Settings → Devices & Services → Add Integration →
    * "World's Air Quality Index" (geolocation or station ID). Point
@@ -226,9 +227,14 @@ const CONFIG = {
   ],
 
   /* ── SENSOR ROW ──────────────────────────────────────────────────────────
-   * floorSensors — side-by-side floor panels, each with any number of readings.
-   * Add/remove entire { label, sensors } blocks to add/remove panels.
-   * Add/remove sensor lines within a panel to add/remove readings.
+   * floorSensors — per-floor readings shown together in the OV3 indoor
+   * environment card (all floors visible at once, no swiping).
+   * Add/remove entire { label, sensors } blocks to add/remove floors.
+   * Add/remove sensor lines within a floor to add/remove readings — the
+   * card only shows a stat column (temp/humidity/pm25/aqi/radon) if at
+   * least one floor defines that sensor type; a floor missing a given
+   * sensor just shows "—" in that column (see Second Floor below, which
+   * has no pm25 sensor).
    * ─────────────────────────────────────────────────────────────────────────── */
   floorSensors: [
     {
@@ -244,7 +250,7 @@ const CONFIG = {
       sensors: [
         { type: "temp",     entity: "YOUR_SECOND_FLOOR_TEMP_ENTITY",     unit: "°C", decimal: true },
         { type: "humidity", entity: "YOUR_SECOND_FLOOR_HUMIDITY_ENTITY", unit: "%"                 },
-        { type: "pm25",     entity: "YOUR_SECOND_FLOOR_PM25_ENTITY",     unit: "μg/m³"             },
+        // No pm25 sensor on this floor — its PM2.5 column will show "—".
       ],
     },
     {
