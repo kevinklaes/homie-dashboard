@@ -597,8 +597,16 @@
     width: min(400px, 90vw);
   }
   .popup--scene {
-    max-width: 500px;
-    width: min(500px, 90vw);
+    max-width: min(920px, 94vw);
+    width: min(920px, 94vw);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+  }
+  .popup--scene .popup-list {
+    max-height: min(75vh, calc(100dvh - 8rem));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* ─── WEATHER POPUP ─── */
@@ -979,6 +987,20 @@
    * Scene bubbles rendered inside the popup for the overview Scenes chip.
    * Same visual style as the room-level scene bubbles but arranged in a
    * wrapped grid under a group label.                                        */
+  .popup-scenes-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.5rem;
+    align-items: start;
+  }
+  .popup-scenes-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  @media (max-width: 520px) {
+    .popup-scenes-columns { grid-template-columns: 1fr; }
+  }
   .popup-scenes-grid {
     display: flex;
     flex-wrap: wrap;
@@ -12191,20 +12213,30 @@ async function openPopup(i) {
 
   // ── Scene chip: render grouped scene bubbles, no entity state needed ────────
   if (c.isSceneChip) {
-    let sceneHtml = "";
-    (c.subGroups || []).forEach(group => {
-      sceneHtml += `<div class="popup-group-label">${escapeHtml(group.label)}</div>`;
-      sceneHtml += `<div class="popup-scenes-grid">`;
-      (group.scenes || []).forEach((sc, idx) => {
-        const bubbleId = `psb-${escapeHtml(group.label)}-${idx}`;
-        sceneHtml += `
-          <div class="popup-scene-bubble" onclick="triggerPopupScene('${escapeHtml(sc.entity)}','${escapeHtml(bubbleId)}')">
-            <div class="popup-scene-icon" id="${bubbleId}" style="background:${sc.color}">${sc.icon}</div>
-            <div class="popup-scene-label">${escapeHtml(sc.label)}</div>
-          </div>`;
+    const groups = c.subGroups || [];
+    const mid = Math.ceil(groups.length / 2);
+    const columns = [groups.slice(0, mid), groups.slice(mid)];
+
+    let sceneHtml = `<div class="popup-scenes-columns">`;
+    columns.forEach(colGroups => {
+      sceneHtml += `<div class="popup-scenes-col">`;
+      colGroups.forEach(group => {
+        sceneHtml += `<div class="popup-group-label">${escapeHtml(group.label)}</div>`;
+        sceneHtml += `<div class="popup-scenes-grid">`;
+        (group.scenes || []).forEach((sc, idx) => {
+          const bubbleId = `psb-${escapeHtml(group.label)}-${idx}`;
+          sceneHtml += `
+            <div class="popup-scene-bubble" onclick="triggerPopupScene('${escapeHtml(sc.entity)}','${escapeHtml(bubbleId)}')">
+              <div class="popup-scene-icon" id="${bubbleId}" style="background:${sc.color}">${sc.icon}</div>
+              <div class="popup-scene-label">${escapeHtml(sc.label)}</div>
+            </div>`;
+        });
+        sceneHtml += `</div>`;
       });
       sceneHtml += `</div>`;
     });
+    sceneHtml += `</div>`;
+
     list.innerHTML = "";
     _openPopupOverlay("popup--scene");
     requestAnimationFrame(() => { list.innerHTML = sceneHtml; });
