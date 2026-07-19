@@ -691,5 +691,26 @@ const CONFIG = {
     ],
   },
 
+  /* ── OV3 POWER PLUGS (hd-rw0) ────────────────────────────────────────────
+   * Sidebar drawer on Overview 3 for turning Third Reality (or any switch.*)
+   * smart plugs on/off and showing their live power draw.
+   *
+   * Each entry:
+   *   label  — display name shown in the drawer
+   *   switch — HA switch.* entity_id for on/off control (required)
+   *   power  — HA sensor.* entity_id reporting watts (optional — shows "—"
+   *            if omitted). Uses the sensor's own unit_of_measurement when
+   *            present, defaults to "W".
+   *
+   * Leave the array empty (or every entry missing `switch`) to hide the
+   * sidebar button entirely.
+   * ──────────────────────────────────────────────────────────────────────── */
+  powerPlugs: [
+    { label: "Plug 1", switch: "YOUR_PLUG_1_SWITCH_ENTITY", power: "YOUR_PLUG_1_POWER_ENTITY" },
+    { label: "Plug 2", switch: "YOUR_PLUG_2_SWITCH_ENTITY", power: "YOUR_PLUG_2_POWER_ENTITY" },
+    // Add more plugs below — copy and paste a line above. `power` is optional:
+    // { label: "Plug x", switch: "switch.YOUR_PLUG_X_ENTITY" },
+  ],
+
 };
 
