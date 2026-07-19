@@ -10414,8 +10414,28 @@ function _stkFmtVolume(v) {
 
 const STK_INDEX_KEYS = ["dow", "sp500", "nasdaq"];
 
+/* _configScheduleActive — shared day/time gate (same semantics as the Waze
+ * travel-time bubble, see refreshWazeTravelTime above). Returns true when no
+ * days are configured (always-on, backward compatible). */
+function _configScheduleActive(cfg) {
+  if (!cfg) return true;
+  const days = Array.isArray(cfg.days) ? cfg.days : null;
+  if (days && days.length && !days.includes(new Date().getDay())) return false;
+  const hour = new Date().getHours();
+  if (hour < (cfg.timeStart ?? 0) || hour >= (cfg.timeEnd ?? 24)) return false;
+  return true;
+}
+
 /* ─── OV3 STOCKS CARD — compact market header ─── */
 function _refreshOv3StocksCard() {
+  const card = document.getElementById("ov3-stocks-card");
+  if (card && !_configScheduleActive(CONFIG.stocks)) {
+    card.style.display = "none";
+    if (_stkFsOpen) closeStocksFS();
+    return;
+  }
+  if (card) card.style.display = "";
+
   const idxCfg = (CONFIG.stocks && CONFIG.stocks.indices) || {};
   STK_INDEX_KEYS.forEach(key => {
     const q = idxCfg[key] ? _stkReadQuote(idxCfg[key]) : null;
@@ -10436,6 +10456,7 @@ let _stkFsInterval = null;
 let _stkActiveIdx  = 0;
 
 function openStocksFS() {
+  if (!_configScheduleActive(CONFIG.stocks)) return;
   haptic("light");
   _closeLauncher && _closeLauncher();
   _stkFsOpen = true;

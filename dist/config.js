@@ -691,8 +691,19 @@ const CONFIG = {
    * view with a day chart and switchable via tap. Each entry:
    *   label  — display name (e.g. company name or your own nickname)
    *   entity — HA sensor entity_id for this ticker's quote
+   *
+   * SCHEDULE (optional, same semantics as wazeTravelTime) — hides the OV3
+   * markets card (and blocks opening the full-screen view) outside market
+   * hours instead of always showing it. Omit both fields for always-on
+   * (backward compatible with existing configs):
+   *   days      — days of the week to show it (0=Sun … 6=Sat). Mon–Fri
+   *               market days would be [1, 2, 3, 4, 5].
+   *   timeStart — hour (0–23) at which the card starts appearing (inclusive)
+   *   timeEnd   — hour (0–24) at which the card stops appearing (exclusive)
    * ──────────────────────────────────────────────────────────────────────── */
   stocks: {
+    // days: [1, 2, 3, 4, 5], timeStart: 9, timeEnd: 16,
+
     indices: {
       dow:    "YOUR_STOCKS_DOW_ENTITY",     // e.g. sensor.yahoofinance_^dji
       sp500:  "YOUR_STOCKS_SP500_ENTITY",   // e.g. sensor.yahoofinance_^gspc
