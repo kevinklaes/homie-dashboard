@@ -5320,11 +5320,11 @@
    * Map + stats overlay opened from the sidebar LiveTrack button. Person
    * tabs appear only when more than one LiveTrack session is active. */
   .popup--livetrack {
-    max-width: min(720px, 94vw);
-    width: min(720px, 94vw);
+    max-width: 95vw;
+    width: 95vw;
     display: flex;
     flex-direction: column;
-    max-height: 90vh;
+    max-height: 95vh;
   }
   .ov3-lt-tabs {
     display: flex;
@@ -5353,15 +5353,15 @@
     margin-top: 1rem;
     border-radius: 14px;
     overflow: hidden;
-    min-height: 55vh;
+    min-height: 40vh;
     background: rgba(0,0,0,0.3);
     position: relative;
-    flex-shrink: 0;
+    flex: 1;
   }
   .ov3-lt-iframe {
     width: 100%;
-    height: 55vh;
-    min-height: 55vh;
+    height: 100%;
+    min-height: 40vh;
     border: none;
     display: block;
   }
@@ -5403,26 +5403,6 @@
     color: #fff;
     margin-top: 2px;
   }
-  .ov3-lt-footer {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: flex-end;
-    flex-shrink: 0;
-  }
-  .ov3-lt-open-btn {
-    padding: 8px 16px;
-    border-radius: 10px;
-    border: 1px solid var(--ac-4);
-    background: var(--accent-glow);
-    color: var(--accent-hi);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .ov3-lt-open-btn:active { opacity: 0.7; }
-
   /* Right content area */
   .ov3-main {
     flex: 1;
@@ -9016,9 +8996,6 @@
       <div id="ov3-lt-map-empty" class="ov3-lt-map-empty">Map unavailable — no LiveTrack URL yet</div>
     </div>
     <div class="ov3-lt-stats" id="ov3-lt-stats"></div>
-    <div class="ov3-lt-footer">
-      <button class="ov3-lt-open-btn" onclick="_ov3LiveTrackOpenBrowser()">Open in browser</button>
-    </div>
   </div>
 </div>
 
@@ -11982,14 +11959,6 @@ function _ov3SelectLiveTrackPerson(idx) {
   haptic("light");
   _ov3LiveTrackActivePerson = idx;
   _refreshOv3LiveTrackModal();
-}
-
-function _ov3LiveTrackOpenBrowser() {
-  const active = _getActiveLiveTrack();
-  const t = active[_ov3LiveTrackActivePerson];
-  if (!t || !t.url) return;
-  haptic("light");
-  window.open(t.url, "_blank");
 }
 
 /* Rebuild tabs, iframe src, and stats row from the current active list.
