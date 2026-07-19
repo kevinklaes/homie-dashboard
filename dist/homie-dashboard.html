@@ -14848,6 +14848,7 @@ function init() {
   setInterval(refreshAll,   FALLBACK_POLL_MS);
   setInterval(() => { refreshMusic(); refreshNowPlayingFS(); }, MUSIC_INTERVAL_MS);
   setInterval(refreshWazeTravelTime, 60_000); // re-check day/time gate every minute
+  setInterval(() => { if (_ov3Built) _refreshOv3StocksCard(); }, 60_000); // re-check stocks schedule gate every minute
 
   // Real-time music progress: interpolate position every second between HA updates
   setInterval(_tickMusicProgress, 1_000);
