@@ -6731,9 +6731,8 @@
     transform: scale(1.3);
   }
   .ov3-sec-feedback {
-    position: absolute;
-    right: 0;
-    bottom: 0;
+    width: 100%;
+    text-align: center;
     min-height: 10px;
     font-size: 9px;
     letter-spacing: 0.2em;
@@ -13843,7 +13842,6 @@ function _buildOv3SecurityCard() {
     const ap = CONFIG.accessPanel;
     card.className = "ov3-security-card ov3-access-card";
     card.innerHTML = `
-      <span id="ov3-access-badge" class="alarm-badge access-badge--secure">—</span>
       <div class="ov3-access-status">
         <div class="ov3-access-row">
           <span class="ov3-access-label">${escapeHtml(ap.garageLabel || "Garage")}</span>
@@ -13922,8 +13920,8 @@ function _buildOv3SecurityCard() {
     <div class="ov3-sec-dots" id="ov3-sec-dots">
       <div class="ov3-sec-dot active" id="ov3-sec-dot-0" onclick="_ov3SecScrollTo(0)"></div>
       <div class="ov3-sec-dot" id="ov3-sec-dot-1" onclick="_ov3SecScrollTo(1)"></div>
-      <div id="ov3-sec-feedback" class="ov3-sec-feedback"></div>
-    </div>`;
+    </div>
+    <div id="ov3-sec-feedback" class="ov3-sec-feedback"></div>`;
   _initOv3SecurityScroll();
 }
 
@@ -13958,11 +13956,6 @@ function _refreshAccessUI() {
     el.classList.toggle("ok", !warn && text !== "—");
   };
 
-  const ov3Badge = document.getElementById("ov3-access-badge");
-  if (ov3Badge) {
-    ov3Badge.textContent = badgeText;
-    ov3Badge.className = "alarm-badge " + badgeClass;
-  }
   setText("ov3-access-garage-value", garageText, garageOpen);
   setText("ov3-access-lock-value", lockText, lockOpen);
 
