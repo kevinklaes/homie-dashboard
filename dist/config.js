@@ -120,6 +120,11 @@ const CONFIG = {
    * floEntity blank/YOUR_* to hide page 2 entirely (single-pane layout).
    * floEntity must be a "switch" entity: on = water flowing, off = shut off.
    * floModeEntity is an optional extra status row (e.g. system mode sensor).
+   *
+   * leakSensors — optional moisture/leak binary_sensor entities (e.g. Aqara).
+   * Shown as status dots in the upper-right of the water shutoff swipe pane
+   * when floEntity is configured. Each entry is an entity ID string or
+   * { entity, label }. off = dry (green), on = leak (red).
    * ─────────────────────────────────────────────────────────────────────── */
   accessPanel: {
     lockEntity: "YOUR_LOCK_ENTITY",              // e.g. lock.front_door
@@ -133,6 +138,11 @@ const CONFIG = {
     floOpenLabel: "Open",
     floClosedLabel: "Shut Off",
     floModeEntity: "",                            // optional, e.g. sensor.water_system_mode
+    leakSensors: [
+      // { entity: "YOUR_LEAK_SENSOR_1", label: "Basement" },
+      // { entity: "YOUR_LEAK_SENSOR_2", label: "Laundry" },
+      // { entity: "YOUR_LEAK_SENSOR_3", label: "Water Heater" },
+    ],
   },
 
   /* ── WEATHER ─────────────────────────────────────────────────────────────

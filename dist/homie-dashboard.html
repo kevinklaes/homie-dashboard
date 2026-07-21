@@ -6730,6 +6730,26 @@
   .ov3-access-value.warn { color: #ff9a9f; }
   .ov3-access-value.ok   { color: #6ee7a8; }
   .ov3-access-btns { grid-template-columns: 1fr 1fr !important; margin-top: 2px; }
+  .ov3-sec-panel--flo { position: relative; }
+  .ov3-leak-indicators {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    z-index: 1;
+  }
+  .ov3-leak-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.28);
+    transition: background 0.25s, box-shadow 0.25s;
+  }
+  .ov3-leak-dot.dry { background: #4cef7a; box-shadow: 0 0 6px rgba(76,239,122,0.45); }
+  .ov3-leak-dot.wet { background: #f04040; box-shadow: 0 0 8px rgba(240,64,64,0.55); }
+  .ov3-leak-dot.unknown { background: rgba(255,255,255,0.28); }
   #ov3-unlock-btn.active { background: rgba(255,170,60,0.12); border-color: rgba(255,170,60,0.45); color: #ffc870; }
   #ov3-unlock-btn.active svg { stroke: #ffc870; }
   #ov3-lock-btn.active { background: rgba(50,210,130,0.12); border-color: rgba(50,210,130,0.4); color: #6ee7a8; }
@@ -9368,8 +9388,10 @@ function _wsConnect() {
             // Keep alarm / access badge in sync with live WS events
             if (_useAccessPanel()) {
               const ap = CONFIG.accessPanel;
+              const leakEntities = _getConfiguredLeakSensors().map(s => s.entity);
               if (newState.entity_id === ap.lockEntity || newState.entity_id === ap.garageEntity ||
-                  newState.entity_id === ap.floEntity || newState.entity_id === ap.floModeEntity) {
+                  newState.entity_id === ap.floEntity || newState.entity_id === ap.floModeEntity ||
+                  leakEntities.includes(newState.entity_id)) {
                 _refreshAccessUI();
               }
             } else if (newState.entity_id === CONFIG.alarmEntity) {
@@ -14039,6 +14061,17 @@ function _hasFloConfigured() {
   return !!(e && !/^YOUR_/i.test(e) && e.includes("."));
 }
 
+function _getConfiguredLeakSensors() {
+  const raw = CONFIG.accessPanel?.leakSensors;
+  if (!Array.isArray(raw) || !raw.length) return [];
+  return raw.map((item, index) => {
+    const entity = typeof item === "string" ? item : item?.entity;
+    if (!entity || /^YOUR_/i.test(entity) || !entity.includes(".")) return null;
+    const label = typeof item === "object" && item?.label ? String(item.label) : "";
+    return { entity, label, index };
+  }).filter(Boolean);
+}
+
 function _accessGarageOpen(state, entityId) {
   const s = String(state || "").toLowerCase();
   const domain = entityId ? entityId.split(".")[0] : "";
@@ -14110,7 +14143,16 @@ function _buildOv3SecurityCard() {
       return;
     }
 
+    const leakSensors = _getConfiguredLeakSensors();
+    const leakIndicatorsHtml = leakSensors.length ? `
+      <div class="ov3-leak-indicators" id="ov3-leak-indicators" aria-label="Leak sensors">
+        ${leakSensors.map((s, i) =>
+          `<div class="ov3-leak-dot unknown" id="ov3-leak-dot-${i}" title="${escapeHtml(s.label || s.entity)}"></div>`
+        ).join("")}
+      </div>` : "";
+
     const floPanelHtml = `
+      ${leakIndicatorsHtml}
       <div class="ov3-access-status">
         <div class="ov3-access-row">
           <span class="ov3-access-label">${escapeHtml(ap.floLabel || "Main Water")}</span>
@@ -14135,7 +14177,7 @@ function _buildOv3SecurityCard() {
     card.innerHTML = `
       <div class="ov3-sec-scroll" id="ov3-sec-scroll">
         <div class="ov3-sec-panel">${lockPanelHtml}</div>
-        <div class="ov3-sec-panel">${floPanelHtml}</div>
+        <div class="ov3-sec-panel ov3-sec-panel--flo">${floPanelHtml}</div>
       </div>
       <div class="ov3-sec-dots" id="ov3-sec-dots">
         <div class="ov3-sec-dot active" id="ov3-sec-dot-0" onclick="_ov3SecScrollTo(0)"></div>
@@ -14287,6 +14329,20 @@ function _refreshAccessUI() {
       const modeEl = document.getElementById("ov3-access-flo-mode-value");
       if (modeEl) modeEl.textContent = modeData ? String(modeData.state).replace(/_/g, " ") : "—";
     }
+
+    _getConfiguredLeakSensors().forEach((s, i) => {
+      const dot = document.getElementById(`ov3-leak-dot-${i}`);
+      if (!dot) return;
+      const data = haGetCached(s.entity);
+      const state = data ? String(data.state).toLowerCase() : "";
+      dot.classList.remove("dry", "wet", "unknown");
+      if (state === "off") dot.classList.add("dry");
+      else if (state === "on") dot.classList.add("wet");
+      else dot.classList.add("unknown");
+      const name = s.label || data?.attributes?.friendly_name || s.entity;
+      const status = state === "off" ? "dry" : state === "on" ? "leak" : "unknown";
+      dot.title = `${name} — ${status}`;
+    });
   }
 }
 
