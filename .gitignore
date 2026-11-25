@@ -1,0 +1,4 @@
+
+# gascity beads (local runtime state)
+.beads/*
+!.beads/identity.toml
